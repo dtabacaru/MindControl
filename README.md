@@ -1,6 +1,15 @@
 # ClassicWowNeuralParasite
 An open-source C# API and automater for World of Warcraft Classic
 
+## Installation notes
+The solution is developed in Visual Studio 2019.
+
+All libraries are provided and this solution should compile natively in .NET Framework 4.7.2.
+
+Since the WowAutomaterUi manifest file requires uiAccess="true", you will have to manually set the WowAutomaterUi
+debug executable to have administrator privelages if you'd like to attach the Visual Studio debugger. Simply right 
+click the executable and go to Properties, Compatability, and check the "Run this program as an administrator" checkbox.
+
 ## Structure
 The solution contains 4 separate projects:
 
