@@ -10,13 +10,19 @@ Since the WowAutomaterUi manifest file requires uiAccess="true", you will have t
 debug executable to have administrator privelages if you'd like to attach the Visual Studio debugger. Simply right 
 click the executable and go to Properties, Compatability, and check the "Run this program as an administrator" checkbox.
 
+The Api and Automater expect you have installed the Classic World of Warcraft addon 'NeuralParasiteSensor'. This addon
+is provided as part of the WowApi project under the 'NeuralParasiteSensor' folder.
+
+Copy-paste this folder into the "Interface" folder of your World of Warcraft Classic installation forlder to install
+the addon.
+
 ## Structure
 The solution contains 4 separate projects:
 
 ### WindowsInput
 This project simulates the keyboard and mouse. Original code (no license): https://archive.codeplex.com/?p=inputsimulator
 
-It is only used by the autoamter.
+It is only used by the automater.
 
 ### WowApi
 This project provides access to a static API object that relays in game information available to the World of Warcraft addon
@@ -24,10 +30,6 @@ system.
 
 You can subscribe to the ClassicWowNeuralParasite.WowApi.UpdateEvent event to get real-time information from a running
 instance of World of Warcraft Classic, provided you have installed the 'NeuralParasiteSensor' addon.
-
-The addon itself is found within this project in the NeuralParasiteSensor folder.
-
-Copy-paste this folder into the "Interface" folder of your World of Warcraft Classic installation forlder.
 
 ### WowAutomater
 This project provides automated control of a World of Warcraft classic character via a WowAutomater object.
