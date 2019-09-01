@@ -165,7 +165,7 @@
             // SplitDistanceLabel
             // 
             this.SplitDistanceLabel.AutoSize = true;
-            this.SplitDistanceLabel.Location = new System.Drawing.Point(8, 296);
+            this.SplitDistanceLabel.Location = new System.Drawing.Point(8, 424);
             this.SplitDistanceLabel.Name = "SplitDistanceLabel";
             this.SplitDistanceLabel.Size = new System.Drawing.Size(70, 13);
             this.SplitDistanceLabel.TabIndex = 42;
@@ -179,9 +179,9 @@
             0,
             0,
             131072});
-            this.SplitDistanceNumericInput.Location = new System.Drawing.Point(130, 294);
+            this.SplitDistanceNumericInput.Location = new System.Drawing.Point(130, 422);
             this.SplitDistanceNumericInput.Maximum = new decimal(new int[] {
-            5,
+            10,
             0,
             0,
             65536});
@@ -194,15 +194,15 @@
             this.SplitDistanceNumericInput.Size = new System.Drawing.Size(76, 20);
             this.SplitDistanceNumericInput.TabIndex = 41;
             this.SplitDistanceNumericInput.Value = new decimal(new int[] {
-            25,
+            5,
             0,
             0,
-            131072});
+            65536});
             this.SplitDistanceNumericInput.ValueChanged += new System.EventHandler(this.SplitDistanceNumericInput_ValueChanged);
             // 
             // SaveFileButton
             // 
-            this.SaveFileButton.Location = new System.Drawing.Point(6, 242);
+            this.SaveFileButton.Location = new System.Drawing.Point(6, 370);
             this.SaveFileButton.Name = "SaveFileButton";
             this.SaveFileButton.Size = new System.Drawing.Size(200, 25);
             this.SaveFileButton.TabIndex = 40;
@@ -227,7 +227,7 @@
             // RecordButton
             // 
             this.RecordButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
-            this.RecordButton.Location = new System.Drawing.Point(6, 320);
+            this.RecordButton.Location = new System.Drawing.Point(6, 448);
             this.RecordButton.Name = "RecordButton";
             this.RecordButton.Size = new System.Drawing.Size(200, 25);
             this.RecordButton.TabIndex = 38;
@@ -238,7 +238,7 @@
             // OKButton
             // 
             this.OKButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.OKButton.Location = new System.Drawing.Point(6, 368);
+            this.OKButton.Location = new System.Drawing.Point(6, 496);
             this.OKButton.Name = "OKButton";
             this.OKButton.Size = new System.Drawing.Size(200, 37);
             this.OKButton.TabIndex = 37;
@@ -248,7 +248,7 @@
             // 
             // LoadFileButton
             // 
-            this.LoadFileButton.Location = new System.Drawing.Point(6, 211);
+            this.LoadFileButton.Location = new System.Drawing.Point(6, 339);
             this.LoadFileButton.Name = "LoadFileButton";
             this.LoadFileButton.Size = new System.Drawing.Size(200, 25);
             this.LoadFileButton.TabIndex = 36;
@@ -258,17 +258,17 @@
             // 
             // YTextBox
             // 
-            this.YTextBox.Location = new System.Drawing.Point(6, 135);
+            this.YTextBox.Location = new System.Drawing.Point(6, 191);
             this.YTextBox.Multiline = true;
             this.YTextBox.Name = "YTextBox";
             this.YTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.YTextBox.Size = new System.Drawing.Size(200, 70);
+            this.YTextBox.Size = new System.Drawing.Size(200, 125);
             this.YTextBox.TabIndex = 35;
             // 
             // YLabel
             // 
             this.YLabel.AutoSize = true;
-            this.YLabel.Location = new System.Drawing.Point(6, 119);
+            this.YLabel.Location = new System.Drawing.Point(6, 175);
             this.YLabel.Name = "YLabel";
             this.YLabel.Size = new System.Drawing.Size(14, 13);
             this.YLabel.TabIndex = 34;
@@ -280,7 +280,7 @@
             this.XTextBox.Multiline = true;
             this.XTextBox.Name = "XTextBox";
             this.XTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.XTextBox.Size = new System.Drawing.Size(200, 70);
+            this.XTextBox.Size = new System.Drawing.Size(200, 125);
             this.XTextBox.TabIndex = 33;
             // 
             // XLabel
@@ -756,7 +756,6 @@
             this.Controls.Add(this.OptionTabs);
             this.Controls.Add(this.ShowInfoButton);
             this.Controls.Add(this.ModeDropDown);
-            this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimizeBox = false;

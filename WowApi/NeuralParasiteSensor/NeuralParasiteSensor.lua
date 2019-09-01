@@ -107,7 +107,32 @@ function DataFrame_OnLoad()
 	-- Necessary for some raisin
 end
 
+local updateDelayCount = 0;
+local updateDelay = 2;
+
+local syncSwitchCount = 0;
+
 function DataFrame_OnUpdate()
+
+	if updateDelayCount < updateDelay then
+		updateDelayCount = updateDelayCount + 1;
+		return
+	end
+	
+	--if syncSwitchCount == 0 then
+	--	SyncPixel:SetColorTexture(1,0,0,1);
+	--	syncSwitchCount = syncSwitchCount + 1;
+	--elseif syncSwitchCount == 1 then
+	--	SyncPixel:SetColorTexture(0,1,0,1);
+	--	syncSwitchCount = syncSwitchCount + 1;
+	--elseif syncSwitchCount == 2 then
+	--	SyncPixel:SetColorTexture(0,0,1,1);
+	--	syncSwitchCount = 0;
+	--end
+	
+	--syncSwitch = not syncSwitch;
+	
+	updateDelayCount = 0;
 
 	FindPixel1:SetColorTexture(50/255, 100/255, 150/255, 1);
 

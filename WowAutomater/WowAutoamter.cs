@@ -1315,7 +1315,7 @@ namespace ClassicWowNeuralParasite
 
         #region Record Path
 
-        public double SplitDistance = 0.25;
+        public double SplitDistance = 0.50;
         private volatile bool m_RecordPath = false;
 
         public void RecordPath()
@@ -1346,6 +1346,8 @@ namespace ClassicWowNeuralParasite
                     lastX = currentX;
                     lastY = currentY;
 
+                    Console.WriteLine(currentX + " " + currentY);
+
                     RecordPathEvent?.Invoke(this, new RecordPathEventArgs(currentX, currentY));
                 }
             }
@@ -1368,8 +1370,8 @@ namespace ClassicWowNeuralParasite
 
         #region Waypoints
 
-        public double TurnToleranceRad  = 0.07; 
-        public double PositionTolerance = 0.05;
+        public double TurnToleranceRad  = 0.08; 
+        public double PositionTolerance = 0.075;
         public double ClosestPointDistance = 1.00;
 
         private int m_WaypointIndex = 0;
