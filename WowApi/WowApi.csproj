@@ -42,8 +42,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LinearAlgebra.cs" />
-    <Compile Include="PlayerKalmanFilter.cs" />
     <Compile Include="WowApi.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

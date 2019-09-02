@@ -115,7 +115,7 @@
             this.OptionTabs.Location = new System.Drawing.Point(0, 63);
             this.OptionTabs.Name = "OptionTabs";
             this.OptionTabs.SelectedIndex = 0;
-            this.OptionTabs.Size = new System.Drawing.Size(222, 565);
+            this.OptionTabs.Size = new System.Drawing.Size(222, 659);
             this.OptionTabs.TabIndex = 37;
             this.OptionTabs.Visible = false;
             this.OptionTabs.SelectedIndexChanged += new System.EventHandler(this.OptionTabs_SelectedIndexChanged);
@@ -126,7 +126,7 @@
             this.InfoTab.Location = new System.Drawing.Point(4, 22);
             this.InfoTab.Name = "InfoTab";
             this.InfoTab.Padding = new System.Windows.Forms.Padding(3);
-            this.InfoTab.Size = new System.Drawing.Size(214, 539);
+            this.InfoTab.Size = new System.Drawing.Size(214, 633);
             this.InfoTab.TabIndex = 0;
             this.InfoTab.Text = "Info";
             this.InfoTab.UseVisualStyleBackColor = true;
@@ -137,7 +137,7 @@
             this.DataTextBox.Location = new System.Drawing.Point(7, 7);
             this.DataTextBox.Name = "DataTextBox";
             this.DataTextBox.ReadOnly = true;
-            this.DataTextBox.Size = new System.Drawing.Size(197, 526);
+            this.DataTextBox.Size = new System.Drawing.Size(197, 620);
             this.DataTextBox.TabIndex = 0;
             this.DataTextBox.Text = "";
             // 
@@ -157,7 +157,7 @@
             this.PathsTab.Location = new System.Drawing.Point(4, 22);
             this.PathsTab.Name = "PathsTab";
             this.PathsTab.Padding = new System.Windows.Forms.Padding(3);
-            this.PathsTab.Size = new System.Drawing.Size(214, 539);
+            this.PathsTab.Size = new System.Drawing.Size(214, 633);
             this.PathsTab.TabIndex = 1;
             this.PathsTab.Text = "Paths";
             this.PathsTab.UseVisualStyleBackColor = true;
@@ -194,10 +194,10 @@
             this.SplitDistanceNumericInput.Size = new System.Drawing.Size(76, 20);
             this.SplitDistanceNumericInput.TabIndex = 41;
             this.SplitDistanceNumericInput.Value = new decimal(new int[] {
-            5,
+            25,
             0,
             0,
-            65536});
+            131072});
             this.SplitDistanceNumericInput.ValueChanged += new System.EventHandler(this.SplitDistanceNumericInput_ValueChanged);
             // 
             // SaveFileButton
@@ -305,7 +305,7 @@
             this.Automater.Controls.Add(this.TurnToleranceLabel);
             this.Automater.Location = new System.Drawing.Point(4, 22);
             this.Automater.Name = "Automater";
-            this.Automater.Size = new System.Drawing.Size(214, 539);
+            this.Automater.Size = new System.Drawing.Size(214, 633);
             this.Automater.TabIndex = 2;
             this.Automater.Text = "Automater";
             this.Automater.UseVisualStyleBackColor = true;
@@ -734,7 +734,6 @@
             this.ShowInfoButton.Name = "ShowInfoButton";
             this.ShowInfoButton.Size = new System.Drawing.Size(30, 30);
             this.ShowInfoButton.TabIndex = 36;
-            this.ShowInfoButton.Text = "V";
             this.ShowInfoButton.UseVisualStyleBackColor = false;
             this.ShowInfoButton.Click += new System.EventHandler(this.ShowInfoButton_Click);
             // 

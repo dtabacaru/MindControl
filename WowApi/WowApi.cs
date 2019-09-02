@@ -40,9 +40,6 @@ namespace ClassicWowNeuralParasite
     {
         public double PlayerXPosition = 0;
         public double PlayerYPosition = 0;
-        //public double PlayerXVelocity = 0;
-        //public double PlayerYVelocity = 0;
-        //public double PlayerSpeed = 0;
         public double PlayerHeading = 0;
         public bool IsInFarRange = false;
         public bool IsInMediumRange = false;
@@ -79,6 +76,7 @@ namespace ClassicWowNeuralParasite
         public bool IsWowForeground = false;
         public PlayerClass Class = PlayerClass.None;
         public double dt = 0;
+        public double Time = 0;
 
         public override string ToString()
         {
@@ -86,9 +84,6 @@ namespace ClassicWowNeuralParasite
 
             output += "PlayerXPosition: " + PlayerXPosition.ToString("N3") + "\r\n";
             output += "PlayerYPosition: " + PlayerYPosition.ToString("N3") + "\r\n";
-            //output += "PlayerXVelocity: " + PlayerXVelocity.ToString("N3") + "\r\n";
-            //output += "PlayerYVelocity: " + PlayerYVelocity.ToString("N3") + "\r\n";
-            //output += "PlayerSpeed: " + PlayerSpeed.ToString("N3") + "\r\n";
             output += "PlayerHeading: " + (PlayerHeading * (180 / Math.PI)).ToString("N3") + "\r\n";
             output += "IsInFarRange: " + IsInFarRange.ToString() + "\r\n";
             output += "IsInMediumRange: " + IsInMediumRange.ToString() + "\r\n";
@@ -125,6 +120,7 @@ namespace ClassicWowNeuralParasite
             output += "IsWowForeground: " + IsWowForeground.ToString() + "\r\n";
             output += "Class: " + Class.ToString() + "\r\n";
             output += "dt: " + dt.ToString() + "\r\n";
+            output += "Time: " + Time.ToString() + "\r\n";
 
             return output;
         }
@@ -157,7 +153,7 @@ namespace ClassicWowNeuralParasite
     public static class WowApi
     {
         private const int API_WIDTH_PIXELS = 7;
-        private const int API_HEIGHT_PIXELS = 46;
+        private const int API_HEIGHT_PIXELS = 52;
         private const int SEARCH_SPACE_PIXELS = 250;
 
         private const byte FIND1_PIXEL_R = 50;
@@ -199,9 +195,9 @@ namespace ClassicWowNeuralParasite
         {
             Rectangle bounds;
             PlayerData playerData = new PlayerData();
-            long lastTicks = -1;
-            double dt = 0;
-            //PlayerKalmanFilter pkf = null;
+
+            long lastTicks = DateTime.Now.Ticks;
+            DateTime startTime = DateTime.Now;
 
             while (true)
             {
@@ -218,6 +214,8 @@ namespace ClassicWowNeuralParasite
                     {
                         g.CopyFromScreen(new Point(m_ApiStartXLocation, m_ApiStartYLocation), Point.Empty, bounds.Size);
                     }
+
+                    playerData.Time = (DateTime.Now - startTime).TotalSeconds;
 
                     //bitmap.Save("wowapi.png");
 
@@ -237,35 +235,15 @@ namespace ClassicWowNeuralParasite
                         continue;
                     }
 
-                    if (lastTicks != -1)
-                        dt = (double)(DateTime.Now.Ticks - lastTicks) / TimeSpan.TicksPerSecond;
+                    long currentTicks = DateTime.Now.Ticks;
+                    playerData.dt = (double)(currentTicks - lastTicks) / TimeSpan.TicksPerSecond;
 
-                    playerData.dt = dt;
-                    lastTicks = DateTime.Now.Ticks;
+                    lastTicks = currentTicks;
 
-                    Color xPositionPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((3 * m_ApiYScale)));
-                    playerData.PlayerXPosition = GetThreeBytePixelValue(xPositionPixel) * 100;
-
-                    Color yPositionPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((6 * m_ApiYScale)));
-                    playerData.PlayerYPosition = GetThreeBytePixelValue(yPositionPixel) * 100;
-
-                    Color playerHeadingPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((9 * m_ApiYScale)));
-                    playerData.PlayerHeading = GetThreeBytePixelValue(playerHeadingPixel) * 2 * Math.PI;
-
-                    //if (pkf == null)
-                    //{
-                    //    pkf = new PlayerKalmanFilter(playerData.PlayerXPosition, playerData.PlayerYPosition, playerData.PlayerHeading);
-                    //}
-                    //else
-                    //{
-                    //    pkf.PredictState(dt);
-                    //    pkf.ProcessMeasurements(playerData.PlayerXPosition, playerData.PlayerYPosition, playerData.PlayerHeading, dt);
-                    //    pkf.ProcessCurrentState(dt);
-                    //}
-                    //
-                    //playerData.PlayerXVelocity = pkf.Matrices.X[2];
-                    //playerData.PlayerYVelocity = pkf.Matrices.X[3];
-                    //playerData.PlayerSpeed = Math.Sqrt(playerData.PlayerXVelocity * playerData.PlayerXVelocity + playerData.PlayerYVelocity * playerData.PlayerYVelocity);
+                    Color playerHeadingPixelR = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((3 * m_ApiYScale)));
+                    Color playerHeadingPixelG = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((6 * m_ApiYScale)));
+                    Color playerHeadingPixelB = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((9 * m_ApiYScale)));
+                    playerData.PlayerHeading = GetThreeByte3PixelValue(playerHeadingPixelR, playerHeadingPixelG, playerHeadingPixelB) * 2 * Math.PI;
 
                     Color isInFarRangePixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((12 * m_ApiYScale)));
                     playerData.IsInFarRange = isInFarRangePixel.R == PIXEL_SET ? true : false;
@@ -303,8 +281,8 @@ namespace ClassicWowNeuralParasite
                     Color classPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((45 * m_ApiYScale)));
                     playerData.Class = (PlayerClass)GetTwoBytePixelValue(classPixel);
 
-                    //Color spellCanAttackTargetPixel = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((0 * m_ApiYScale)));
-                    //playerData.SpellCanAttackTarget = spellCanAttackTargetPixel.R == PIXEL_SET ? true : false;
+                    Color spellCanAttackTargetPixel = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((0 * m_ApiYScale)));
+                    playerData.SpellCanAttackTarget = spellCanAttackTargetPixel.R == PIXEL_SET ? true : false;
 
                     Color canAttackTargetPixel = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((3 * m_ApiYScale)));
                     playerData.CanAttackTarget = canAttackTargetPixel.R == PIXEL_SET ? true : false;
@@ -396,6 +374,18 @@ namespace ClassicWowNeuralParasite
 
                     Color canUseSkillPixel = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((42 * m_ApiYScale)));
                     playerData.CanUseSkill = canUseSkillPixel.R == PIXEL_SET ? true : false;
+
+                    Color xPositionR = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((48 * m_ApiYScale)));
+                    Color xPositionG = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((48 * m_ApiYScale)));
+                    Color xPositionB = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((48 * m_ApiYScale)));
+
+                    playerData.PlayerXPosition = GetThreeByte3PixelValue(xPositionR, xPositionG, xPositionB) * 100;
+
+                    Color yPositionR = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((51 * m_ApiYScale)));
+                    Color yPositionG = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((51 * m_ApiYScale)));
+                    Color yPositionB = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((51 * m_ApiYScale)));
+
+                    playerData.PlayerYPosition = GetThreeByte3PixelValue(yPositionR, yPositionG, yPositionB) * 100;
 
                     UpdateEvent?.Invoke(null, new WowApiUpdateEventArguments(playerData));
                 }
@@ -507,13 +497,13 @@ namespace ClassicWowNeuralParasite
             return BitConverter.ToUInt16(pixelBytes, 0);
         }
 
-        private static double GetThreeBytePixelValue(Color pixel)
+        private static double GetThreeByte3PixelValue(Color pixelR, Color pixelG, Color pixelB)
         {
             byte[] pixelBytes = new byte[4];
 
-            pixelBytes[0] = pixel.R;
-            pixelBytes[1] = pixel.G;
-            pixelBytes[2] = pixel.B;
+            pixelBytes[0] = pixelR.R;
+            pixelBytes[1] = pixelG.G;
+            pixelBytes[2] = pixelB.B;
             pixelBytes[3] = 0;
 
             uint pixelInt = BitConverter.ToUInt32(pixelBytes, 0);

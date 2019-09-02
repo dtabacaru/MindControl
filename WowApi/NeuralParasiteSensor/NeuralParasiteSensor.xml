@@ -94,7 +94,7 @@
               </Anchors>
               <Color r="0" g="1" b="0"/>
             </Texture>
-            <Texture name="XPositionPixel">
+            <Texture name="HeadingPixelR">
               <Size>
                 <AbsDimension x="3" y="3"/>
               </Size>
@@ -107,7 +107,7 @@
               </Anchors>
               <Color r="0" g="1" b="0"/>
             </Texture>
-            <Texture name="YPositionPixel">
+            <Texture name="HeadingPixelG">
               <Size>
                 <AbsDimension x="3" y="3"/>
               </Size>
@@ -120,7 +120,7 @@
               </Anchors>
               <Color r="1" g="0" b="0"/>
             </Texture>
-            <Texture name="HeadingPixel">
+            <Texture name="HeadingPixelB">
               <Size>
                 <AbsDimension x="3" y="3"/>
               </Size>
@@ -284,6 +284,32 @@
                 <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="0" y="-45"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="0" g="0" b="0"/>
+            </Texture>
+            <Texture name="XPositionR">
+              <Size>
+                <AbsDimension x="3" y="3"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="0" y="-48"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="0" g="0" b="0"/>
+            </Texture>
+            <Texture name="YPositionR">
+              <Size>
+                <AbsDimension x="3" y="3"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="0" y="-51"/>
                   </Offset>
                 </Anchor>
               </Anchors>
@@ -497,7 +523,7 @@
               </Anchors>
               <Color r="0" g="0" b="0"/>
             </Texture>
-            <Texture name="SyncPixel">
+            <Texture name="Reserved1">
               <Size>
                 <AbsDimension x="3" y="3"/>
               </Size>
@@ -508,7 +534,33 @@
                   </Offset>
                 </Anchor>
               </Anchors>
-              <Color r="1" g="1" b="1"/>
+              <Color r="0" g="0" b="0"/>
+            </Texture>
+            <Texture name="XPositionG">
+              <Size>
+                <AbsDimension x="3" y="3"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="3" y="-48"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="0" g="0" b="0"/>
+            </Texture>
+            <Texture name="YPositionG">
+              <Size>
+                <AbsDimension x="3" y="3"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="3" y="-51"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="0" g="0" b="0"/>
             </Texture>
             <Texture name="TargetNamePixel6">
               <Size>
@@ -700,6 +752,45 @@
                 <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="6" y="-42"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="0" g="0" b="0"/>
+            </Texture>
+            <Texture name="Reserved2">
+              <Size>
+                <AbsDimension x="3" y="3"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="6" y="-45"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="0" g="0" b="0"/>
+            </Texture>
+            <Texture name="XPositionB">
+              <Size>
+                <AbsDimension x="3" y="3"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="6" y="-48"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="0" g="0" b="0"/>
+            </Texture>
+            <Texture name="YPositionB">
+              <Size>
+                <AbsDimension x="3" y="3"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="6" y="-51"/>
                   </Offset>
                 </Anchor>
               </Anchors>

@@ -34,7 +34,6 @@ namespace ClassicWowNeuralParasite
 
     public enum ActionMode
     {
-        Initialize,
         AutoAttack,
         FindTarget,
         KillTarget,
@@ -166,7 +165,7 @@ namespace ClassicWowNeuralParasite
             });
         }
 
-        private volatile ActionMode m_CurrentActionMode = ActionMode.Initialize;
+        private volatile ActionMode m_CurrentActionMode = ActionMode.FindTarget;
 
         public delegate void AutomaterStatusEventHandler(object sender, AutomaterStatusEventArgs wea);
         public event AutomaterStatusEventHandler AutomaterStatusEvent;
@@ -197,6 +196,7 @@ namespace ClassicWowNeuralParasite
 
         private bool m_NoDead = false;
         private bool m_NoShop = false;
+        private bool m_Initialized = false;
 
         private void Idle()
         {
@@ -275,11 +275,14 @@ namespace ClassicWowNeuralParasite
 
                 if (canRun)
                 {
+                    if(!m_Initialized)
+                    {
+                        InitClasses();
+                        m_Initialized = true;
+                    }
+
                     switch (m_CurrentActionMode)
                     {
-                        case ActionMode.Initialize:
-                            InitClasses();
-                            break;
                         case ActionMode.AutoAttack:
                             AutoAttackTarget();
                             break;
@@ -1315,15 +1318,15 @@ namespace ClassicWowNeuralParasite
 
         #region Record Path
 
-        public double SplitDistance = 0.50;
+        public double SplitDistance = 0.25;
         private volatile bool m_RecordPath = false;
 
         public void RecordPath()
         {
             m_RecordPath = true;
 
-            double lastX = -1;
-            double lastY = -1;
+            double lastSplitX = -1;
+            double lastSplitY = -1;
             while (m_RecordPath)
             {
                 m_ApiEventWaitHandle.WaitOne();
@@ -1333,20 +1336,23 @@ namespace ClassicWowNeuralParasite
                     double currentX = m_CurrentPlayerData.PlayerXPosition;
                     double currentY = m_CurrentPlayerData.PlayerYPosition;
 
-                    if (lastX == -1)
+                    if (lastSplitX == -1)
                     {
-                        // fall through
-                    }
-                    else
-                    {
-                        if (Math.Sqrt((currentX - lastX) * (currentX - lastX) + (currentY - lastY) * (currentY - lastY)) < SplitDistance)
-                            continue;
+                        lastSplitX = currentX;
+                        lastSplitY = currentY;
+
+                        RecordPathEvent?.Invoke(this, new RecordPathEventArgs(currentX, currentY));
+
+                        continue;
                     }
 
-                    lastX = currentX;
-                    lastY = currentY;
+                    double splitDistance = Math.Sqrt((currentX - lastSplitX) * (currentX - lastSplitX) + (currentY - lastSplitY) * (currentY - lastSplitY));
 
-                    Console.WriteLine(currentX + " " + currentY);
+                    if (splitDistance < SplitDistance)
+                        continue;
+
+                    lastSplitX = currentX;
+                    lastSplitY = currentY;
 
                     RecordPathEvent?.Invoke(this, new RecordPathEventArgs(currentX, currentY));
                 }
@@ -1370,8 +1376,8 @@ namespace ClassicWowNeuralParasite
 
         #region Waypoints
 
-        public double TurnToleranceRad  = 0.08; 
-        public double PositionTolerance = 0.075;
+        public double TurnToleranceRad  = 0.07; 
+        public double PositionTolerance = 0.05;
         public double ClosestPointDistance = 1.00;
 
         private int m_WaypointIndex = 0;

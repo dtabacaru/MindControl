@@ -163,7 +163,7 @@ namespace WoWNeuralParasiteUI
             {
                 Invoke(method);
             }
-            catch (ObjectDisposedException ode)
+            catch (ObjectDisposedException)
             {
                 // Do nothing
             }
@@ -204,7 +204,7 @@ namespace WoWNeuralParasiteUI
             }
             else
             {
-                Size = new System.Drawing.Size(236, 666);
+                Size = new System.Drawing.Size(236, 760);
                 OptionTabs.Visible = true;
                 ShowInfoButton.BackgroundImage = Properties.Resources.hide;
             }

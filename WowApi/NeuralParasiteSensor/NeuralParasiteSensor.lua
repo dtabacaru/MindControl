@@ -54,12 +54,15 @@ local function Set2BytePixelValue(pixelValue,Pixel)
 	Pixel:SetColorTexture(part2/255,part1/255,1, 1);
 end
 
-local function Set3BytePixelValue(pixelValue,Pixel)
+local function Set3Byte3PixelValue(pixelValue,PixelR,PixelG,PixelB)
 	local pixelIntValue = Round(pixelValue * FLOAT_TO_3_BYTE_INT);
 	local part1 = BitwiseAND(RightBitShift(pixelIntValue,16),255);
 	local part2 = BitwiseAND(RightBitShift(pixelIntValue,8),255);
 	local part3 = BitwiseAND(pixelIntValue,255);
-	Pixel:SetColorTexture(part3/255, part2/255, part1/255, 1);
+
+	PixelR:SetColorTexture(part3/255,0,0,1);
+	PixelG:SetColorTexture(0,part2/255,0,1);
+	PixelB:SetColorTexture(0,0,part1/255,1);
 end
 
 local function SetDebugText(debugText, text)
@@ -107,48 +110,22 @@ function DataFrame_OnLoad()
 	-- Necessary for some raisin
 end
 
-local updateDelayCount = 0;
-local updateDelay = 2;
-
-local syncSwitchCount = 0;
-
 function DataFrame_OnUpdate()
 
-	if updateDelayCount < updateDelay then
-		updateDelayCount = updateDelayCount + 1;
-		return
-	end
-	
-	--if syncSwitchCount == 0 then
-	--	SyncPixel:SetColorTexture(1,0,0,1);
-	--	syncSwitchCount = syncSwitchCount + 1;
-	--elseif syncSwitchCount == 1 then
-	--	SyncPixel:SetColorTexture(0,1,0,1);
-	--	syncSwitchCount = syncSwitchCount + 1;
-	--elseif syncSwitchCount == 2 then
-	--	SyncPixel:SetColorTexture(0,0,1,1);
-	--	syncSwitchCount = 0;
-	--end
-	
-	--syncSwitch = not syncSwitch;
-	
-	updateDelayCount = 0;
-
 	FindPixel1:SetColorTexture(50/255, 100/255, 150/255, 1);
-
 	FindPixel2:SetColorTexture(150/255, 50/255, 100/255, 1);
 
 	local map = C_Map.GetBestMapForUnit("player")
 	local position = C_Map.GetPlayerMapPosition(map, "player")
 	
-	Set3BytePixelValue(position.x,XPositionPixel);
-	Set3BytePixelValue(position.y,YPositionPixel);
+	Set3Byte3PixelValue(position.x,XPositionR,XPositionG,XPositionB)
+	Set3Byte3PixelValue(position.y,YPositionR,YPositionG,YPositionB)
 	
 	local debugString = "X: " .. position.x*100 .. "\n";
 	debugString = debugString .. "Y: " .. position.y*100 .. "\n";
 	
 	local heading = GetPlayerFacing();
-	Set3BytePixelValue(heading/(2*PI),HeadingPixel);
+	Set3Byte3PixelValue(heading/(2*PI),HeadingPixelR,HeadingPixelG,HeadingPixelB);
 	
 	debugString = debugString .. "Heading: " .. heading*(180/PI) .. "\n";
 	
@@ -389,8 +366,6 @@ function DataFrame_OnUpdate()
 		debugString = debugString .. "Attacking: False" .. "\n";
 	end
 	
-	---- Always set target name last
-	
 	local targetName = UnitName("target")
 	
 	-- Pixel array
@@ -412,51 +387,47 @@ function DataFrame_OnUpdate()
 	end
 
 	if targetName == nil then
-
 		debugString = debugString .. "Target: " .. "\n";
-		SetDebugText(DebugText,debugString);
+	else
+		debugString = debugString .. "Target: " .. UnitName("target") .. "\n";
 
-		return
-	end;
-	
-	debugString = debugString .. "Target: " .. UnitName("target") .. "\n";
-	
-	SetDebugText(DebugText,debugString);
-
-	local nameLen = string.len(targetName);
-	
-	local byteCount = 1;
-	
-	for i = 0, 9 do
+		local nameLen = string.len(targetName);
 		
-		if byteCount > nameLen then break end;
+		local byteCount = 1;
 		
-		local val1 = string.byte(string.sub(targetName,byteCount,byteCount));
-		if val1 == nil then
-			break;
-		else
-			TargetNamePixels[i]:SetColorTexture(val1/255, 0, 0, 1);
+		for i = 0, 9 do
+			
+			if byteCount > nameLen then break end;
+			
+			local val1 = string.byte(string.sub(targetName,byteCount,byteCount));
+			if val1 == nil then
+				break;
+			else
+				TargetNamePixels[i]:SetColorTexture(val1/255, 0, 0, 1);
+			end
+			byteCount = byteCount + 1;
+		
+			local val2 = string.byte(string.sub(targetName,byteCount,byteCount));
+			if val2 == nil then
+				break;
+			else
+				TargetNamePixels[i]:SetColorTexture(val1/255, val2/255, 0, 1);
+			end
+			byteCount = byteCount + 1;
+		
+			local val3 = string.byte(string.sub(targetName,byteCount,byteCount));
+			if val3 == nil then
+				break;
+			else
+				TargetNamePixels[i]:SetColorTexture(val1/255, val2/255, val3/255, 1);
+			end
+			byteCount = byteCount + 1;
+			
 		end
-		byteCount = byteCount + 1;
-	
-		local val2 = string.byte(string.sub(targetName,byteCount,byteCount));
-		if val2 == nil then
-			break;
-		else
-			TargetNamePixels[i]:SetColorTexture(val1/255, val2/255, 0, 1);
-		end
-		byteCount = byteCount + 1;
-	
-		local val3 = string.byte(string.sub(targetName,byteCount,byteCount));
-		if val3 == nil then
-			break;
-		else
-			TargetNamePixels[i]:SetColorTexture(val1/255, val2/255, val3/255, 1);
-		end
-		byteCount = byteCount + 1;
 		
 	end
 	
+	SetDebugText(DebugText,debugString);
 end
 
 function StartStopButton_OnClick()
