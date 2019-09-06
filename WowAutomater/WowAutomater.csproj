@@ -7,8 +7,8 @@
     <ProjectGuid>{B249AF88-91D7-4560-8215-385B41E76F0A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WowWaypointFollow</RootNamespace>
-    <AssemblyName>WowWaypointFollow</AssemblyName>
+    <RootNamespace>WowAutomater</RootNamespace>
+    <AssemblyName>WowAutomater</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Timers;
 using System.Threading;
 using System.Threading.Tasks;
-
 using WindowsInput;
 using WindowsInput.Native;
 
@@ -478,6 +477,8 @@ namespace ClassicWowNeuralParasite
             if (!m_StartedEating)
             {
                 Block(1.500);
+                KeyPress(VirtualKeyCode.VK_X);
+                Block(RegisterDelay);
                 KeyPress(VirtualKeyCode.VK_8);
                 Block(RegisterDelay);
                 KeyPress(VirtualKeyCode.VK_9);

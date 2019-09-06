@@ -112,22 +112,45 @@ end
 
 function DataFrame_OnUpdate()
 
+	local debugString = ""
+
 	FindPixel1:SetColorTexture(50/255, 100/255, 150/255, 1);
 	FindPixel2:SetColorTexture(150/255, 50/255, 100/255, 1);
 
 	local map = C_Map.GetBestMapForUnit("player")
-	local position = C_Map.GetPlayerMapPosition(map, "player")
 	
-	Set3Byte3PixelValue(position.x,XPositionR,XPositionG,XPositionB)
-	Set3Byte3PixelValue(position.y,YPositionR,YPositionG,YPositionB)
+	if map == nil then 
+		Set3Byte3PixelValue(0,XPositionR,XPositionG,XPositionB)
+		Set3Byte3PixelValue(0,YPositionR,YPositionG,YPositionB)
+		
+		debugString = debugString .. "X: 0\n";
+		debugString = debugString .. "Y: 0\n";
+	else
+		local position = C_Map.GetPlayerMapPosition(map, "player")
 	
-	local debugString = "X: " .. position.x*100 .. "\n";
-	debugString = debugString .. "Y: " .. position.y*100 .. "\n";
+		Set3Byte3PixelValue(position.x,XPositionR,XPositionG,XPositionB)
+		Set3Byte3PixelValue(position.y,YPositionR,YPositionG,YPositionB)
+		
+		debugString = debugString .. "X: " .. position.x*100 .. "\n";
+		debugString = debugString .. "Y: " .. position.y*100 .. "\n";
+	end
 	
 	local heading = GetPlayerFacing();
-	Set3Byte3PixelValue(heading/(2*PI),HeadingPixelR,HeadingPixelG,HeadingPixelB);
 	
-	debugString = debugString .. "Heading: " .. heading*(180/PI) .. "\n";
+	if heading == nil then
+		HeadingPixelR:SetColorTexture(0,0,0,1);
+		HeadingPixelG:SetColorTexture(0,0,0,1);
+		HeadingPixelB:SetColorTexture(0,0,0,1);
+		
+		Set3Byte3PixelValue(0,HeadingPixelR,HeadingPixelG,HeadingPixelB);
+	
+		debugString = debugString .. "Heading: 0\n";
+	else
+		Set3Byte3PixelValue(heading/(2*PI),HeadingPixelR,HeadingPixelG,HeadingPixelB);
+	
+		debugString = debugString .. "Heading: " .. heading*(180/PI) .. "\n";
+	end
+
 	
 	if CheckInteractDistance("target", 4) then
 		FarRangePixel:SetColorTexture(1, 1, 1, 1);
