@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ClassicWowNeuralParasite;
 
-namespace WoWNeuralParasiteUI
+namespace WowAutomaterUi
 {
     public partial class MainUI : Form
     {
@@ -186,10 +186,10 @@ namespace WoWNeuralParasiteUI
             switch(ModeDropDown.SelectedIndex)
             {
                 case 0:
-                    m_Automater.AutoAttackMode = false;
+                    m_Automater.CurrentActionMode = ActionMode.FindTarget;
                     break;
                 case 1:
-                    m_Automater.AutoAttackMode = true;
+                    m_Automater.CurrentActionMode = ActionMode.AutoAttack;
                     break;
             }
         }
@@ -395,6 +395,11 @@ namespace WoWNeuralParasiteUI
             m_Automater.AutomaterStatusEvent -= AutomaterStatusEvent;
 
             m_Automater.Stop();
+        }
+
+        private void SkinLootCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            m_Automater.SkinLoot = SkinLootCheckbox.Checked;
         }
     }
 }

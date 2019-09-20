@@ -1,4 +1,4 @@
-﻿namespace WoWNeuralParasiteUI
+﻿namespace WowAutomaterUi
 {
     partial class MainUI
     {
@@ -46,6 +46,8 @@
             this.XTextBox = new System.Windows.Forms.TextBox();
             this.XLabel = new System.Windows.Forms.Label();
             this.Automater = new System.Windows.Forms.TabPage();
+            this.SkinLootCheckbox = new System.Windows.Forms.CheckBox();
+            this.SkinLootLabel = new System.Windows.Forms.Label();
             this.ClosestPointDistanceLabel = new System.Windows.Forms.Label();
             this.ClosestPointDistanceNumericInput = new System.Windows.Forms.NumericUpDown();
             this.RegisterDelayLabel = new System.Windows.Forms.Label();
@@ -99,8 +101,9 @@
             this.ModeDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ModeDropDown.FormattingEnabled = true;
             this.ModeDropDown.Items.AddRange(new object[] {
-            "Find and kill",
-            "Attack only"});
+            "Full Automation",
+            "Auto Attack",
+            "Auto Walk"});
             this.ModeDropDown.Location = new System.Drawing.Point(0, 0);
             this.ModeDropDown.Name = "ModeDropDown";
             this.ModeDropDown.Size = new System.Drawing.Size(220, 21);
@@ -294,6 +297,8 @@
             // 
             // Automater
             // 
+            this.Automater.Controls.Add(this.SkinLootCheckbox);
+            this.Automater.Controls.Add(this.SkinLootLabel);
             this.Automater.Controls.Add(this.ClosestPointDistanceLabel);
             this.Automater.Controls.Add(this.ClosestPointDistanceNumericInput);
             this.Automater.Controls.Add(this.RegisterDelayLabel);
@@ -309,6 +314,25 @@
             this.Automater.TabIndex = 2;
             this.Automater.Text = "Automater";
             this.Automater.UseVisualStyleBackColor = true;
+            // 
+            // SkinLootCheckbox
+            // 
+            this.SkinLootCheckbox.AutoSize = true;
+            this.SkinLootCheckbox.Location = new System.Drawing.Point(154, 113);
+            this.SkinLootCheckbox.Name = "SkinLootCheckbox";
+            this.SkinLootCheckbox.Size = new System.Drawing.Size(15, 14);
+            this.SkinLootCheckbox.TabIndex = 12;
+            this.SkinLootCheckbox.UseVisualStyleBackColor = true;
+            this.SkinLootCheckbox.CheckedChanged += new System.EventHandler(this.SkinLootCheckbox_CheckedChanged);
+            // 
+            // SkinLootLabel
+            // 
+            this.SkinLootLabel.AutoSize = true;
+            this.SkinLootLabel.Location = new System.Drawing.Point(3, 113);
+            this.SkinLootLabel.Name = "SkinLootLabel";
+            this.SkinLootLabel.Size = new System.Drawing.Size(72, 13);
+            this.SkinLootLabel.TabIndex = 11;
+            this.SkinLootLabel.Text = "Skin after loot";
             // 
             // ClosestPointDistanceLabel
             // 
@@ -397,7 +421,7 @@
             this.ClassTabs.Controls.Add(this.HunterTab);
             this.ClassTabs.Controls.Add(this.ShamanTab);
             this.ClassTabs.Controls.Add(this.DruidTab);
-            this.ClassTabs.Location = new System.Drawing.Point(0, 156);
+            this.ClassTabs.Location = new System.Drawing.Point(0, 190);
             this.ClassTabs.Name = "ClassTabs";
             this.ClassTabs.SelectedIndex = 0;
             this.ClassTabs.Size = new System.Drawing.Size(214, 380);
@@ -648,12 +672,12 @@
             // 
             // PositionToleranceNumericInput
             // 
-            this.PositionToleranceNumericInput.DecimalPlaces = 2;
+            this.PositionToleranceNumericInput.DecimalPlaces = 3;
             this.PositionToleranceNumericInput.Increment = new decimal(new int[] {
             1,
             0,
             0,
-            131072});
+            196608});
             this.PositionToleranceNumericInput.Location = new System.Drawing.Point(154, 33);
             this.PositionToleranceNumericInput.Maximum = new decimal(new int[] {
             1,
@@ -669,10 +693,10 @@
             this.PositionToleranceNumericInput.Size = new System.Drawing.Size(54, 20);
             this.PositionToleranceNumericInput.TabIndex = 5;
             this.PositionToleranceNumericInput.Value = new decimal(new int[] {
-            5,
+            75,
             0,
             0,
-            131072});
+            196608});
             // 
             // PositionToleranceLabel
             // 
@@ -706,7 +730,7 @@
             this.TurnToleranceNumericInput.Size = new System.Drawing.Size(54, 20);
             this.TurnToleranceNumericInput.TabIndex = 3;
             this.TurnToleranceNumericInput.Value = new decimal(new int[] {
-            7,
+            8,
             0,
             0,
             131072});
@@ -724,7 +748,7 @@
             // ShowInfoButton
             // 
             this.ShowInfoButton.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.ShowInfoButton.BackgroundImage = global::WoWNeuralParasiteUI.Properties.Resources.show;
+            this.ShowInfoButton.BackgroundImage = global::WowAutomaterUi.Properties.Resources.show;
             this.ShowInfoButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.ShowInfoButton.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ButtonFace;
             this.ShowInfoButton.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.ButtonFace;
@@ -834,6 +858,8 @@
         private System.Windows.Forms.Label ClosestPointDistanceLabel;
         private System.Windows.Forms.NumericUpDown ClosestPointDistanceNumericInput;
         private System.Windows.Forms.RichTextBox DataTextBox;
+        private System.Windows.Forms.CheckBox SkinLootCheckbox;
+        private System.Windows.Forms.Label SkinLootLabel;
     }
 }
 

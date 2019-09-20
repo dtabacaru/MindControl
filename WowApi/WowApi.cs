@@ -36,6 +36,13 @@ namespace ClassicWowNeuralParasite
         LastPlayerClass = Druid
     }
 
+    public enum ActionError
+    {
+        None = 0,
+        BehindTarget = 1,
+        FacingWrongWay = 2
+    }
+
     public class PlayerData
     {
         public double PlayerXPosition = 0;
@@ -64,7 +71,7 @@ namespace ClassicWowNeuralParasite
         public bool IsTargetAlliance = false;
         public string TargetName = string.Empty;
         public ushort TargetComboPoints = 0;
-        public bool ActionError = false;
+        public ActionError PlayerActionError = ActionError.None;
         public bool PlayerIsAttacking = false;
         public ushort AmmoCount = 0;
         public bool IsTargetPlayer = false;
@@ -75,6 +82,8 @@ namespace ClassicWowNeuralParasite
         public bool CanUseSkill = false;
         public bool IsWowForeground = false;
         public PlayerClass Class = PlayerClass.None;
+        public bool CastingSucceeded = false;
+        public bool CastingInterrupted = false;
         public double dt = 0;
         public double Time = 0;
 
@@ -108,7 +117,7 @@ namespace ClassicWowNeuralParasite
             output += "IsTargetAlliance: " + IsTargetAlliance.ToString() + "\r\n";
             output += "TargetName: " + TargetName.ToString() + "\r\n";
             output += "TargetComboPoints: " + TargetComboPoints.ToString() + "\r\n";
-            output += "ActionError: " + ActionError.ToString() + "\r\n";
+            output += "PlayerActionError: " + PlayerActionError.ToString() + "\r\n";
             output += "PlayerIsAttacking: " + PlayerIsAttacking.ToString() + "\r\n";
             output += "AmmoCount: " + AmmoCount.ToString() + "\r\n";
             output += "IsTargetPlayer: " + IsTargetPlayer.ToString() + "\r\n";
@@ -119,6 +128,8 @@ namespace ClassicWowNeuralParasite
             output += "CanUseSkill: " + CanUseSkill.ToString() + "\r\n";
             output += "IsWowForeground: " + IsWowForeground.ToString() + "\r\n";
             output += "Class: " + Class.ToString() + "\r\n";
+            output += "Casting Succeeded: " + CastingSucceeded.ToString() + "\r\n";
+            output += "Casting Interrupted: " + CastingInterrupted.ToString() + "\r\n";
             output += "dt: " + dt.ToString() + "\r\n";
             output += "Time: " + Time.ToString() + "\r\n";
 
@@ -153,7 +164,7 @@ namespace ClassicWowNeuralParasite
     public static class WowApi
     {
         private const int API_WIDTH_PIXELS = 7;
-        private const int API_HEIGHT_PIXELS = 52;
+        private const int API_HEIGHT_PIXELS = 55;
         private const int SEARCH_SPACE_PIXELS = 250;
 
         private const byte FIND1_PIXEL_R = 50;
@@ -179,8 +190,6 @@ namespace ClassicWowNeuralParasite
 
         private static EventWaitHandle m_FindApiEventWait = new EventWaitHandle(false, EventResetMode.AutoReset);
         private static volatile bool m_FindingApi = false;
-
-        public static volatile bool ActionErrorNeedsResolution = false;
 
         public delegate void UpdateEventHandler(object sender, WowApiUpdateEventArguments wea);
         public static event UpdateEventHandler UpdateEvent;
@@ -281,6 +290,9 @@ namespace ClassicWowNeuralParasite
                     Color classPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((45 * m_ApiYScale)));
                     playerData.Class = (PlayerClass)GetTwoBytePixelValue(classPixel);
 
+                    Color castingSucceededPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((54 * m_ApiYScale)));
+                    playerData.CastingSucceeded = castingSucceededPixel.R == PIXEL_SET ? true : false;
+
                     Color spellCanAttackTargetPixel = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((0 * m_ApiYScale)));
                     playerData.SpellCanAttackTarget = spellCanAttackTargetPixel.R == PIXEL_SET ? true : false;
 
@@ -317,6 +329,9 @@ namespace ClassicWowNeuralParasite
                     targetNamePixels.Add(bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((36 * m_ApiYScale))));
                     targetNamePixels.Add(bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((39 * m_ApiYScale))));
 
+                    Color castingInterruptedPixel = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((54 * m_ApiYScale)));
+                    playerData.CastingInterrupted = castingInterruptedPixel.R == PIXEL_SET ? true : false;
+
                     targetNamePixels.Add(bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((0 * m_ApiYScale))));
                     targetNamePixels.Add(bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((3 * m_ApiYScale))));
                     targetNamePixels.Add(bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((6 * m_ApiYScale))));
@@ -345,10 +360,7 @@ namespace ClassicWowNeuralParasite
                     playerData.TargetComboPoints = GetTwoBytePixelValue(comboPointsPixel);
 
                     Color errorPixel = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((18 * m_ApiYScale)));
-                    playerData.ActionError = errorPixel.R == PIXEL_SET ? true : false;
-
-                    if (playerData.ActionError)
-                        ActionErrorNeedsResolution = true;
+                    playerData.PlayerActionError = (ActionError)GetTwoBytePixelValue(errorPixel);
 
                     Color attackingPixel = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((21 * m_ApiYScale)));
                     playerData.PlayerIsAttacking = attackingPixel.R == PIXEL_SET ? true : false;

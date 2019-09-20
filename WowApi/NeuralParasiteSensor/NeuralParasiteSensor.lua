@@ -5,8 +5,12 @@ local PI = 3.141592654;
 
 -- Globals
 
-local lastUpdate = 0;
-local start = false;
+local errorLastUpdate = 0;
+local errorStart = false;
+local castLastUpdate = 0;
+local castStart = false;
+local castInterruptedLastUpdate = 0;
+local castInterruptedStart = false;
 local startedAutomater = false;
 local showDebug = false;
 
@@ -235,6 +239,7 @@ function DataFrame_OnUpdate()
 		debugString = debugString .. CheckCanUseSkill("Sinister Strike", debugString);
 		classIndex = 3;
 	elseif (localizedClass == "Priest") then
+		debugString = debugString .. CheckCanUseSkill("Smite", debugString);
 		classIndex = 4;
 	elseif (localizedClass == "Mage") then
 		classIndex = 5;
@@ -450,6 +455,39 @@ function DataFrame_OnUpdate()
 		
 	end
 	
+	if errorStart == true then
+	
+		if errorLastUpdate == 4 then
+			errorLastUpdate = 0;
+			ErrorPixel:SetColorTexture(0, 0, 0, 1);
+			errorStart = false;
+		end
+	
+		errorLastUpdate = errorLastUpdate + 1;
+	end
+	
+	if castStart == true then
+	
+		if castLastUpdate == 4 then
+			castLastUpdate = 0;
+			CastSucceededPixel:SetColorTexture(0, 0, 0, 1);
+			castStart = false;
+		end
+	
+		castLastUpdate = castLastUpdate + 1;
+	end
+	
+	if castInterruptedStart == true then
+	
+		if castInterruptedLastUpdate == 4 then
+			castInterruptedLastUpdate = 0;
+			CastInterruptedPixel:SetColorTexture(0, 0, 0, 1);
+			castInterruptedStart = false;
+		end
+	
+		castInterruptedLastUpdate = castInterruptedLastUpdate + 1;
+	end
+	
 	SetDebugText(DebugText,debugString);
 end
 
@@ -476,24 +514,36 @@ end
 -- Error frame event
 
 local errorFrame = CreateFrame('Frame');
-UIErrorsFrame:UnregisterEvent("UI_ERROR_MESSAGE")
 errorFrame:RegisterEvent("UI_ERROR_MESSAGE")
-errorFrame:SetScript('OnEvent', function(self, event, arg1)
-	ErrorPixel:SetColorTexture(1, 1, 1, 1);
-    start = true;
-end)
+errorFrame:SetScript('OnEvent', function(self, event, arg1, arg2)
 
-errorFrame:SetScript('OnUpdate', function(self, elapsed)
-
-	if start == true then
-	
-		if lastUpdate == 4 then
-			lastUpdate = 0;
-			ErrorPixel:SetColorTexture(0, 0, 0, 1);
-			start = false;
-		end
-	
-		lastUpdate = lastUpdate + 1;
+	if arg2 == "Target needs to be in front of you" then
+		Set2BytePixelValue(1,ErrorPixel);
+		errorStart = true;
+		CastInterruptedPixel:SetColorTexture(1, 1, 1, 1);
+		castInterruptedStart = true;
 	end
 	
+	if arg2 == "You are facing the wrong way!" then
+		Set2BytePixelValue(2,ErrorPixel);
+		errorStart = true;
+	end
+end)
+
+-- Spell Succeeded frame event
+
+local castFrame = CreateFrame('Frame');
+castFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+castFrame:SetScript('OnEvent', function(self, event)
+	CastSucceededPixel:SetColorTexture(1, 1, 1, 1);
+    castStart = true;
+end)
+
+-- Spell Interrupted frame event
+
+local castFrame = CreateFrame('Frame');
+castFrame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
+castFrame:SetScript('OnEvent', function(self, event)
+	CastInterruptedPixel:SetColorTexture(1, 1, 1, 1);
+    castInterruptedStart = true;
 end)

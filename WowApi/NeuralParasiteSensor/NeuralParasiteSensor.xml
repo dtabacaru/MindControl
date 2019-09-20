@@ -35,7 +35,7 @@
             <Anchors>
               <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
                 <Offset>
-                  <AbsDimension x="30" y="-10"/>
+                  <AbsDimension x="28" y="-5"/>
                 </Offset>
               </Anchor>
             </Anchors>
@@ -55,7 +55,7 @@
             <Anchors>
               <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
                 <Offset>
-                  <AbsDimension x="80" y="-10"/>
+                  <AbsDimension x="68" y="-5"/>
                 </Offset>
               </Anchor>
             </Anchors>
@@ -315,6 +315,19 @@
               </Anchors>
               <Color r="0" g="0" b="0"/>
             </Texture>
+            <Texture name="CastSucceededPixel">
+              <Size>
+                <AbsDimension x="3" y="3"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="0" y="-54"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="0" g="0" b="0"/>
+            </Texture>
             <Texture name="SpellCanAttackTargetPixel">
               <Size>
                 <AbsDimension x="3" y="3"/>
@@ -557,6 +570,19 @@
                 <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="3" y="-51"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="0" g="0" b="0"/>
+            </Texture>
+            <Texture name="CastInterruptedPixel">
+              <Size>
+                <AbsDimension x="3" y="3"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="3" y="-54"/>
                   </Offset>
                 </Anchor>
               </Anchors>
