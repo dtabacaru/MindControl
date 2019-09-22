@@ -720,6 +720,7 @@
             this.AlwaysThrowCheckBox.Size = new System.Drawing.Size(15, 14);
             this.AlwaysThrowCheckBox.TabIndex = 16;
             this.AlwaysThrowCheckBox.UseVisualStyleBackColor = true;
+            this.AlwaysThrowCheckBox.CheckedChanged += new System.EventHandler(this.AlwaysThrowCheckBox_CheckedChanged);
             // 
             // AlwaysThrowLabel
             // 
@@ -740,6 +741,7 @@
             this.StealthCheckBox.Size = new System.Drawing.Size(15, 14);
             this.StealthCheckBox.TabIndex = 14;
             this.StealthCheckBox.UseVisualStyleBackColor = true;
+            this.StealthCheckBox.CheckedChanged += new System.EventHandler(this.StealthCheckBox_CheckedChanged);
             // 
             // RuptureCPLabel
             // 
