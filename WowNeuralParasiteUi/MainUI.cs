@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ClassicWowNeuralParasite;
+using WindowsInput;
 
 namespace WowAutomaterUi
 {
@@ -18,6 +20,7 @@ namespace WowAutomaterUi
         private string m_FilePath = string.Empty;
         private Color m_RedColor = Color.FromArgb(50, 255, 0, 0);
         private Color m_GreenColor = Color.FromArgb(50, 0, 255, 0);
+        private InputSimulator m_InputSimulator = new InputSimulator();
 
         public MainUI()
         {
@@ -36,6 +39,11 @@ namespace WowAutomaterUi
             if (!File.Exists("shoppath.txt"))
             {
                 File.WriteAllText("shoppath.txt", ";");
+            }
+
+            if (!File.Exists("walkpath.txt"))
+            {
+                File.WriteAllText("walkpath.txt", ";");
             }
 
             ReadPaths();
@@ -121,6 +129,12 @@ namespace WowAutomaterUi
             m_Automater.SetShopCoordinates(Program.ExtractCommaDelimitedDoubles(paths[0]),
                                      Program.ExtractCommaDelimitedDoubles(paths[1]));
 
+            allpaths = File.ReadAllText("walkpath.txt");
+            paths = allpaths.Split(';');
+
+            m_Automater.SetWalkCoordinates(Program.ExtractCommaDelimitedDoubles(paths[0]),
+                                     Program.ExtractCommaDelimitedDoubles(paths[1]));
+
         }
 
         private void ApiDataUpdateTimer_Tick(object sender, EventArgs e)
@@ -191,6 +205,9 @@ namespace WowAutomaterUi
                 case 1:
                     m_Automater.CurrentActionMode = ActionMode.AutoAttack;
                     break;
+                case 2:
+                    m_Automater.CurrentActionMode = ActionMode.AutoWalk;
+                    break;
             }
         }
 
@@ -230,6 +247,9 @@ namespace WowAutomaterUi
                     break;
                 case 2:
                     m_FilePath = "shoppath.txt";
+                    break;
+                case 3:
+                    m_FilePath = "walkpath.txt";
                     break;
             }
         }
@@ -340,8 +360,8 @@ namespace WowAutomaterUi
                 m_Automater.StopRecordingPath();
             }
 
-            // OptionTabs.SelectedIndex == 2 "Automater" tab
-            if (OptionTabs.SelectedIndex == 2 && 
+            // OptionTabs.SelectedIndex == 3 "Classes" tab
+            if (OptionTabs.SelectedIndex == 3 && 
                 m_PlayerData.Class > PlayerClass.None && 
                 m_PlayerData.Class <= PlayerClass.LastPlayerClass)
             {
@@ -366,17 +386,17 @@ namespace WowAutomaterUi
 
         private void SliceNDiceCPNumericInput_ValueChanged(object sender, EventArgs e)
         {
-            m_Automater.SliceAndDiceComboPoints = (int)Math.Round(SliceNDiceCPNumericInput.Value);
+            m_Automater.SliceAndDiceComboPoints = (int)SliceNDiceCPNumericInput.Value ;
         }
 
         private void numericUpDown2_ValueChanged(object sender, EventArgs e)
         {
-            m_Automater.RuptureComboPoints = (int)Math.Round(RuptureCPNumericInput.Value);
+            m_Automater.RuptureComboPoints = (int)RuptureCPNumericInput.Value;
         }
 
         private void EvisceratePercentageNumericInput_ValueChanged(object sender, EventArgs e)
         {
-            m_Automater.EvisceratePercentage = (int)Math.Round(EvisceratePercentageNumericInput.Value);
+            m_Automater.EvisceratePercentage = (int)EvisceratePercentageNumericInput.Value;
         }
 
         private void ClosestPointDistanceNumericInput_ValueChanged(object sender, EventArgs e)
@@ -400,6 +420,85 @@ namespace WowAutomaterUi
         private void SkinLootCheckbox_CheckedChanged(object sender, EventArgs e)
         {
             m_Automater.SkinLoot = SkinLootCheckbox.Checked;
+        }
+
+        private void ReversePathButton_Click(object sender, EventArgs e)
+        {
+            List<double> xCoordinates = Program.ExtractCommaDelimitedDoubles(XTextBox.Text);
+            List<double> yCoordinates = Program.ExtractCommaDelimitedDoubles(YTextBox.Text);
+
+            xCoordinates.Reverse();
+            yCoordinates.Reverse();
+
+            string xPath = string.Empty;
+            string yPath = string.Empty;
+
+            foreach(double xCoordinate in xCoordinates)
+            {
+                xPath += xCoordinate.ToString("N3") + ", ";
+            }
+
+            foreach (double yCoordinate in yCoordinates)
+            {
+                yPath += yCoordinate.ToString("N3") + ", ";
+            }
+
+            XTextBox.Text = xPath;
+            YTextBox.Text = yPath;
+        }
+
+        private void AlwaysThrowCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            m_Automater.ThrowWeapon = AlwaysThrowCheckBox.Checked;
+
+            if (AlwaysThrowCheckBox.Checked)
+            {
+                StealthCheckBox.Checked = false;
+                StealthLevelNumericInput.Enabled = false;
+                StaleStealthNumericInput.Enabled = false;
+                StealthCooldownNumericInput.Enabled = false;
+            }
+                
+        }
+
+        private void StealthCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            m_Automater.Stealth = StealthCheckBox.Checked;
+
+            if (StealthCheckBox.Checked)
+            {
+                AlwaysThrowCheckBox.Checked = false;
+                StealthLevelNumericInput.Enabled = true;
+                StaleStealthNumericInput.Enabled = true;
+                StealthCooldownNumericInput.Enabled = true;
+            }
+
+        }
+
+        private void StealthCooldownNumericInput_ValueChanged(object sender, EventArgs e)
+        {
+            m_Automater.StealthTimer.Interval = (double)(StealthCooldownNumericInput.Value * 1000);
+        }
+
+        private void EvasionPercentaceNumericInput_ValueChanged(object sender, EventArgs e)
+        {
+            m_Automater.EvasionPercentage = (int)EvasionPercentaceNumericInput.Value;
+        }
+
+        private void XReviveButtonLocationNumericInput_ValueChanged(object sender, EventArgs e)
+        {
+            m_Automater.XReviveButtonLocation = (double)XReviveButtonLocationNumericInput.Value * 100;
+        }
+
+        private void YReviveButtonLocationNumericInput_ValueChanged(object sender, EventArgs e)
+        {
+            m_Automater.YReviveButtonLocation = (double)YReviveButtonLocationNumericInput.Value * 100;
+        }
+
+        private void ReviveButtonLocationTestButton_Click(object sender, EventArgs e)
+        {
+            m_InputSimulator.Mouse.MoveMouseTo((double)XReviveButtonLocationNumericInput.Value * 100,
+                                               (double)YReviveButtonLocationNumericInput.Value * 100);
         }
     }
 }

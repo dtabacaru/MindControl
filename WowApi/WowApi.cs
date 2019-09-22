@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -53,6 +52,7 @@ namespace ClassicWowNeuralParasite
         public bool IsInCloseRange = false;
         public ushort PlayerHealth = 0;
         public ushort MaxPlayerHealth = 0;
+        public double PlayerHealthPercentage = 0;
         public ushort PlayerMana = 0;
         public ushort MaxPlayerMana = 0;
         public bool PlayerHasTarget = false;
@@ -99,6 +99,7 @@ namespace ClassicWowNeuralParasite
             output += "IsInCloseRange: " + IsInCloseRange.ToString() + "\r\n";
             output += "PlayerHealth: " + PlayerHealth.ToString() + "\r\n";
             output += "MaxPlayerHealth: " + MaxPlayerHealth.ToString() + "\r\n";
+            output += "PlayerHealthPercentage: " + PlayerHealthPercentage.ToString() + "\r\n";
             output += "PlayerMana: " + PlayerMana.ToString() + "\r\n";
             output += "MaxPlayerMana: " + MaxPlayerMana.ToString() + "\r\n";
             output += "PlayerHasTarget: " + PlayerHasTarget.ToString() + "\r\n";
@@ -210,6 +211,8 @@ namespace ClassicWowNeuralParasite
 
             while (true)
             {
+                UpdateEvent?.Invoke(null, new WowApiUpdateEventArguments(playerData));
+
                 if (m_FindingApi)
                 {
                     m_FindApiEventWait.WaitOne();
@@ -268,6 +271,8 @@ namespace ClassicWowNeuralParasite
 
                     Color playerHealthPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((24 * m_ApiYScale)));
                     playerData.PlayerHealth = GetTwoBytePixelValue(playerHealthPixel);
+
+                    playerData.PlayerHealthPercentage = ((double)playerData.PlayerHealth / playerData.MaxPlayerHealth)*100;
 
                     Color maxPlayerManaPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((27 * m_ApiYScale)));
                     playerData.MaxPlayerMana = GetTwoBytePixelValue(maxPlayerManaPixel);
@@ -398,8 +403,6 @@ namespace ClassicWowNeuralParasite
                     Color yPositionB = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((51 * m_ApiYScale)));
 
                     playerData.PlayerYPosition = GetThreeByte3PixelValue(yPositionR, yPositionG, yPositionB) * 100;
-
-                    UpdateEvent?.Invoke(null, new WowApiUpdateEventArguments(playerData));
                 }
 
             }

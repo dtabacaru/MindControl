@@ -90,6 +90,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\WindowsInput\WindowsInput.csproj">
+      <Project>{3549cd6f-80f8-450f-b99e-cf0a736b1f2a}</Project>
+      <Name>WindowsInput</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WowApi\WowApi.csproj">
       <Project>{222eafc4-b29b-49f4-88ac-47fa9bbdcd14}</Project>
       <Name>WowApi</Name>
@@ -112,4 +116,11 @@
     <Content Include="logo_small.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>xcopy "$(SolutionDir)WowApi\NeuralParasiteSensor\*.*" "NeuralParasiteSensor" /Y /I /E</PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
 </Project>

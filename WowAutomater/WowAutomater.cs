@@ -68,7 +68,7 @@ namespace ClassicWowNeuralParasite
 
             m_ApiEventWaitHandle.Set();
         }
-        
+
         #endregion
 
         #region Input
@@ -172,41 +172,63 @@ namespace ClassicWowNeuralParasite
             });
         }
 
-        public volatile ActionMode CurrentActionMode = ActionMode.FindTarget;
+        public ActionMode CurrentActionMode
+        {
+            set
+            {
+                m_ResetCoordinates = true;
+                m_CurrentActionMode = value;
+            }
+            get
+            {
+                return m_CurrentActionMode;
+            }
+        }
+
+        private volatile ActionMode m_CurrentActionMode = ActionMode.FindTarget;
 
         public delegate void AutomaterStatusEventHandler(object sender, AutomaterStatusEventArgs wea);
         public event AutomaterStatusEventHandler AutomaterStatusEvent;
 
-        private List<double> m_XCoordinates = null;
-        private List<double> m_YCoordinates = null;
+        private List<double> m_XCoordinates = new List<double>();
+        private List<double> m_YCoordinates = new List<double>();
 
-        private List<double> m_PathXCoordinates = null;
-        private List<double> m_PathYCoordinates = null;
-        private List<double> m_ReviveXCoordinates = null;
-        private List<double> m_ReviveYCoordinates = null;
-        private List<double> m_ShopXCoordinates = null;
-        private List<double> m_ShopYCoordinates = null;
+        private List<double> m_PathXCoordinates = new List<double>();
+        private List<double> m_PathYCoordinates = new List<double>();
+        private List<double> m_ReviveXCoordinates = new List<double>();
+        private List<double> m_ReviveYCoordinates = new List<double>();
+        private List<double> m_ShopXCoordinates = new List<double>();
+        private List<double> m_ShopYCoordinates = new List<double>();
+        private List<double> m_WalkXCoordinates = new List<double>();
+        private List<double> m_WalkYCoordinates = new List<double>();
 
         private EventWaitHandle m_StopEventWaitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
         private volatile bool m_Run = true;
 
         private bool m_NoDead = false;
         private bool m_NoShop = false;
+        private bool m_NoWalk = false;
         private bool m_Initialized = false;
+        private bool m_ResetCoordinates = true;
 
         private void Idle()
         {
             StopFollowingWaypoints();
 
-            CurrentActionMode = CurrentActionMode == ActionMode.AutoAttack ? ActionMode.AutoAttack : ActionMode.FindTarget;
+            if (m_CurrentActionMode == ActionMode.AutoAttack)
+                m_CurrentActionMode = ActionMode.AutoAttack;
+            else if (m_CurrentActionMode == ActionMode.AutoWalk)
+                m_CurrentActionMode = ActionMode.AutoWalk;
+            else
+                m_CurrentActionMode = ActionMode.FindTarget;
 
-            if (!m_CurrentPlayerData.Found)
-            {
-                AutomaterStatusEvent?.Invoke(this, new AutomaterStatusEventArgs("API not found"));
-            }
-            else if (!m_CurrentPlayerData.IsWowForeground)
+            if (!m_CurrentPlayerData.IsWowForeground)
             {
                 AutomaterStatusEvent?.Invoke(this, new AutomaterStatusEventArgs("Wow not selected"));
+            }
+            else if (!m_CurrentPlayerData.Found)
+            {
+                AutomaterStatusEvent?.Invoke(this, new AutomaterStatusEventArgs("Addon not found"));
             }
             else if (!m_CurrentPlayerData.Start)
             {
@@ -219,17 +241,18 @@ namespace ClassicWowNeuralParasite
             if (xCoordinates.Count != yCoordinates.Count)
                 throw new Exception("The number of x and y coordinates must match.");
 
+            m_ResetCoordinates = true;
+
             m_PathXCoordinates = new List<double>(xCoordinates);
             m_PathYCoordinates = new List<double>(yCoordinates);
-
-            m_XCoordinates = new List<double>(m_PathXCoordinates);
-            m_YCoordinates = new List<double>(m_PathYCoordinates);
         }
 
         public void SetReviveCoordinates(List<double> xCoordinates, List<double> yCoordinates)
         {
             if (xCoordinates.Count != yCoordinates.Count)
                 throw new Exception("The number of x and y coordinates must match.");
+
+            m_ResetCoordinates = true;
 
             m_ReviveXCoordinates = new List<double>(xCoordinates);
             m_ReviveYCoordinates = new List<double>(yCoordinates);
@@ -243,11 +266,27 @@ namespace ClassicWowNeuralParasite
             if (xCoordinates.Count != yCoordinates.Count)
                 throw new Exception("The number of x and y coordinates must match.");
 
+            m_ResetCoordinates = true;
+
             m_ShopXCoordinates = new List<double>(xCoordinates);
             m_ShopYCoordinates = new List<double>(yCoordinates);
 
             if (m_ShopXCoordinates.Count == 0)
                 m_NoShop = true;
+        }
+
+        public void SetWalkCoordinates(List<double> xCoordinates, List<double> yCoordinates)
+        {
+            if (xCoordinates.Count != yCoordinates.Count)
+                throw new Exception("The number of x and y coordinates must match.");
+
+            m_ResetCoordinates = true;
+
+            m_WalkXCoordinates = new List<double>(xCoordinates);
+            m_WalkYCoordinates = new List<double>(yCoordinates);
+
+            if (m_WalkXCoordinates.Count == 0)
+                m_NoWalk = true;
         }
 
         public void Stop()
@@ -277,10 +316,13 @@ namespace ClassicWowNeuralParasite
                         m_Initialized = true;
                     }
 
-                    switch (CurrentActionMode)
+                    switch (m_CurrentActionMode)
                     {
                         case ActionMode.AutoAttack:
                             AutoAttackTarget();
+                            break;
+                        case ActionMode.AutoWalk:
+                            AutoWalk();
                             break;
                         case ActionMode.FindTarget:
                             FindTarget();
@@ -304,7 +346,7 @@ namespace ClassicWowNeuralParasite
                             break;
                     }
 
-                    AutomaterStatusEvent?.Invoke(this, new AutomaterStatusEventArgs(CurrentActionMode.ToString()));
+                    AutomaterStatusEvent?.Invoke(this, new AutomaterStatusEventArgs(m_CurrentActionMode.ToString()));
                 }
                 else
                 {
@@ -322,7 +364,8 @@ namespace ClassicWowNeuralParasite
         #region Generic
 
         public double RegisterDelay = 0.1;
-
+        public double XReviveButtonLocation = 32500;
+        public double YReviveButtonLocation = 14000;
         public volatile bool SkinLoot = false;
 
         private volatile bool m_ActionErrorNeedsResolution = false;
@@ -333,6 +376,7 @@ namespace ClassicWowNeuralParasite
         private bool m_Potion = false;
         private bool m_StartedEating = false;
         private bool m_Melee = false;
+        private bool m_MovedBack = false;
         private Stopwatch m_ReviveSw = new Stopwatch();
 
         private void InitClasses()
@@ -372,6 +416,27 @@ namespace ClassicWowNeuralParasite
 
         }
 
+        private void AutoWalk()
+        {
+            if (m_NoWalk)
+                return;
+
+            if(m_ResetCoordinates)
+            {
+                m_XCoordinates.Clear();
+                m_YCoordinates.Clear();
+
+                m_XCoordinates.AddRange(m_WalkXCoordinates);
+                m_YCoordinates.AddRange(m_WalkYCoordinates);
+
+                m_WaypointIndex = 0;
+
+                m_ResetCoordinates = false;
+            }
+
+            FollowWaypoints(false);
+        }
+
         private void RunFromGraveToBody()
         {
             if (m_NoDead)
@@ -380,7 +445,7 @@ namespace ClassicWowNeuralParasite
             if (!m_Ghosted)
             {
                 Block(5.0);
-                m_InputSimulator.Mouse.MoveMouseTo(27300, 13000);
+                m_InputSimulator.Mouse.MoveMouseTo(XReviveButtonLocation, YReviveButtonLocation);
                 Block(0.1);
                 LeftClick();
                 m_Ghosted = true;
@@ -399,7 +464,7 @@ namespace ClassicWowNeuralParasite
                 m_ReviveSw.Start();
             }
 
-            FollowWaypoints();
+            FollowWaypoints(true);
 
             if (m_ReviveSw.ElapsedMilliseconds > 1000)
             {
@@ -410,7 +475,7 @@ namespace ClassicWowNeuralParasite
             if (m_CurrentPlayerData.PlayerHealth > 1)
             {
                 m_Ghosted = false;
-                CurrentActionMode = ActionMode.RegenerateVitals;
+                m_CurrentActionMode = ActionMode.RegenerateVitals;
                 m_ReviveSw.Stop();
 
                 KeyUp(VirtualKeyCode.VK_W);
@@ -435,102 +500,136 @@ namespace ClassicWowNeuralParasite
 
         private void LootTarget()
         {
-            Block(0.500);
+            Block(0.250);
             KeyDown(VirtualKeyCode.LSHIFT);
+
+            m_InputSimulator.Mouse.MoveMouseTo(33300, 30000);
+            RightClick();
+            Block(0.250);
 
             m_InputSimulator.Mouse.MoveMouseTo(33300, 40000);
             RightClick();
-            Block(0.500);
+            Block(0.250);
 
             m_InputSimulator.Mouse.MoveMouseTo(43300, 40000);
             RightClick();
-            Block(0.500);
+            Block(0.250);
 
             m_InputSimulator.Mouse.MoveMouseTo(23300, 40000);
             RightClick();
-            Block(0.500);
+            Block(0.250);
 
             m_InputSimulator.Mouse.MoveMouseTo(33300, 50000);
             RightClick();
-            Block(0.500);
+            Block(0.250);
 
             m_InputSimulator.Mouse.MoveMouseTo(43300, 50000);
             RightClick();
-            Block(0.500);
+            Block(0.250);
 
             m_InputSimulator.Mouse.MoveMouseTo(23300, 50000);
             RightClick();
-            Block(0.500);
+            Block(0.250);
 
             KeyUp(VirtualKeyCode.LSHIFT);
 
             if(SkinLoot)
             {
-                Block(0.500);
+                Block(0.250);
                 KeyDown(VirtualKeyCode.LSHIFT);
+
+                m_InputSimulator.Mouse.MoveMouseTo(33300, 30000);
+                RightClick();
+                Block(0.250);   
 
                 m_InputSimulator.Mouse.MoveMouseTo(33300, 40000);
                 RightClick();
-                Block(0.500);
+                Block(0.250);
 
                 m_InputSimulator.Mouse.MoveMouseTo(43300, 40000);
                 RightClick();
-                Block(0.500);
+                Block(0.250);
 
                 m_InputSimulator.Mouse.MoveMouseTo(23300, 40000);
                 RightClick();
-                Block(0.500);
+                Block(0.250);
 
                 m_InputSimulator.Mouse.MoveMouseTo(33300, 50000);
                 RightClick();
-                Block(0.500);
+                Block(0.250);
 
                 m_InputSimulator.Mouse.MoveMouseTo(43300, 50000);
                 RightClick();
-                Block(0.500);
+                Block(0.250);
 
                 m_InputSimulator.Mouse.MoveMouseTo(23300, 50000);
                 RightClick();
-                Block(0.500);
+                Block(0.250);
 
                 Block(4.000);
                 KeyUp(VirtualKeyCode.LSHIFT);
             }
 
             if (m_CurrentPlayerData.PlayerInCombat)
-                CurrentActionMode = ActionMode.KillTarget;
+                m_CurrentActionMode = ActionMode.KillTarget;
             else if ((double)m_CurrentPlayerData.PlayerHealth / m_CurrentPlayerData.MaxPlayerHealth < 0.6)
-                CurrentActionMode = ActionMode.RegenerateVitals;
+                m_CurrentActionMode = ActionMode.RegenerateVitals;
             else
-                CurrentActionMode = ActionMode.FindTarget;
+                m_CurrentActionMode = ActionMode.FindTarget;
         }
 
         private void RegenerateVitals()
         {
-            if (!m_StartedEating)
+            switch (m_CurrentPlayerData.Class)
             {
-                Block(1.500);
-                KeyPress(VirtualKeyCode.VK_X);
-                Block(RegisterDelay);
-                KeyPress(VirtualKeyCode.VK_8);
-                Block(RegisterDelay);
-                KeyPress(VirtualKeyCode.VK_9);
-                m_StartedEating = true;
+                case PlayerClass.Warrior:
+                    //RegenerateVitalsWarrior();
+                    break;
+                case PlayerClass.Paladin:
+                    //RegenerateVitalsPaladin();
+                    break;
+                case PlayerClass.Rogue:
+                    RegenerateVitalsRogue();
+                    break;
+                case PlayerClass.Priest:
+                    //RegenerateVitalsPriest();
+                    break;
+                case PlayerClass.Mage:
+                    //RegenerateVitalsMage();
+                    break;
+                case PlayerClass.Warlock:
+                    //RegenerateVitalsWarlock();
+                    break;
+                case PlayerClass.Hunter:
+                    //RegenerateVitalsHunter();
+                    break;
+                case PlayerClass.Shaman:
+                    //RegenerateVitalsShaman();
+                    break;
+                case PlayerClass.Druid:
+                    //RegenerateVitalsDruid();
+                    break;
+                default:
+                    break;
             }
-            else if (m_CurrentPlayerData.PlayerInCombat)
-            {
-                m_StartedEating = false;
-                CurrentActionMode = ActionMode.KillTarget;
-            }
-            else if (m_CurrentPlayerData.PlayerHealth == m_CurrentPlayerData.MaxPlayerHealth)
-            {
-                CurrentActionMode = ActionMode.FindTarget;
-                m_StartedEating = false;
-            }
+
         }
 
         private void FindTarget()
         {
+            if(m_ResetCoordinates)
+            {
+                m_XCoordinates.Clear();
+                m_YCoordinates.Clear();
+
+                m_XCoordinates.AddRange(m_PathXCoordinates);
+                m_YCoordinates.AddRange(m_PathYCoordinates);
+
+                m_WaypointIndex = 0;
+
+                m_ResetCoordinates = false;
+            }
+
             switch(m_CurrentPlayerData.Class)
             {
                 case PlayerClass.Warrior:
@@ -603,21 +702,19 @@ namespace ClassicWowNeuralParasite
 
         private void KillTarget()
         {
-            double healthRatio = (double)m_CurrentPlayerData.PlayerHealth / m_CurrentPlayerData.MaxPlayerHealth;
-
             if (m_CurrentPlayerData.IsPlayerDead)
             {
                 m_SlicedAndDiced = false;
                 m_Potion = false;
                 m_Fighting = false;
-                CurrentActionMode = ActionMode.Revive;
+                m_CurrentActionMode = ActionMode.Revive;
             }
             else if (!m_CurrentPlayerData.PlayerInCombat)
             {
                 m_SlicedAndDiced = false;
                 m_Potion = false;
                 m_Fighting = false;
-                CurrentActionMode = ActionMode.LootTarget;
+                m_CurrentActionMode = ActionMode.LootTarget;
             }
             // Wrong target
             else if (!m_CurrentPlayerData.PlayerHasTarget ||
@@ -671,7 +768,7 @@ namespace ClassicWowNeuralParasite
                 Block(RegisterDelay);
                 m_ActionErrorNeedsResolution = false;
             }
-            else if (healthRatio < 0.1 && !m_Potion)
+            else if (m_CurrentPlayerData.PlayerHealthPercentage < 10 && !m_Potion)
             {
                 KeyPress(VirtualKeyCode.VK_0);
                 m_Potion = true;
@@ -764,13 +861,13 @@ namespace ClassicWowNeuralParasite
             {
                 StopFollowingWaypoints();
 
-                CurrentActionMode = ActionMode.KillTarget;
+                m_CurrentActionMode = ActionMode.KillTarget;
                 ToggleAttackFlag = true;
                 m_ActionErrorNeedsResolution = false;
                 return;
             }
 
-            FollowWaypoints();
+            FollowWaypoints(true);
 
             // Look for target
             KeyPress(VirtualKeyCode.TAB);
@@ -828,27 +925,66 @@ namespace ClassicWowNeuralParasite
         public int SliceAndDiceComboPoints = 1;
         public int RuptureComboPoints = 3;
         public int EvisceratePercentage = 25;
+        public int EvasionPercentage = 40;
         public int StealthLevel = 10;
+        public bool Stealth = true;
+        public bool ThrowWeapon = false;
 
-        private const int STEALTH_COOLDOWN_TIME_SEC = 10;
+        public int StealthCooldown = 10;
+
+        private const int KIDNEY_SHOT_COOLDOWN = 20;
+        private const int EVASION_COOLDOWN = 5* 60;
 
         private volatile bool m_CanStealth = true;
+
         private bool m_Stealthed = false;
         private bool m_SlicedAndDiced = false;
-        private System.Timers.Timer m_CanStealthTimer = new System.Timers.Timer();
+        private bool m_CanRupture = true;
+        private bool m_CanKidneyShot = true;
+        private bool m_CanEvasion = true;
+
+        public System.Timers.Timer StealthTimer = new System.Timers.Timer();
         public System.Timers.Timer StaleStealthTimer = new System.Timers.Timer();
-        private Stopwatch m_RuptureSW = new Stopwatch();
-        private Stopwatch m_KidneyShotSW = new Stopwatch();
+        public System.Timers.Timer RuptureTimer = new System.Timers.Timer();
+        private System.Timers.Timer m_KidneyShotTimer = new System.Timers.Timer();
+        private System.Timers.Timer m_EvasionTimer = new System.Timers.Timer();
 
         private void InitRogue()
         {
             m_Melee = true;
 
-            m_CanStealthTimer.Interval = STEALTH_COOLDOWN_TIME_SEC * 1000;
-            m_CanStealthTimer.Elapsed += CanStealthTimer_Elapsed;
+            StealthTimer.Interval = StealthCooldown * 1000;
+            StealthTimer.Elapsed += CanStealthTimer_Elapsed;
 
-            StaleStealthTimer.Interval = STEALTH_COOLDOWN_TIME_SEC * 1000;
+            StaleStealthTimer.Interval = StealthCooldown * 1000;
             StaleStealthTimer.Elapsed += StaleStealthTimer_Elapsed;
+
+            RuptureTimer.Interval = (6 + RuptureComboPoints * 2) * 1000;
+            RuptureTimer.Elapsed += RuptureTimer_Elapsed;
+
+            m_KidneyShotTimer.Interval = KIDNEY_SHOT_COOLDOWN * 1000;
+            m_KidneyShotTimer.Elapsed += KidneyShotTimer_Elapsed;
+
+            m_EvasionTimer.Interval = EVASION_COOLDOWN * 1000;
+            m_EvasionTimer.Elapsed += EvasionTimer_Elapsed; ;
+        }
+
+        private void EvasionTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            m_CanEvasion = true;
+            m_EvasionTimer.Stop();
+        }
+
+        private void KidneyShotTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            m_CanKidneyShot = true;
+            m_KidneyShotTimer.Stop();
+        }
+
+        private void RuptureTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            m_CanRupture = true;
+            RuptureTimer.Stop();
         }
 
         private void StaleStealthTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -857,7 +993,7 @@ namespace ClassicWowNeuralParasite
             {
                 KeyPress(VirtualKeyCode.VK_T);
                 m_Stealthed = false;
-                m_CanStealthTimer.Start();
+                StealthTimer.Start();
             }
 
             StaleStealthTimer.Stop();
@@ -866,27 +1002,10 @@ namespace ClassicWowNeuralParasite
         private void CanStealthTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             m_CanStealth = true;
-
-            m_CanStealthTimer.Stop();
+            StealthTimer.Stop();
         }
 
         private void FindTargetRogue()
-        {
-            if (m_CurrentPlayerData.PlayerLevel < 5)
-            {
-                FindTargetStartRogue();
-            }
-            else if (m_CurrentPlayerData.PlayerLevel < StealthLevel)
-            {
-                FindTargetNoStealthRogue();
-            }
-            else
-            {
-                FindTargetStealthRogue();
-            }
-        }
-
-        private void FindTargetStealthRogue()
         {
             if (m_CurrentPlayerData.PlayerInCombat)
             {
@@ -894,14 +1013,14 @@ namespace ClassicWowNeuralParasite
 
                 m_Stealthed = false;
                 StaleStealthTimer.Stop();
-                m_CanStealthTimer.Start();
+                StealthTimer.Start();
 
-                CurrentActionMode = ActionMode.KillTarget;
+                m_CurrentActionMode = ActionMode.KillTarget;
                 m_ActionErrorNeedsResolution = false;
                 return;
             }
 
-            FollowWaypoints();
+            FollowWaypoints(true);
 
             // Look for target
             KeyPress(VirtualKeyCode.TAB);
@@ -909,95 +1028,62 @@ namespace ClassicWowNeuralParasite
 
             if (m_CurrentPlayerData.PlayerHasTarget)
             {
-                bool validEnemy = m_CurrentPlayerData.TargetHealth == 100 &&
-                                 !m_CurrentPlayerData.TargetInCombat &&
-                                 !m_CurrentPlayerData.IsTargetPlayer &&
-                                  m_CurrentPlayerData.IsInFarRange;
+                bool validEnemy = false;
 
-                if (validEnemy && m_CurrentPlayerData.CanUseSkill)
+                if ((m_CurrentPlayerData.PlayerLevel < 5 || ThrowWeapon) && m_CurrentPlayerData.AmmoCount > 0)
                 {
-                    if (!m_Stealthed && m_CanStealth)
+                    validEnemy = m_CurrentPlayerData.TargetHealth == 100 &&
+                                !m_CurrentPlayerData.TargetInCombat &&
+                                !m_CurrentPlayerData.IsTargetPlayer &&
+                                m_CurrentPlayerData.IsInFarRange &&
+                                !m_CurrentPlayerData.IsInCloseRange;
+
+                    if (validEnemy)
                     {
-                        KeyPress(VirtualKeyCode.VK_T);
+                        StopFollowingWaypoints();
 
-                        StaleStealthTimer.Start();
-                        m_Stealthed = true;
-                        m_CanStealth = false;
+                        // Throw dagger
+                        Block(1);
+                        KeyPress(VirtualKeyCode.VK_4);
+                        Block(3);
                     }
-
-                    KeyPress(VirtualKeyCode.VK_2);
                 }
-            }
-        }
-
-        private void FindTargetStartRogue()
-        {
-            if (m_CurrentPlayerData.PlayerInCombat)
-            {
-                StopFollowingWaypoints();
-
-                CurrentActionMode = ActionMode.KillTarget;
-                m_ActionErrorNeedsResolution = false;
-                return;
-            }
-
-            FollowWaypoints();
-
-            // Look for target
-            KeyPress(VirtualKeyCode.TAB);
-            Block(RegisterDelay);
-
-            // Found a target
-            if (m_CurrentPlayerData.PlayerHasTarget)
-            {
-                bool validEnemy = m_CurrentPlayerData.TargetHealth == 100 &&
-                                  !m_CurrentPlayerData.TargetInCombat &&
-                                  !m_CurrentPlayerData.IsTargetPlayer &&
-                                   m_CurrentPlayerData.IsInFarRange &&
-                                  !m_CurrentPlayerData.IsInCloseRange;
-
-                if (validEnemy)
+                else if (m_CurrentPlayerData.PlayerLevel > StealthLevel && Stealth)
                 {
-                    StopFollowingWaypoints();
+                    validEnemy = m_CurrentPlayerData.TargetHealth == 100 &&
+                                !m_CurrentPlayerData.TargetInCombat &&
+                                !m_CurrentPlayerData.IsTargetPlayer &&
+                                m_CurrentPlayerData.IsInFarRange;
 
-                    // Throw dagger
-                    Block(1);
-                    KeyPress(VirtualKeyCode.VK_4);
-                    Block(3);
+                    if (validEnemy && m_CurrentPlayerData.CanUseSkill)
+                    {
+                        if (!m_Stealthed && m_CanStealth)
+                        {
+                            KeyPress(VirtualKeyCode.VK_T);
+
+                            StaleStealthTimer.Start();
+                            m_Stealthed = true;
+                            m_CanStealth = false;
+                        }
+
+                        KeyPress(VirtualKeyCode.VK_2);
+                    }
                 }
-            }
-        }
-
-        private void FindTargetNoStealthRogue()
-        {
-            if (m_CurrentPlayerData.PlayerInCombat)
-            {
-                StopFollowingWaypoints();
-
-                CurrentActionMode = ActionMode.KillTarget;
-                m_ActionErrorNeedsResolution = false;
-                return;
-            }
-
-            FollowWaypoints();
-
-            // Look for target
-            KeyPress(VirtualKeyCode.TAB);
-            Block(RegisterDelay);
-
-            if (m_CurrentPlayerData.PlayerHasTarget)
-            {
-                bool validEnemy = m_CurrentPlayerData.TargetHealth == 100 &&
-                                  !m_CurrentPlayerData.TargetInCombat &&
-                                  !m_CurrentPlayerData.IsTargetPlayer &&
-                                  m_CurrentPlayerData.IsInCloseRange;
-
-                if (validEnemy)
+                else
                 {
-                    KeyPress(VirtualKeyCode.VK_2);
-                }
-            }
+                    validEnemy = m_CurrentPlayerData.TargetHealth == 100 &&
+                                !m_CurrentPlayerData.TargetInCombat &&
+                                !m_CurrentPlayerData.IsTargetPlayer &&
+                                m_CurrentPlayerData.IsInCloseRange;
 
+                    if (validEnemy)
+                    {
+                        KeyPress(VirtualKeyCode.VK_2);
+                    }
+                }
+
+
+            }
         }
 
         private void AutoAttackTargetRogue()
@@ -1036,20 +1122,22 @@ namespace ClassicWowNeuralParasite
                         KeyPress(VirtualKeyCode.VK_3);
                     }
                 }
-                else if (m_CurrentPlayerData.TargetComboPoints >= 3 && m_CurrentPlayerData.PlayerLevel > 29 && (m_KidneyShotSW.ElapsedMilliseconds > 20000 || !m_KidneyShotSW.IsRunning))
+                else if (m_CurrentPlayerData.TargetComboPoints >= 3 && m_CurrentPlayerData.PlayerLevel > 29 && m_CanKidneyShot)
                 {
                     if (m_CurrentPlayerData.PlayerMana >= 25)
                     {
-                        m_KidneyShotSW.Restart();
                         KeyPress(VirtualKeyCode.VK_7);
+                        m_CanKidneyShot = false;
+                        m_KidneyShotTimer.Start();
                     }
                 }
-                else if (m_CurrentPlayerData.TargetComboPoints >= 3 && m_CurrentPlayerData.PlayerLevel > 19 && (m_RuptureSW.ElapsedMilliseconds > 12000 || !m_RuptureSW.IsRunning))
+                else if (m_CurrentPlayerData.TargetComboPoints >= 3 && m_CurrentPlayerData.PlayerLevel > 19 && m_CanRupture)
                 {
                     if (m_CurrentPlayerData.PlayerMana >= 25)
                     {
                         KeyPress(VirtualKeyCode.VK_6);
-                        m_RuptureSW.Restart();
+                        m_CanRupture = false;
+                        RuptureTimer.Start();
                     }
                 }
                 else
@@ -1076,7 +1164,13 @@ namespace ClassicWowNeuralParasite
 
         private void KillTargetRogue()
         {
-            if (!m_SlicedAndDiced &&
+            if( (m_CurrentPlayerData.PlayerHealthPercentage <= EvasionPercentage) && m_CanEvasion)
+            {
+                KeyPress(VirtualKeyCode.VK_L);
+                m_CanEvasion = false;
+                m_EvasionTimer.Start();
+            }
+            else if (!m_SlicedAndDiced &&
                  m_CurrentPlayerData.TargetComboPoints == SliceAndDiceComboPoints &&
                  m_CurrentPlayerData.PlayerLevel > 9 &&
                  m_CurrentPlayerData.PlayerMana >= 25)
@@ -1086,9 +1180,12 @@ namespace ClassicWowNeuralParasite
             }
             else if (m_CurrentPlayerData.TargetComboPoints == RuptureComboPoints &&
                  m_CurrentPlayerData.PlayerLevel > 19 &&
-                 m_CurrentPlayerData.PlayerMana >= 25)
+                 m_CurrentPlayerData.PlayerMana >= 25 &&
+                 m_CanRupture)
             {
                 KeyPress(VirtualKeyCode.VK_6);
+                m_CanRupture = false;
+                RuptureTimer.Start();
             }
             else if (( (m_CurrentPlayerData.TargetHealth < 25 && m_CurrentPlayerData.TargetComboPoints > 0) ||
                       m_CurrentPlayerData.TargetComboPoints == 5) &&
@@ -1117,6 +1214,35 @@ namespace ClassicWowNeuralParasite
             }
         }
 
+        private void RegenerateVitalsRogue()
+        {
+            if (!m_StartedEating)
+            {
+                Block(1.500);
+                KeyPress(VirtualKeyCode.VK_X);
+                Block(RegisterDelay);
+                KeyPress(VirtualKeyCode.VK_8);
+                Block(RegisterDelay);
+                KeyPress(VirtualKeyCode.VK_T);
+                Block(RegisterDelay);
+                m_StartedEating = true;
+            }
+            else if (m_CurrentPlayerData.PlayerInCombat)
+            {
+                m_StartedEating = false;
+                m_CurrentActionMode = ActionMode.KillTarget;
+            }
+            else if (m_CurrentPlayerData.PlayerHealth == m_CurrentPlayerData.MaxPlayerHealth)
+            {
+                m_CurrentActionMode = ActionMode.FindTarget;
+                KeyPress(VirtualKeyCode.VK_T);
+                Block(RegisterDelay);
+                m_CanStealth = false;
+                StealthTimer.Start();
+                m_StartedEating = false;
+            }
+        }
+
         #endregion
 
         #region Priest
@@ -1132,12 +1258,12 @@ namespace ClassicWowNeuralParasite
             {
                 StopFollowingWaypoints();
 
-                CurrentActionMode = ActionMode.KillTarget;
+                m_CurrentActionMode = ActionMode.KillTarget;
                 m_ActionErrorNeedsResolution = false;
                 return;
             }
 
-            FollowWaypoints();
+            FollowWaypoints(true);
 
             // Look for target
             KeyPress(VirtualKeyCode.TAB);
@@ -1254,12 +1380,12 @@ namespace ClassicWowNeuralParasite
             {
                 StopFollowingWaypoints();
 
-                CurrentActionMode = ActionMode.KillTarget;
+                m_CurrentActionMode = ActionMode.KillTarget;
                 m_ActionErrorNeedsResolution = false;
                 return;
             }
 
-            FollowWaypoints();
+            FollowWaypoints(true);
 
             // Look for target
             KeyPress(VirtualKeyCode.TAB);
@@ -1333,9 +1459,34 @@ namespace ClassicWowNeuralParasite
 
         #region Druid
 
+        private const int MOTW_COOLDOWN_TIME_SEC = 60 * 30;
+        private const int THORNS_COOLDOWN_TIME_SEC = 60 * 10;
+
+        private System.Timers.Timer m_ThornsTimer = new System.Timers.Timer();
+        private System.Timers.Timer m_MotwTimer = new System.Timers.Timer();
+
+        private volatile bool m_CanThorns = true;
+        private volatile bool m_CanMotw = true;
+
         private void InitDruid()
         {
+            m_MotwTimer.Interval = MOTW_COOLDOWN_TIME_SEC * 1000;
+            m_MotwTimer.Elapsed += MotwTimer_Elapsed; ;
 
+            m_ThornsTimer.Interval = THORNS_COOLDOWN_TIME_SEC * 1000;
+            m_ThornsTimer.Elapsed += ThornsTimer_Elapsed; ;
+        }
+
+        private void ThornsTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            m_CanThorns = true;
+            m_ThornsTimer.Stop();
+        }
+
+        private void MotwTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            m_CanMotw = true;
+            m_MotwTimer.Stop();
         }
 
         private void FindTargetDruid()
@@ -1344,12 +1495,12 @@ namespace ClassicWowNeuralParasite
             {
                 StopFollowingWaypoints();
 
-                CurrentActionMode = ActionMode.KillTarget;
+                m_CurrentActionMode = ActionMode.KillTarget;
                 m_ActionErrorNeedsResolution = false;
                 return;
             }
 
-            FollowWaypoints();
+            FollowWaypoints(true);
 
             // Look for target
             KeyPress(VirtualKeyCode.TAB);
@@ -1380,15 +1531,55 @@ namespace ClassicWowNeuralParasite
 
         private void AutoAttackTargetDruid()
         {
-
+            if(m_CanThorns && m_CurrentPlayerData.CanUseSkill && m_CurrentPlayerData.PlayerMana >= 35)
+            {
+                KeyPress(VirtualKeyCode.VK_L);
+                m_CanThorns = false;
+                Block(0.1);
+                m_ThornsTimer.Start();
+            }
+            else if(m_CanMotw && m_CurrentPlayerData.CanUseSkill && m_CurrentPlayerData.PlayerMana >= 20)
+            {
+                KeyPress(VirtualKeyCode.VK_P);
+                m_CanMotw = false;
+                Block(0.1);
+                m_MotwTimer.Start();
+            }
+            else if (!m_CurrentPlayerData.PlayerInCombat)
+            {
+                return;
+            }
+            else if (!m_CurrentPlayerData.PlayerHasTarget)
+            {
+                KeyPress(VirtualKeyCode.TAB);
+            }
+            else if (!m_CurrentPlayerData.PlayerIsAttacking)
+            {
+                KeyPress(VirtualKeyCode.VK_1);
+                Block(0.05);
+                return;
+            }
+            else if (m_CurrentPlayerData.CanUseSkill)   
+            {
+                if (m_CurrentPlayerData.PlayerMana >= 25 && m_CurrentPlayerData.PlayerHealthPercentage < 40 && !m_Casting)
+                {
+                    KeyPress(VirtualKeyCode.VK_3);
+                    m_Casting = true;
+                }
+                else if (m_CurrentPlayerData.PlayerMana >= 35 && !m_Casting)
+                {
+                    KeyPress(VirtualKeyCode.VK_2);
+                    m_Casting = true;
+                }
+            }
         }
 
         private void KillTargetDruid()
         {
-            if(m_CurrentPlayerData.PlayerMana >= 20)
+            if (m_CurrentPlayerData.PlayerMana >= 20 && !m_Casting)
             {
                 KeyPress(VirtualKeyCode.VK_2);
-                Block(0.5);
+                m_Casting = true;
             }
         }
 
@@ -1492,10 +1683,6 @@ namespace ClassicWowNeuralParasite
                 m_FollowingWaypoints = false;
                 m_StopWaypointEventWaitHandle.WaitOne();
 
-                KeyUp(VirtualKeyCode.VK_W);
-                KeyUp(VirtualKeyCode.VK_A);
-                KeyUp(VirtualKeyCode.VK_D);
-
                 m_TurningDirection = TurningDirection.None;
             }
         }
@@ -1507,7 +1694,7 @@ namespace ClassicWowNeuralParasite
             Right
         }
 
-        private void FollowWaypoints()
+        private void FollowWaypoints(bool loop)
         {
             if (!m_FollowingWaypoints)
             {
@@ -1542,7 +1729,7 @@ namespace ClassicWowNeuralParasite
 
                         if (Math.Abs(requriedTurn) < TurnToleranceRad)
                         {
-                            if(m_TurningDirection != TurningDirection.None)
+                            if (m_TurningDirection != TurningDirection.None)
                             {
                                 KeyUp(VirtualKeyCode.VK_D);
                                 KeyUp(VirtualKeyCode.VK_A);
@@ -1552,7 +1739,7 @@ namespace ClassicWowNeuralParasite
                         }
                         else if (requriedTurn > 0)
                         {
-                            if(m_TurningDirection != TurningDirection.Right)
+                            if (m_TurningDirection != TurningDirection.Right)
                             {
                                 KeyUp(VirtualKeyCode.VK_A);
                                 KeyDown(VirtualKeyCode.VK_D);
@@ -1603,17 +1790,26 @@ namespace ClassicWowNeuralParasite
 
                         if (xReached && yReached)
                         {
-                            m_WaypointIndex++;
-
-                            if (m_WaypointIndex == m_XCoordinates.Count)
+                            if (m_WaypointIndex == (m_XCoordinates.Count - 1))
                             {
+                                if (!loop)
+                                {
+                                    break;
+                                }
+
                                 m_XCoordinates.Reverse();
                                 m_YCoordinates.Reverse();
 
                                 m_WaypointIndex = 0;
                             }
+
+                            m_WaypointIndex++;
                         }
                     }
+
+                    KeyUp(VirtualKeyCode.VK_W);
+                    KeyUp(VirtualKeyCode.VK_A);
+                    KeyUp(VirtualKeyCode.VK_D);
                     m_StopWaypointEventWaitHandle.Set();
                 });
             }
