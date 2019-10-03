@@ -49,7 +49,8 @@ namespace ClassicWowNeuralParasite
         SealOfTheCrusader = 1,
         MarkOfTheWild = 2,
         Thorns = 4,
-        SealOfCommand = 8
+        SealOfCommand = 8,
+        BlessingOfWisdom = 16
     }
 
     public class PlayerData
