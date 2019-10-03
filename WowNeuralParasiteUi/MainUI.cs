@@ -488,5 +488,10 @@ namespace ClassicWowNeuralParasite
         {
             WowAutomater.Druid.Passive = PassiveHumanoidCheckBox.Checked;
         }
+
+        private void RegenerateVitalsNumericInput_ValueChanged(object sender, EventArgs e)
+        {
+            WowAutomater.RegenerateVitalsHealthPercentage = (double)RegenerateVitalsNumericInput.Value;
+        }
     }
 }

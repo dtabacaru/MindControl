@@ -76,6 +76,8 @@ namespace ClassicWowNeuralParasite
         public static double YReviveButtonLocation = 14000;
         public static volatile bool SkinLoot = false;
 
+        public static double RegenerateVitalsHealthPercentage = 60;
+
         private static volatile bool m_WalkBackwards = false;
 
         private static bool m_Ghosted = false;
@@ -83,6 +85,7 @@ namespace ClassicWowNeuralParasite
         private static bool m_FarTarget = false;
         private static bool m_Potion = false;
         private static bool m_Idle = false;
+        private static bool m_StartedEating = false;
 
         private static Stopwatch m_ReviveSw = new Stopwatch();
 
@@ -422,7 +425,7 @@ namespace ClassicWowNeuralParasite
 
             if (WowApi.CurrentPlayerData.PlayerInCombat)
                 m_CurrentActionMode = ActionMode.KillTarget;
-            else if ((double)WowApi.CurrentPlayerData.PlayerHealth / WowApi.CurrentPlayerData.MaxPlayerHealth < 0.6)
+            else if (WowApi.CurrentPlayerData.PlayerHealthPercentage <= RegenerateVitalsHealthPercentage)
                 m_CurrentActionMode = ActionMode.RegenerateVitals;
             else
                 m_CurrentActionMode = ActionMode.FindTarget;
@@ -430,7 +433,30 @@ namespace ClassicWowNeuralParasite
 
         private static void RegenerateVitals()
         {
-            m_WowClassAutomater.RegenerateVitals();
+            if (!m_StartedEating)
+            {
+                Helper.WaitSeconds(1.500);
+                Input.KeyPress(VirtualKeyCode.VK_X);
+                Helper.WaitSeconds(RegisterDelay);
+                Input.KeyPress(VirtualKeyCode.VK_8);
+                Helper.WaitSeconds(RegisterDelay);
+                Input.KeyPress(VirtualKeyCode.VK_9);
+                Helper.WaitSeconds(RegisterDelay);
+
+                m_WowClassAutomater.RegenerateVitals();
+
+                m_StartedEating = true;
+            }
+            else if (WowApi.CurrentPlayerData.PlayerInCombat)
+            {
+                m_StartedEating = false;
+                CurrentActionMode = ActionMode.KillTarget;
+            }
+            else if (WowApi.CurrentPlayerData.PlayerHealth == WowApi.CurrentPlayerData.MaxPlayerHealth)
+            {
+                CurrentActionMode = ActionMode.FindTarget;
+                m_StartedEating = false;
+            }
         }
 
         private static void FindTarget()

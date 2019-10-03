@@ -175,7 +175,8 @@ namespace ClassicWowNeuralParasite
 
         public override void RegenerateVitals()
         {
-            
+            Input.KeyPress(VirtualKeyCode.VK_T);
+            Helper.WaitSeconds(WowAutomater.RegisterDelay);
         }
     }
 }

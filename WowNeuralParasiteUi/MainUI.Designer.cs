@@ -95,6 +95,8 @@
             this.PassiveHumanoidLabel = new System.Windows.Forms.Label();
             this.ShowInfoButton = new System.Windows.Forms.Button();
             this.StatusLabel = new System.Windows.Forms.Label();
+            this.RegenerateVitalsLabel = new System.Windows.Forms.Label();
+            this.RegenerateVitalsNumericInput = new System.Windows.Forms.NumericUpDown();
             this.OptionTabs.SuspendLayout();
             this.InfoTab.SuspendLayout();
             this.PathsTab.SuspendLayout();
@@ -117,6 +119,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.StaleStealthNumericInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.StealthLevelNumericInput)).BeginInit();
             this.DruidTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.RegenerateVitalsNumericInput)).BeginInit();
             this.SuspendLayout();
             // 
             // ModeDropDown
@@ -333,6 +336,8 @@
             // 
             // AutomaterTab
             // 
+            this.AutomaterTab.Controls.Add(this.RegenerateVitalsLabel);
+            this.AutomaterTab.Controls.Add(this.RegenerateVitalsNumericInput);
             this.AutomaterTab.Controls.Add(this.ReviveButtonLocationTestButton);
             this.AutomaterTab.Controls.Add(this.YReviveButtonLocationLabel);
             this.AutomaterTab.Controls.Add(this.YReviveButtonLocationNumericInput);
@@ -1009,6 +1014,33 @@
             this.StatusLabel.Size = new System.Drawing.Size(0, 24);
             this.StatusLabel.TabIndex = 38;
             // 
+            // RegenerateVitalsLabel
+            // 
+            this.RegenerateVitalsLabel.AutoSize = true;
+            this.RegenerateVitalsLabel.Location = new System.Drawing.Point(3, 216);
+            this.RegenerateVitalsLabel.Name = "RegenerateVitalsLabel";
+            this.RegenerateVitalsLabel.Size = new System.Drawing.Size(108, 13);
+            this.RegenerateVitalsLabel.TabIndex = 19;
+            this.RegenerateVitalsLabel.Text = "Regenerate Health %";
+            // 
+            // RegenerateVitalsNumericInput
+            // 
+            this.RegenerateVitalsNumericInput.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.RegenerateVitalsNumericInput.Location = new System.Drawing.Point(154, 214);
+            this.RegenerateVitalsNumericInput.Name = "RegenerateVitalsNumericInput";
+            this.RegenerateVitalsNumericInput.Size = new System.Drawing.Size(54, 20);
+            this.RegenerateVitalsNumericInput.TabIndex = 18;
+            this.RegenerateVitalsNumericInput.Value = new decimal(new int[] {
+            60,
+            0,
+            0,
+            0});
+            this.RegenerateVitalsNumericInput.ValueChanged += new System.EventHandler(this.RegenerateVitalsNumericInput_ValueChanged);
+            // 
             // MainUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1051,6 +1083,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.StealthLevelNumericInput)).EndInit();
             this.DruidTab.ResumeLayout(false);
             this.DruidTab.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.RegenerateVitalsNumericInput)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1123,6 +1156,8 @@
         private System.Windows.Forms.Button ReviveButtonLocationTestButton;
         private System.Windows.Forms.CheckBox PassiveHumanoidCheckBox;
         private System.Windows.Forms.Label PassiveHumanoidLabel;
+        private System.Windows.Forms.Label RegenerateVitalsLabel;
+        private System.Windows.Forms.NumericUpDown RegenerateVitalsNumericInput;
     }
 }
 
