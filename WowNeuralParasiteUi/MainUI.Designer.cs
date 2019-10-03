@@ -1,4 +1,4 @@
-﻿namespace WowAutomaterUi
+﻿namespace ClassicWowNeuralParasite
 {
     partial class MainUI
     {
@@ -91,6 +91,8 @@
             this.HunterTab = new System.Windows.Forms.TabPage();
             this.ShamanTab = new System.Windows.Forms.TabPage();
             this.DruidTab = new System.Windows.Forms.TabPage();
+            this.PassiveHumanoidCheckBox = new System.Windows.Forms.CheckBox();
+            this.PassiveHumanoidLabel = new System.Windows.Forms.Label();
             this.ShowInfoButton = new System.Windows.Forms.Button();
             this.StatusLabel = new System.Windows.Forms.Label();
             this.OptionTabs.SuspendLayout();
@@ -114,6 +116,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.SliceNDiceCPNumericInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.StaleStealthNumericInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.StealthLevelNumericInput)).BeginInit();
+            this.DruidTab.SuspendLayout();
             this.SuspendLayout();
             // 
             // ModeDropDown
@@ -681,6 +684,7 @@
             0,
             0,
             0});
+            this.StealthCooldownNumericInput.ValueChanged += new System.EventHandler(this.StealthCooldownNumericInput_ValueChanged);
             // 
             // StealthCooldownLabel
             // 
@@ -711,6 +715,7 @@
             0,
             0,
             0});
+            this.EvasionPercentaceNumericInput.ValueChanged += new System.EventHandler(this.EvasionPercentaceNumericInput_ValueChanged);
             // 
             // AlwaysThrowCheckBox
             // 
@@ -790,6 +795,7 @@
             0,
             0,
             0});
+            this.EvisceratePercentageNumericInput.ValueChanged += new System.EventHandler(this.EvisceratePercentageNumericInput_ValueChanged);
             // 
             // RuptureCPNumericInput
             // 
@@ -812,6 +818,7 @@
             0,
             0,
             0});
+            this.RuptureCPNumericInput.ValueChanged += new System.EventHandler(this.RuptureCPNumericInput_ValueChanged);
             // 
             // SliceNDiceCPNumericInput
             // 
@@ -834,6 +841,7 @@
             0,
             0,
             0});
+            this.SliceNDiceCPNumericInput.ValueChanged += new System.EventHandler(this.SliceNDiceCPNumericInput_ValueChanged);
             // 
             // StaleStealthNumericInput
             // 
@@ -856,6 +864,7 @@
             0,
             0,
             0});
+            this.StaleStealthNumericInput.ValueChanged += new System.EventHandler(this.StaleStealthNumericInput_ValueChanged);
             // 
             // StaleStealthLabel
             // 
@@ -896,6 +905,7 @@
             0,
             0,
             0});
+            this.StealthLevelNumericInput.ValueChanged += new System.EventHandler(this.StealthLevelNumericInput_ValueChanged);
             // 
             // PriestTab
             // 
@@ -944,6 +954,8 @@
             // 
             // DruidTab
             // 
+            this.DruidTab.Controls.Add(this.PassiveHumanoidCheckBox);
+            this.DruidTab.Controls.Add(this.PassiveHumanoidLabel);
             this.DruidTab.Location = new System.Drawing.Point(4, 22);
             this.DruidTab.Name = "DruidTab";
             this.DruidTab.Size = new System.Drawing.Size(206, 601);
@@ -951,10 +963,31 @@
             this.DruidTab.Text = "Druid";
             this.DruidTab.UseVisualStyleBackColor = true;
             // 
+            // PassiveHumanoidCheckBox
+            // 
+            this.PassiveHumanoidCheckBox.AutoSize = true;
+            this.PassiveHumanoidCheckBox.Checked = true;
+            this.PassiveHumanoidCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.PassiveHumanoidCheckBox.Location = new System.Drawing.Point(146, 10);
+            this.PassiveHumanoidCheckBox.Name = "PassiveHumanoidCheckBox";
+            this.PassiveHumanoidCheckBox.Size = new System.Drawing.Size(15, 14);
+            this.PassiveHumanoidCheckBox.TabIndex = 16;
+            this.PassiveHumanoidCheckBox.UseVisualStyleBackColor = true;
+            this.PassiveHumanoidCheckBox.CheckedChanged += new System.EventHandler(this.PassiveHumanoidCheckBox_CheckedChanged);
+            // 
+            // PassiveHumanoidLabel
+            // 
+            this.PassiveHumanoidLabel.AutoSize = true;
+            this.PassiveHumanoidLabel.Location = new System.Drawing.Point(4, 10);
+            this.PassiveHumanoidLabel.Name = "PassiveHumanoidLabel";
+            this.PassiveHumanoidLabel.Size = new System.Drawing.Size(95, 13);
+            this.PassiveHumanoidLabel.TabIndex = 15;
+            this.PassiveHumanoidLabel.Text = "Passive Humanoid";
+            // 
             // ShowInfoButton
             // 
             this.ShowInfoButton.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.ShowInfoButton.BackgroundImage = global::WowAutomaterUi.Properties.Resources.show;
+            this.ShowInfoButton.BackgroundImage = global::ClassicWowNeuralParasite.Properties.Resources.show;
             this.ShowInfoButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.ShowInfoButton.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ButtonFace;
             this.ShowInfoButton.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.ButtonFace;
@@ -1016,6 +1049,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.SliceNDiceCPNumericInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.StaleStealthNumericInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.StealthLevelNumericInput)).EndInit();
+            this.DruidTab.ResumeLayout(false);
+            this.DruidTab.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1086,6 +1121,8 @@
         private System.Windows.Forms.Label YReviveButtonLocationLabel;
         private System.Windows.Forms.NumericUpDown YReviveButtonLocationNumericInput;
         private System.Windows.Forms.Button ReviveButtonLocationTestButton;
+        private System.Windows.Forms.CheckBox PassiveHumanoidCheckBox;
+        private System.Windows.Forms.Label PassiveHumanoidLabel;
     }
 }
 

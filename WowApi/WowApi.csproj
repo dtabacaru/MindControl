@@ -7,7 +7,7 @@
     <ProjectGuid>{222EAFC4-B29B-49F4-88AC-47FA9BBDCD14}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WowApi</RootNamespace>
+    <RootNamespace>ClassicWowNeuralParasite</RootNamespace>
     <AssemblyName>WowApi</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

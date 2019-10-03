@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{31EBE28B-9392-46FE-95A0-3960A24956E9}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>WowAutomaterUi</RootNamespace>
+    <RootNamespace>ClassicWowNeuralParasite</RootNamespace>
     <AssemblyName>WowAutomaterUi</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

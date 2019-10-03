@@ -39,7 +39,17 @@ namespace ClassicWowNeuralParasite
     {
         None = 0,
         BehindTarget = 1,
-        FacingWrongWay = 2
+        FacingWrongWay = 2,
+        Moving = 3
+    }
+
+    public enum BuffType
+    {
+        None = 0,
+        SealOfTheCrusader = 1,
+        MarkOfTheWild = 2,
+        Thorns = 4,
+        SealOfCommand = 8
     }
 
     public class PlayerData
@@ -82,10 +92,12 @@ namespace ClassicWowNeuralParasite
         public bool CanUseSkill = false;
         public bool IsWowForeground = false;
         public PlayerClass Class = PlayerClass.None;
-        public bool CastingSucceeded = false;
-        public bool CastingInterrupted = false;
+        public bool Casting = false;
+        public ushort Shape = 0;
         public double dt = 0;
         public double Time = 0;
+        public ushort Buffs = 0;
+        public bool MouseOverTarget = false;
 
         public override string ToString()
         {
@@ -129,8 +141,10 @@ namespace ClassicWowNeuralParasite
             output += "CanUseSkill: " + CanUseSkill.ToString() + "\r\n";
             output += "IsWowForeground: " + IsWowForeground.ToString() + "\r\n";
             output += "Class: " + Class.ToString() + "\r\n";
-            output += "Casting Succeeded: " + CastingSucceeded.ToString() + "\r\n";
-            output += "Casting Interrupted: " + CastingInterrupted.ToString() + "\r\n";
+            output += "Casting: " + Casting.ToString() + "\r\n";
+            output += "Shape: " + Shape.ToString() + "\r\n";
+            output += "Buffs: " + Buffs.ToString() + "\r\n";
+            output += "MouseOverTarget: " + MouseOverTarget.ToString() + "\r\n";
             output += "dt: " + dt.ToString() + "\r\n";
             output += "Time: " + Time.ToString() + "\r\n";
 
@@ -192,7 +206,7 @@ namespace ClassicWowNeuralParasite
         private static EventWaitHandle m_FindApiEventWait = new EventWaitHandle(false, EventResetMode.AutoReset);
         private static volatile bool m_FindingApi = false;
 
-        public delegate void UpdateEventHandler(object sender, WowApiUpdateEventArguments wea);
+        public delegate void UpdateEventHandler(object sender, EventArgs ea);
         public static event UpdateEventHandler UpdateEvent;
 
         [DllImport("user32.dll")]
@@ -201,17 +215,38 @@ namespace ClassicWowNeuralParasite
         [DllImport("user32.dll")]
         private static extern Int32 GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
 
+        private static PlayerData m_CurrentPlayerDataContainer = new PlayerData();
+        private static object m_CurrentPlayerDataLock = new object();
+
+        static WowApi()
+        {
+            Task.Run(() =>
+            {
+                Run();
+            });
+        }
+
+        public static PlayerData CurrentPlayerData
+        {
+            get { lock (m_CurrentPlayerDataLock) { return m_CurrentPlayerDataContainer; } }
+            set { lock (m_CurrentPlayerDataLock) { m_CurrentPlayerDataContainer = value; } }
+        }
+
+        public static EventWaitHandle Sync = new EventWaitHandle(false, EventResetMode.AutoReset);
+
         public static void Run()
         {
             Rectangle bounds;
-            PlayerData playerData = new PlayerData();
+            PlayerData parsedPlayerData = new PlayerData();
 
             long lastTicks = DateTime.Now.Ticks;
             DateTime startTime = DateTime.Now;
 
             while (true)
             {
-                UpdateEvent?.Invoke(null, new WowApiUpdateEventArguments(playerData));
+                CurrentPlayerData = parsedPlayerData;
+                UpdateEvent?.Invoke(null, null);
+                Sync.Set();
 
                 if (m_FindingApi)
                 {
@@ -227,7 +262,7 @@ namespace ClassicWowNeuralParasite
                         g.CopyFromScreen(new Point(m_ApiStartXLocation, m_ApiStartYLocation), Point.Empty, bounds.Size);
                     }
 
-                    playerData.Time = (DateTime.Now - startTime).TotalSeconds;
+                    parsedPlayerData.Time = (DateTime.Now - startTime).TotalSeconds;
 
                     //bitmap.Save("wowapi.png");
 
@@ -237,95 +272,95 @@ namespace ClassicWowNeuralParasite
                     bool found1 = find1Pixel.R == FIND1_PIXEL_R && find1Pixel.G == FIND1_PIXEL_G && find1Pixel.B == FIND1_PIXEL_B;
                     bool found2 = find2Pixel.R == FIND2_PIXEL_R && find2Pixel.G == FIND2_PIXEL_G && find2Pixel.B == FIND2_PIXEL_B;
 
-                    playerData.Found = found1 && found2;
+                    parsedPlayerData.Found = found1 && found2;
 
-                    playerData.IsWowForeground = GetForegroundProcessName().ToLower() == "wow";
+                    parsedPlayerData.IsWowForeground = GetForegroundProcessName().ToLower() == "wow";
 
-                    if (playerData.IsWowForeground && !playerData.Found)
+                    if (parsedPlayerData.IsWowForeground && !parsedPlayerData.Found)
                     {
                         FindApi();
                         continue;
                     }
 
                     long currentTicks = DateTime.Now.Ticks;
-                    playerData.dt = (double)(currentTicks - lastTicks) / TimeSpan.TicksPerSecond;
+                    parsedPlayerData.dt = (double)(currentTicks - lastTicks) / TimeSpan.TicksPerSecond;
 
                     lastTicks = currentTicks;
 
                     Color playerHeadingPixelR = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((3 * m_ApiYScale)));
                     Color playerHeadingPixelG = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((6 * m_ApiYScale)));
                     Color playerHeadingPixelB = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((9 * m_ApiYScale)));
-                    playerData.PlayerHeading = GetThreeByte3PixelValue(playerHeadingPixelR, playerHeadingPixelG, playerHeadingPixelB) * 2 * Math.PI;
+                    parsedPlayerData.PlayerHeading = GetThreeByte3PixelValue(playerHeadingPixelR, playerHeadingPixelG, playerHeadingPixelB) * 2 * Math.PI;
 
                     Color isInFarRangePixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((12 * m_ApiYScale)));
-                    playerData.IsInFarRange = isInFarRangePixel.R == PIXEL_SET ? true : false;
+                    parsedPlayerData.IsInFarRange = isInFarRangePixel.R == PIXEL_SET ? true : false;
 
                     Color isInMediumRangePixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((15 * m_ApiYScale)));
-                    playerData.IsInMediumRange = isInMediumRangePixel.R == PIXEL_SET ? true : false;
+                    parsedPlayerData.IsInMediumRange = isInMediumRangePixel.R == PIXEL_SET ? true : false;
 
                     Color isInCloseRangePixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((18 * m_ApiYScale)));
-                    playerData.IsInCloseRange = isInCloseRangePixel.R == PIXEL_SET ? true : false;
+                    parsedPlayerData.IsInCloseRange = isInCloseRangePixel.R == PIXEL_SET ? true : false;
 
                     Color maxPlayerHealthPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((21 * m_ApiYScale)));
-                    playerData.MaxPlayerHealth = GetTwoBytePixelValue(maxPlayerHealthPixel);
+                    parsedPlayerData.MaxPlayerHealth = GetTwoBytePixelValue(maxPlayerHealthPixel);
 
                     Color playerHealthPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((24 * m_ApiYScale)));
-                    playerData.PlayerHealth = GetTwoBytePixelValue(playerHealthPixel);
+                    parsedPlayerData.PlayerHealth = GetTwoBytePixelValue(playerHealthPixel);
 
-                    playerData.PlayerHealthPercentage = ((double)playerData.PlayerHealth / playerData.MaxPlayerHealth)*100;
+                    parsedPlayerData.PlayerHealthPercentage = ((double)parsedPlayerData.PlayerHealth / parsedPlayerData.MaxPlayerHealth)*100;
 
                     Color maxPlayerManaPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((27 * m_ApiYScale)));
-                    playerData.MaxPlayerMana = GetTwoBytePixelValue(maxPlayerManaPixel);
+                    parsedPlayerData.MaxPlayerMana = GetTwoBytePixelValue(maxPlayerManaPixel);
 
                     Color playerManaPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((30 * m_ApiYScale)));
-                    playerData.PlayerMana = GetTwoBytePixelValue(playerManaPixel);
+                    parsedPlayerData.PlayerMana = GetTwoBytePixelValue(playerManaPixel);
 
                     Color hasTargetPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((33 * m_ApiYScale)));
-                    playerData.PlayerHasTarget = hasTargetPixel.R == PIXEL_SET ? true : false;
+                    parsedPlayerData.PlayerHasTarget = hasTargetPixel.R == PIXEL_SET ? true : false;
 
                     Color targetHealthPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((36 * m_ApiYScale)));
-                    playerData.TargetHealth = GetTwoBytePixelValue(targetHealthPixel);
+                    parsedPlayerData.TargetHealth = GetTwoBytePixelValue(targetHealthPixel);
 
                     Color targetManaPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((39 * m_ApiYScale)));
-                    playerData.TargetMana = GetTwoBytePixelValue(targetManaPixel);
+                    parsedPlayerData.TargetMana = GetTwoBytePixelValue(targetManaPixel);
 
                     Color inCombatPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((42 * m_ApiYScale)));
-                    playerData.PlayerInCombat = inCombatPixel.R == PIXEL_SET ? true : false;
+                    parsedPlayerData.PlayerInCombat = inCombatPixel.R == PIXEL_SET ? true : false;
 
                     Color classPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((45 * m_ApiYScale)));
-                    playerData.Class = (PlayerClass)GetTwoBytePixelValue(classPixel);
+                    parsedPlayerData.Class = (PlayerClass)GetTwoBytePixelValue(classPixel);
 
-                    Color castingSucceededPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((54 * m_ApiYScale)));
-                    playerData.CastingSucceeded = castingSucceededPixel.R == PIXEL_SET ? true : false;
+                    Color castingPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((54 * m_ApiYScale)));
+                    parsedPlayerData.Casting = castingPixel.R == PIXEL_SET ? true : false;
 
                     Color spellCanAttackTargetPixel = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((0 * m_ApiYScale)));
-                    playerData.SpellCanAttackTarget = spellCanAttackTargetPixel.R == PIXEL_SET ? true : false;
+                    parsedPlayerData.SpellCanAttackTarget = spellCanAttackTargetPixel.R == PIXEL_SET ? true : false;
 
                     Color canAttackTargetPixel = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((3 * m_ApiYScale)));
-                    playerData.CanAttackTarget = canAttackTargetPixel.R == PIXEL_SET ? true : false;
+                    parsedPlayerData.CanAttackTarget = canAttackTargetPixel.R == PIXEL_SET ? true : false;
 
                     Color isDeadPixel = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((6 * m_ApiYScale)));
-                    playerData.IsTargetDead = isDeadPixel.R == PIXEL_SET ? true : false;
+                    parsedPlayerData.IsTargetDead = isDeadPixel.R == PIXEL_SET ? true : false;
 
                     Color isElitePixel = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((9 * m_ApiYScale)));
-                    playerData.IsTargetElite = isElitePixel.R == PIXEL_SET ? true : false;
+                    parsedPlayerData.IsTargetElite = isElitePixel.R == PIXEL_SET ? true : false;
 
                     Color reactionPixel = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((12 * m_ApiYScale)));
-                    playerData.Reaction = (TargetReaction)GetTwoBytePixelValue(reactionPixel);
+                    parsedPlayerData.Reaction = (TargetReaction)GetTwoBytePixelValue(reactionPixel);
 
                     Color targetLevelPixel = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((15 * m_ApiYScale)));
-                    playerData.TargetLevel = GetTwoBytePixelValue(targetLevelPixel);
+                    parsedPlayerData.TargetLevel = GetTwoBytePixelValue(targetLevelPixel);
 
                     Color playerLevelPixel = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((18 * m_ApiYScale)));
-                    playerData.PlayerLevel = GetTwoBytePixelValue(playerLevelPixel);
+                    parsedPlayerData.PlayerLevel = GetTwoBytePixelValue(playerLevelPixel);
 
                     Color isEnemyPixel = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((21 * m_ApiYScale)));
-                    playerData.IsTargetEnemy = isEnemyPixel.R == PIXEL_SET ? true : false;
+                    parsedPlayerData.IsTargetEnemy = isEnemyPixel.R == PIXEL_SET ? true : false;
 
                     Color isAlliancePixel = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((24 * m_ApiYScale)));
-                    playerData.IsTargetAlliance = isAlliancePixel.R == PIXEL_SET ? true : false;
+                    parsedPlayerData.IsTargetAlliance = isAlliancePixel.R == PIXEL_SET ? true : false;
 
-                    playerData.TargetName = string.Empty;
+                    parsedPlayerData.TargetName = string.Empty;
 
                     List<Color> targetNamePixels = new List<Color>();
                     targetNamePixels.Add(bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((27 * m_ApiYScale))));
@@ -333,9 +368,6 @@ namespace ClassicWowNeuralParasite
                     targetNamePixels.Add(bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((33 * m_ApiYScale))));
                     targetNamePixels.Add(bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((36 * m_ApiYScale))));
                     targetNamePixels.Add(bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((39 * m_ApiYScale))));
-
-                    Color castingInterruptedPixel = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((54 * m_ApiYScale)));
-                    playerData.CastingInterrupted = castingInterruptedPixel.R == PIXEL_SET ? true : false;
 
                     targetNamePixels.Add(bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((0 * m_ApiYScale))));
                     targetNamePixels.Add(bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((3 * m_ApiYScale))));
@@ -348,61 +380,70 @@ namespace ClassicWowNeuralParasite
                         if (targetNamePixels[i].R == 0)
                             break;
                         else
-                            playerData.TargetName += (char)targetNamePixels[i].R;
+                            parsedPlayerData.TargetName += (char)targetNamePixels[i].R;
 
                         if (targetNamePixels[i].G == 0)
                             break;
                         else
-                            playerData.TargetName += (char)targetNamePixels[i].G;
+                            parsedPlayerData.TargetName += (char)targetNamePixels[i].G;
 
                         if (targetNamePixels[i].B == 0)
                             break;
                         else
-                            playerData.TargetName += (char)targetNamePixels[i].B;
+                            parsedPlayerData.TargetName += (char)targetNamePixels[i].B;
                     }
 
+                    Color buffsPixel = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((45 * m_ApiYScale)));
+                    parsedPlayerData.Buffs = GetTwoBytePixelValue(buffsPixel);
+
+                    Color mouseOverPixel = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((54 * m_ApiYScale)));
+                    parsedPlayerData.MouseOverTarget = mouseOverPixel.R == PIXEL_SET ? true : false;
+
                     Color comboPointsPixel = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((15 * m_ApiYScale)));
-                    playerData.TargetComboPoints = GetTwoBytePixelValue(comboPointsPixel);
+                    parsedPlayerData.TargetComboPoints = GetTwoBytePixelValue(comboPointsPixel);
 
                     Color errorPixel = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((18 * m_ApiYScale)));
-                    playerData.PlayerActionError = (ActionError)GetTwoBytePixelValue(errorPixel);
+                    parsedPlayerData.PlayerActionError = (ActionError)GetTwoBytePixelValue(errorPixel);
 
                     Color attackingPixel = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((21 * m_ApiYScale)));
-                    playerData.PlayerIsAttacking = attackingPixel.R == PIXEL_SET ? true : false;
+                    parsedPlayerData.PlayerIsAttacking = attackingPixel.R == PIXEL_SET ? true : false;
 
                     Color ammoPixel = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((24 * m_ApiYScale)));
-                    playerData.AmmoCount = GetTwoBytePixelValue(ammoPixel);
+                    parsedPlayerData.AmmoCount = GetTwoBytePixelValue(ammoPixel);
 
                     Color targetIsPlayerPixel = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((27 * m_ApiYScale)));
-                    playerData.IsTargetPlayer = targetIsPlayerPixel.R == PIXEL_SET ? true : false;
+                    parsedPlayerData.IsTargetPlayer = targetIsPlayerPixel.R == PIXEL_SET ? true : false;
 
                     Color targetCombatPixel = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((30 * m_ApiYScale)));
-                    playerData.TargetInCombat = targetCombatPixel.R == PIXEL_SET ? true : false;
+                    parsedPlayerData.TargetInCombat = targetCombatPixel.R == PIXEL_SET ? true : false;
 
                     Color hordePixel = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((33 * m_ApiYScale)));
-                    playerData.IsTargetHorde = hordePixel.R == PIXEL_SET ? true : false;
+                    parsedPlayerData.IsTargetHorde = hordePixel.R == PIXEL_SET ? true : false;
 
                     Color deadPixel = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((36 * m_ApiYScale)));
-                    playerData.IsPlayerDead = deadPixel.R == PIXEL_SET ? true : false;
+                    parsedPlayerData.IsPlayerDead = deadPixel.R == PIXEL_SET ? true : false;
 
                     Color startPixel = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((39 * m_ApiYScale)));
 
-                    playerData.Start = (startPixel.R == 1 && startPixel.G == PIXEL_SET && startPixel.B == 2) ? true : false;
+                    parsedPlayerData.Start = (startPixel.R == 1 && startPixel.G == PIXEL_SET && startPixel.B == 2) ? true : false;
 
                     Color canUseSkillPixel = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((42 * m_ApiYScale)));
-                    playerData.CanUseSkill = canUseSkillPixel.R == PIXEL_SET ? true : false;
+                    parsedPlayerData.CanUseSkill = canUseSkillPixel.R == PIXEL_SET ? true : false;
 
                     Color xPositionR = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((48 * m_ApiYScale)));
                     Color xPositionG = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((48 * m_ApiYScale)));
                     Color xPositionB = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((48 * m_ApiYScale)));
 
-                    playerData.PlayerXPosition = GetThreeByte3PixelValue(xPositionR, xPositionG, xPositionB) * 100;
+                    parsedPlayerData.PlayerXPosition = GetThreeByte3PixelValue(xPositionR, xPositionG, xPositionB) * 100;
 
                     Color yPositionR = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((51 * m_ApiYScale)));
                     Color yPositionG = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((51 * m_ApiYScale)));
                     Color yPositionB = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((51 * m_ApiYScale)));
 
-                    playerData.PlayerYPosition = GetThreeByte3PixelValue(yPositionR, yPositionG, yPositionB) * 100;
+                    parsedPlayerData.PlayerYPosition = GetThreeByte3PixelValue(yPositionR, yPositionG, yPositionB) * 100;
+
+                    Color shapePixel = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((54 * m_ApiYScale)));
+                    parsedPlayerData.Shape = GetTwoBytePixelValue(shapePixel);
                 }
 
             }

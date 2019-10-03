@@ -13,11 +13,51 @@ local castInterruptedLastUpdate = 0;
 local castInterruptedStart = false;
 local startedAutomater = false;
 local showDebug = false;
+local isCasting = false;
+local keyBindSet = false;
 
 -- Helper functions
 
 local function RightBitShift(a, b)
 	return math.floor(a/(2^b));
+end
+
+local function BitwiseOR(a,b)
+    local p = 1;
+	local c = 0;
+	
+    while a + b > 0 do
+        local ra = mod(a,2);
+		local rb = mod(b,2);
+		
+        if ra + rb > 0 then
+			c = c + p;
+		end
+		
+        a = (a - ra)/2;
+		b = (b - rb)/2;
+		p = p * 2;
+    end
+	
+    return c
+end
+
+local function BitwiseNOT(n)
+    local p = 1;
+	local c = 0;
+    
+	while n > 0 do
+        local r = mod(n,2);
+		
+        if r < 1 then
+			c = c + p;
+		end
+        
+		n = (n-r)/2;
+		p = p * 2;
+    end
+	
+    return c
 end
 
 local function BitwiseAND(a,b)
@@ -29,12 +69,12 @@ local function BitwiseAND(a,b)
 		local rb = mod(b,2);
         
 		if ra + rb > 1 then 
-			c = c+p;
+			c = c + p;
 		end
         
 		a = (a - ra)/2;
 		b = (b - rb)/2;
-		p = p*2;
+		p = p * 2;
     end
     
 	return c;
@@ -110,11 +150,12 @@ end
 
 -- UI Events
 
-function DataFrame_OnLoad()
-	-- Necessary for some raisin
-end
-
 function DataFrame_OnUpdate()
+
+	if keyBindSet == false then
+		SetBindingClick("SHIFT-T", StartStopButton:GetName());
+		keyBindSet = true;
+	end
 
 	local debugString = ""
 
@@ -226,39 +267,6 @@ function DataFrame_OnUpdate()
 		debugString = debugString .. "In Combat: False" .. "\n";
 	end
 	
-	localizedClass, englishClass = UnitClass("player");
-	
-	local classIndex = 0;
-	
-	if (localizedClass == "Warrior") then
-		debugString = debugString .. CheckCanUseSkill("Heroic Strike", debugString);
-		classIndex = 1;
-	elseif (localizedClass == "Paladin") then
-		classIndex = 2;
-	elseif (localizedClass == "Rogue") then
-		debugString = debugString .. CheckCanUseSkill("Sinister Strike", debugString);
-		classIndex = 3;
-	elseif (localizedClass == "Priest") then
-		debugString = debugString .. CheckCanUseSkill("Smite", debugString);
-		classIndex = 4;
-	elseif (localizedClass == "Mage") then
-		classIndex = 5;
-	elseif (localizedClass == "Warlock") then
-		classIndex = 6;
-	elseif (localizedClass == "Hunter") then
-		classIndex = 7;
-	elseif (localizedClass == "Shaman") then
-		classIndex = 8;
-	elseif (localizedClass == "Druid") then
-		debugString = debugString .. CheckCanUseSkill("Wrath", debugString);
-		classIndex = 9;
-	else
-		classIndex = 0;
-	end
-	
-	debugString = debugString .. "Class: " .. classIndex .. "\n";
-	Set2BytePixelValue(classIndex,ClassPixel);
-	
 	if SpellCanTargetUnit("target") then
 		SpellCanAttackTargetPixel:SetColorTexture(1, 1, 1, 1);
 		debugString = debugString .. "Can Spell Attack: True" .. "\n";
@@ -360,7 +368,7 @@ function DataFrame_OnUpdate()
 		debugString = debugString .. "Target Combat: False" .. "\n";
 	end	
 	
-		if UnitFactionGroup("target") == "Horde" then
+	if UnitFactionGroup("target") == "Horde" then
 		HordePixel:SetColorTexture(1, 1, 1, 1);
 		debugString = debugString .. "Horde: True" .. "\n";
 	else
@@ -466,28 +474,92 @@ function DataFrame_OnUpdate()
 		errorLastUpdate = errorLastUpdate + 1;
 	end
 	
-	if castStart == true then
+	local shapeShiftForm = GetShapeshiftForm(true);
+
+	Set2BytePixelValue(shapeShiftForm, ShapeShiftPixel);
+
+	debugString = debugString .. "Shape: " .. shapeShiftForm .. "\n";
+
+	localizedClass, englishClass = UnitClass("player");
 	
-		if castLastUpdate == 4 then
-			castLastUpdate = 0;
-			CastSucceededPixel:SetColorTexture(0, 0, 0, 1);
-			castStart = false;
+	local classIndex = 0;
+	
+	if (localizedClass == "Warrior") then
+		debugString = debugString .. CheckCanUseSkill("Heroic Strike", debugString);
+		classIndex = 1;
+	elseif (localizedClass == "Paladin") then
+		debugString = debugString .. CheckCanUseSkill("Seal of the Crusader", debugString);
+		classIndex = 2;
+	elseif (localizedClass == "Rogue") then
+		debugString = debugString .. CheckCanUseSkill("Sinister Strike", debugString);
+		classIndex = 3;
+	elseif (localizedClass == "Priest") then
+		debugString = debugString .. CheckCanUseSkill("Smite", debugString);
+		classIndex = 4;
+	elseif (localizedClass == "Mage") then
+		classIndex = 5;
+	elseif (localizedClass == "Warlock") then
+		classIndex = 6;
+	elseif (localizedClass == "Hunter") then
+		classIndex = 7;
+	elseif (localizedClass == "Shaman") then
+		classIndex = 8;
+	elseif (localizedClass == "Druid") then
+		
+		if shapeShiftForm == 0 then
+			debugString = debugString .. CheckCanUseSkill("Wrath", debugString);
+		elseif shapeShiftForm == 1 then
+			debugString = debugString .. CheckCanUseSkill("Growl", debugString);
+		elseif shapeShiftForm == 2 then
+			debugString = debugString .. CheckCanUseSkill("Claw", debugString);
+		elseif shapeShiftForm == 3 then
+			debugString = debugString .. CheckCanUseSkill("Claw", debugString);
 		end
-	
-		castLastUpdate = castLastUpdate + 1;
+		
+		classIndex = 9;
+	else
+		classIndex = 0;
 	end
 	
-	if castInterruptedStart == true then
-	
-		if castInterruptedLastUpdate == 4 then
-			castInterruptedLastUpdate = 0;
-			CastInterruptedPixel:SetColorTexture(0, 0, 0, 1);
-			castInterruptedStart = false;
-		end
-	
-		castInterruptedLastUpdate = castInterruptedLastUpdate + 1;
+	debugString = debugString .. "Class: " .. classIndex .. "\n";
+	Set2BytePixelValue(classIndex,ClassPixel);
+
+	if isCasting == true then
+		CastingPixel:SetColorTexture(1, 1, 1, 1);
+		debugString = debugString .. " Casting: true\n";
+	else
+		CastingPixel:SetColorTexture(0, 0, 0, 1);
+		debugString = debugString .. " Casting: false\n";
+	end
+
+	if UnitName("mouseover") == nil then
+		MouseOverPixel:SetColorTexture(0, 0, 0, 1);
+		debugString = debugString .. "Mouseover: false\n";
+	else
+		MouseOverPixel:SetColorTexture(1, 1, 1, 1);
+		debugString = debugString .. "Mouseover: true\n";
 	end
 	
+	local buffPixelValue = 0;
+	for i=1,40 do
+	  local name = UnitBuff("player",i)
+	  
+	  if name == "Seal of the Crusader" then
+		buffPixelValue = BitwiseOR(buffPixelValue, 1)
+	  elseif name == "Mark of the Wild" then
+		buffPixelValue = BitwiseOR(buffPixelValue, 2)
+	  elseif name == "Thorns" then
+		buffPixelValue = BitwiseOR(buffPixelValue, 4)
+	  elseif name == "Seal of Command" then
+		buffPixelValue = BitwiseOR(buffPixelValue, 8)
+	  end
+	  
+	end
+	
+	Set2BytePixelValue(buffPixelValue,BuffsPixel);
+	
+	debugString = debugString .. "Buffs: " .. buffPixelValue .."\n";
+
 	SetDebugText(DebugText,debugString);
 end
 
@@ -511,6 +583,10 @@ function ShowHideButton_OnClick()
 	showDebug = not showDebug;
 end
 
+function DataFrame_OnLoad()
+	
+end
+
 -- Error frame event
 
 local errorFrame = CreateFrame('Frame');
@@ -520,30 +596,31 @@ errorFrame:SetScript('OnEvent', function(self, event, arg1, arg2)
 	if arg2 == "Target needs to be in front of you" then
 		Set2BytePixelValue(1,ErrorPixel);
 		errorStart = true;
-		CastInterruptedPixel:SetColorTexture(1, 1, 1, 1);
-		castInterruptedStart = true;
 	end
 	
 	if arg2 == "You are facing the wrong way!" then
 		Set2BytePixelValue(2,ErrorPixel);
 		errorStart = true;
 	end
+	
 end)
 
--- Spell Succeeded frame event
+-- Spell cast event
 
-local castFrame = CreateFrame('Frame');
-castFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
-castFrame:SetScript('OnEvent', function(self, event)
-	CastSucceededPixel:SetColorTexture(1, 1, 1, 1);
-    castStart = true;
+local castStartFrame = CreateFrame('Frame');
+castStartFrame:RegisterEvent("UNIT_SPELLCAST_START")
+castStartFrame:SetScript('OnEvent', function(self, event, arg1)
+	if arg1 == "player" then
+		isCasting = true;
+	end
 end)
 
--- Spell Interrupted frame event
+-- Spell stop cast event
 
-local castFrame = CreateFrame('Frame');
-castFrame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
-castFrame:SetScript('OnEvent', function(self, event)
-	CastInterruptedPixel:SetColorTexture(1, 1, 1, 1);
-    castInterruptedStart = true;
+local castStopFrame = CreateFrame('Frame');
+castStopFrame:RegisterEvent("UNIT_SPELLCAST_STOP")
+castStopFrame:SetScript('OnEvent', function(self, event, arg1)
+	if arg1 == "player" then
+		isCasting = false;
+	end
 end)

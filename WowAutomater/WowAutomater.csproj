@@ -7,7 +7,7 @@
     <ProjectGuid>{B249AF88-91D7-4560-8215-385B41E76F0A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WowAutomater</RootNamespace>
+    <RootNamespace>ClassicWowNeuralParasite</RootNamespace>
     <AssemblyName>WowAutomater</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -41,8 +41,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Action.cs" />
+    <Compile Include="BuffSpell.cs" />
+    <Compile Include="FinishingSpell.cs" />
+    <Compile Include="Helper.cs" />
+    <Compile Include="Input.cs" />
+    <Compile Include="RecordWowPath.cs" />
+    <Compile Include="SealSpell.cs" />
+    <Compile Include="Spell.cs" />
+    <Compile Include="WaypointFollower.cs" />
     <Compile Include="WowAutomater.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WowClasses\Druid.cs" />
+    <Compile Include="WowClasses\Hunter.cs" />
+    <Compile Include="WowClasses\Mage.cs" />
+    <Compile Include="WowClasses\Paladin.cs" />
+    <Compile Include="WowClasses\Priest.cs" />
+    <Compile Include="WowClasses\Rogue.cs" />
+    <Compile Include="WowClasses\Shaman.cs" />
+    <Compile Include="WowClasses\Warlock.cs" />
+    <Compile Include="WowClasses\Warrior.cs" />
+    <Compile Include="WowClasses\WowClass.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WindowsInput\WindowsInput.csproj">

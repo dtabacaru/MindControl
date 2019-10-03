@@ -4,16 +4,13 @@ using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using ClassicWowNeuralParasite;
 using WindowsInput;
 
-namespace WowAutomaterUi
+namespace ClassicWowNeuralParasite
 {
     public partial class MainUI : Form
     {
-        private WowAutomater m_Automater = new WowAutomater();
-        private PlayerData m_PlayerData = new PlayerData();
-        private string m_AutomaterStatusString = string.Empty;
+        private string WowAutomaterStatusString = string.Empty;
         private Timer m_ApiDataUpdateTimer = new Timer();
         private bool m_InfoSHown = false;
         private bool m_Recording = false;
@@ -48,8 +45,8 @@ namespace WowAutomaterUi
 
             ReadPaths();
 
-            m_Automater.RecordPathEvent += Automater_RecordPathEvent;
-            m_Automater.StopEvent += Automater_StopEvent;
+            RecordWowPath.RecordPathEvent += Automater_RecordPathEvent;
+            RecordWowPath.StopEvent += Automater_StopEvent;
 
             PathTypeDropDown.SelectedIndex = 0;
 
@@ -58,14 +55,13 @@ namespace WowAutomaterUi
             m_ApiDataUpdateTimer.Tick += ApiDataUpdateTimer_Tick;
             m_ApiDataUpdateTimer.Enabled = true;
 
-            m_Automater.AutomaterStatusEvent += AutomaterStatusEvent;
-            WowApi.UpdateEvent += ApiEvent;
+            WowAutomater.AutomaterStatusEvent += AutomaterStatusEvent;
 
             Task.Run(() =>
             {
                 try
                 {
-                    m_Automater.Run();
+                    WowAutomater.Run();
                 }
                 catch (Exception err)
                 {
@@ -112,27 +108,27 @@ namespace WowAutomaterUi
             string allpaths = File.ReadAllText("targetpath.txt");
             string[] paths = allpaths.Split(';');
 
-            m_Automater.SetPathCoordinates(Program.ExtractCommaDelimitedDoubles(paths[0]),
+            WowAutomater.SetPathCoordinates(Program.ExtractCommaDelimitedDoubles(paths[0]),
                                      Program.ExtractCommaDelimitedDoubles(paths[1]));
 
 
             allpaths = File.ReadAllText("revivepath.txt");
             paths = allpaths.Split(';');
 
-            m_Automater.SetReviveCoordinates(Program.ExtractCommaDelimitedDoubles(paths[0]),
+            WowAutomater.SetReviveCoordinates(Program.ExtractCommaDelimitedDoubles(paths[0]),
                                      Program.ExtractCommaDelimitedDoubles(paths[1]));
 
 
             allpaths = File.ReadAllText("shoppath.txt");
             paths = allpaths.Split(';');
 
-            m_Automater.SetShopCoordinates(Program.ExtractCommaDelimitedDoubles(paths[0]),
+            WowAutomater.SetShopCoordinates(Program.ExtractCommaDelimitedDoubles(paths[0]),
                                      Program.ExtractCommaDelimitedDoubles(paths[1]));
 
             allpaths = File.ReadAllText("walkpath.txt");
             paths = allpaths.Split(';');
 
-            m_Automater.SetWalkCoordinates(Program.ExtractCommaDelimitedDoubles(paths[0]),
+            WowAutomater.SetWalkCoordinates(Program.ExtractCommaDelimitedDoubles(paths[0]),
                                      Program.ExtractCommaDelimitedDoubles(paths[1]));
 
         }
@@ -145,10 +141,10 @@ namespace WowAutomaterUi
                 return;
             }
 
-            DataTextBox.Text = m_PlayerData.ToString();
-            StatusLabel.Text = m_AutomaterStatusString;
+            DataTextBox.Text = WowApi.CurrentPlayerData.ToString();
+            StatusLabel.Text = WowAutomaterStatusString;
 
-            if (m_PlayerData.Found)
+            if (WowApi.CurrentPlayerData.Found)
             {
                 RecordButton.Enabled = true;
                 InfoTab.BackColor = m_GreenColor;
@@ -160,7 +156,7 @@ namespace WowAutomaterUi
             }
         }
 
-        private void AutomaterStatusEvent(object sender, AutomaterStatusEventArgs e)
+        private void AutomaterStatusEvent(object sender, AutomaterActionEventArgs e)
         {
             if (InvokeRequired)
             {
@@ -168,7 +164,7 @@ namespace WowAutomaterUi
                 return;
             }
 
-            m_AutomaterStatusString = e.Status;
+            WowAutomaterStatusString = e.CurrentAction.ToString();
         }
 
         private void InvokeWithoutDisposedException(Delegate method)
@@ -184,29 +180,18 @@ namespace WowAutomaterUi
             
         }
 
-        private void ApiEvent(object sender, WowApiUpdateEventArguments e)
-        {
-            if (InvokeRequired)
-            {
-                InvokeWithoutDisposedException(new MethodInvoker(() => { ApiEvent(sender, e); }));
-                return;
-            }
-
-            m_PlayerData = e.PlayerData;
-        }
-
         private void ModeDropDown_SelectedIndexChanged(object sender, EventArgs e)
         {
             switch(ModeDropDown.SelectedIndex)
             {
                 case 0:
-                    m_Automater.CurrentActionMode = ActionMode.FindTarget;
+                    WowAutomater.CurrentActionMode = ActionMode.FindTarget;
                     break;
                 case 1:
-                    m_Automater.CurrentActionMode = ActionMode.AutoAttack;
+                    WowAutomater.CurrentActionMode = ActionMode.AutoAttack;
                     break;
                 case 2:
-                    m_Automater.CurrentActionMode = ActionMode.AutoWalk;
+                    WowAutomater.CurrentActionMode = ActionMode.AutoWalk;
                     break;
             }
         }
@@ -276,7 +261,7 @@ namespace WowAutomaterUi
         {
             if (m_Recording)
             {
-                m_Automater.StopRecordingPath();
+                RecordWowPath.StopRecordingPath();
             }
             else
             {
@@ -296,7 +281,7 @@ namespace WowAutomaterUi
                 {
                     try
                     {
-                        m_Automater.RecordPath();
+                        RecordWowPath.RecordPath();
                     }
                     catch (Exception err)
                     {
@@ -343,83 +328,81 @@ namespace WowAutomaterUi
             }
         }
 
-        private void StealthlevelNumericInput_ValueChanged(object sender, EventArgs e)
+        private void StealthLevelNumericInput_ValueChanged(object sender, EventArgs e)
         {
-            m_Automater.StealthLevel = (int)Math.Round(StealthLevelNumericInput.Value);
+            WowAutomater.Rogue.StealthLevel = (int)Math.Round(StealthLevelNumericInput.Value);
         }
 
         private void TurnToleranceNumericInput_ValueChanged(object sender, EventArgs e)
         {
-            m_Automater.TurnToleranceRad = (double)TurnToleranceNumericInput.Value;
+            WaypointFollower.TurnToleranceRad = (double)TurnToleranceNumericInput.Value;
         }
 
         private void OptionTabs_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (m_Recording)
             {
-                m_Automater.StopRecordingPath();
+                RecordWowPath.StopRecordingPath();
             }
 
             // OptionTabs.SelectedIndex == 3 "Classes" tab
             if (OptionTabs.SelectedIndex == 3 && 
-                m_PlayerData.Class > PlayerClass.None && 
-                m_PlayerData.Class <= PlayerClass.LastPlayerClass)
+                WowApi.CurrentPlayerData.Class > PlayerClass.None && 
+                WowApi.CurrentPlayerData.Class <= PlayerClass.LastPlayerClass)
             {
-                ClassTabs.SelectedIndex = (int)m_PlayerData.Class - 1;
+                ClassTabs.SelectedIndex = (int)WowApi.CurrentPlayerData.Class - 1;
             }
         }
 
         private void StaleStealthNumericInput_ValueChanged(object sender, EventArgs e)
         {
-            m_Automater.StaleStealthTimer.Interval = (double)(StaleStealthNumericInput.Value * 1000);
+            WowAutomater.Rogue.StaleStealthTimer.Interval = (double)(StaleStealthNumericInput.Value * 1000);
         }
 
         private void RegisterDelayNumericInput_ValueChanged(object sender, EventArgs e)
         {
-            m_Automater.RegisterDelay = (double)RegisterDelayNumericInput.Value;
+            WowAutomater.RegisterDelay = (double)RegisterDelayNumericInput.Value;
         }
 
         private void SplitDistanceNumericInput_ValueChanged(object sender, EventArgs e)
         {
-            m_Automater.SplitDistance = (double)SplitDistanceNumericInput.Value;
+            RecordWowPath.SplitDistance = (double)SplitDistanceNumericInput.Value;
         }
 
         private void SliceNDiceCPNumericInput_ValueChanged(object sender, EventArgs e)
         {
-            m_Automater.SliceAndDiceComboPoints = (int)SliceNDiceCPNumericInput.Value ;
+            WowAutomater.Rogue.SliceAndDice.ComboPointsCost = (ushort)SliceNDiceCPNumericInput.Value ;
         }
 
-        private void numericUpDown2_ValueChanged(object sender, EventArgs e)
+        private void RuptureCPNumericInput_ValueChanged(object sender, EventArgs e)
         {
-            m_Automater.RuptureComboPoints = (int)RuptureCPNumericInput.Value;
+            WowAutomater.Rogue.Rupture.ComboPointsCost = (ushort)RuptureCPNumericInput.Value;
         }
 
         private void EvisceratePercentageNumericInput_ValueChanged(object sender, EventArgs e)
         {
-            m_Automater.EvisceratePercentage = (int)EvisceratePercentageNumericInput.Value;
+            WowAutomater.Rogue.Eviscerate.TargetHealthPercentage = (ushort)EvisceratePercentageNumericInput.Value;
         }
 
         private void ClosestPointDistanceNumericInput_ValueChanged(object sender, EventArgs e)
         {
-            m_Automater.ClosestPointDistance = (double)ClosestPointDistanceNumericInput.Value;
+            WaypointFollower.ClosestPointDistance = (double)ClosestPointDistanceNumericInput.Value;
         }
 
         private void MainUI_FormClosing(object sender, FormClosingEventArgs e)
         {
-            WowApi.UpdateEvent -= ApiEvent;
-
-            m_Automater.RecordPathEvent -= Automater_RecordPathEvent;
-            m_Automater.StopEvent -= Automater_StopEvent;
+            RecordWowPath.RecordPathEvent -= Automater_RecordPathEvent;
+            RecordWowPath.StopEvent -= Automater_StopEvent;
             m_ApiDataUpdateTimer.Enabled = false;
             m_ApiDataUpdateTimer.Tick -= ApiDataUpdateTimer_Tick;
-            m_Automater.AutomaterStatusEvent -= AutomaterStatusEvent;
+            WowAutomater.AutomaterStatusEvent -= AutomaterStatusEvent;
 
-            m_Automater.Stop();
+            WowAutomater.Stop();
         }
 
         private void SkinLootCheckbox_CheckedChanged(object sender, EventArgs e)
         {
-            m_Automater.SkinLoot = SkinLootCheckbox.Checked;
+            WowAutomater.SkinLoot = SkinLootCheckbox.Checked;
         }
 
         private void ReversePathButton_Click(object sender, EventArgs e)
@@ -449,7 +432,7 @@ namespace WowAutomaterUi
 
         private void AlwaysThrowCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            m_Automater.ThrowWeapon = AlwaysThrowCheckBox.Checked;
+            WowAutomater.Rogue.ThrowWeapon = AlwaysThrowCheckBox.Checked;
 
             if (AlwaysThrowCheckBox.Checked)
             {
@@ -463,7 +446,7 @@ namespace WowAutomaterUi
 
         private void StealthCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            m_Automater.Stealth = StealthCheckBox.Checked;
+            WowAutomater.Rogue.Stealth = StealthCheckBox.Checked;
 
             if (StealthCheckBox.Checked)
             {
@@ -477,28 +460,33 @@ namespace WowAutomaterUi
 
         private void StealthCooldownNumericInput_ValueChanged(object sender, EventArgs e)
         {
-            m_Automater.StealthTimer.Interval = (double)(StealthCooldownNumericInput.Value * 1000);
+            WowAutomater.Rogue.StealthTimer.Interval = (double)(StealthCooldownNumericInput.Value * 1000);
         }
 
         private void EvasionPercentaceNumericInput_ValueChanged(object sender, EventArgs e)
         {
-            m_Automater.EvasionPercentage = (int)EvasionPercentaceNumericInput.Value;
+            WowAutomater.Rogue.Evasion.PlayerHealthPercentage = (int)EvasionPercentaceNumericInput.Value;
         }
 
         private void XReviveButtonLocationNumericInput_ValueChanged(object sender, EventArgs e)
         {
-            m_Automater.XReviveButtonLocation = (double)XReviveButtonLocationNumericInput.Value * 100;
+            WowAutomater.XReviveButtonLocation = (double)XReviveButtonLocationNumericInput.Value * 100;
         }
 
         private void YReviveButtonLocationNumericInput_ValueChanged(object sender, EventArgs e)
         {
-            m_Automater.YReviveButtonLocation = (double)YReviveButtonLocationNumericInput.Value * 100;
+            WowAutomater.YReviveButtonLocation = (double)YReviveButtonLocationNumericInput.Value * 100;
         }
 
         private void ReviveButtonLocationTestButton_Click(object sender, EventArgs e)
         {
             m_InputSimulator.Mouse.MoveMouseTo((double)XReviveButtonLocationNumericInput.Value * 100,
                                                (double)YReviveButtonLocationNumericInput.Value * 100);
+        }
+
+        private void PassiveHumanoidCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            WowAutomater.Druid.Passive = PassiveHumanoidCheckBox.Checked;
         }
     }
 }

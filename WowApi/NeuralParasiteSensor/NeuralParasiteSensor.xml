@@ -315,7 +315,7 @@
               </Anchors>
               <Color r="0" g="0" b="0"/>
             </Texture>
-            <Texture name="CastSucceededPixel">
+            <Texture name="CastingPixel">
               <Size>
                 <AbsDimension x="3" y="3"/>
               </Size>
@@ -536,7 +536,7 @@
               </Anchors>
               <Color r="0" g="0" b="0"/>
             </Texture>
-            <Texture name="Reserved1">
+            <Texture name="BuffsPixel">
               <Size>
                 <AbsDimension x="3" y="3"/>
               </Size>
@@ -575,7 +575,7 @@
               </Anchors>
               <Color r="0" g="0" b="0"/>
             </Texture>
-            <Texture name="CastInterruptedPixel">
+            <Texture name="MouseOverPixel">
               <Size>
                 <AbsDimension x="3" y="3"/>
               </Size>
@@ -817,6 +817,19 @@
                 <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="6" y="-51"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="0" g="0" b="0"/>
+            </Texture>
+            <Texture name="ShapeShiftPixel">
+              <Size>
+                <AbsDimension x="3" y="3"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="6" y="-54"/>
                   </Offset>
                 </Anchor>
               </Anchors>
