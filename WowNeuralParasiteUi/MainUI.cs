@@ -432,30 +432,12 @@ namespace ClassicWowNeuralParasite
 
         private void AlwaysThrowCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            WowAutomater.Rogue.ThrowWeapon = AlwaysThrowCheckBox.Checked;
-
-            if (AlwaysThrowCheckBox.Checked)
-            {
-                StealthCheckBox.Checked = false;
-                StealthLevelNumericInput.Enabled = false;
-                StaleStealthNumericInput.Enabled = false;
-                StealthCooldownNumericInput.Enabled = false;
-            }
-                
+            WowAutomater.Rogue.ThrowFlag = AlwaysThrowCheckBox.Checked;
         }
 
         private void StealthCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            WowAutomater.Rogue.Stealth = StealthCheckBox.Checked;
-
-            if (StealthCheckBox.Checked)
-            {
-                AlwaysThrowCheckBox.Checked = false;
-                StealthLevelNumericInput.Enabled = true;
-                StaleStealthNumericInput.Enabled = true;
-                StealthCooldownNumericInput.Enabled = true;
-            }
-
+            WowAutomater.Rogue.StealthFlag = StealthCheckBox.Checked;
         }
 
         private void StealthCooldownNumericInput_ValueChanged(object sender, EventArgs e)

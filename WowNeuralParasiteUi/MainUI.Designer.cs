@@ -47,6 +47,8 @@
             this.XTextBox = new System.Windows.Forms.TextBox();
             this.XLabel = new System.Windows.Forms.Label();
             this.AutomaterTab = new System.Windows.Forms.TabPage();
+            this.RegenerateVitalsLabel = new System.Windows.Forms.Label();
+            this.RegenerateVitalsNumericInput = new System.Windows.Forms.NumericUpDown();
             this.ReviveButtonLocationTestButton = new System.Windows.Forms.Button();
             this.YReviveButtonLocationLabel = new System.Windows.Forms.Label();
             this.YReviveButtonLocationNumericInput = new System.Windows.Forms.NumericUpDown();
@@ -95,13 +97,12 @@
             this.PassiveHumanoidLabel = new System.Windows.Forms.Label();
             this.ShowInfoButton = new System.Windows.Forms.Button();
             this.StatusLabel = new System.Windows.Forms.Label();
-            this.RegenerateVitalsLabel = new System.Windows.Forms.Label();
-            this.RegenerateVitalsNumericInput = new System.Windows.Forms.NumericUpDown();
             this.OptionTabs.SuspendLayout();
             this.InfoTab.SuspendLayout();
             this.PathsTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SplitDistanceNumericInput)).BeginInit();
             this.AutomaterTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.RegenerateVitalsNumericInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.YReviveButtonLocationNumericInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.XReviveButtonLocationNumericInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ClosestPointDistanceNumericInput)).BeginInit();
@@ -119,7 +120,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.StaleStealthNumericInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.StealthLevelNumericInput)).BeginInit();
             this.DruidTab.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.RegenerateVitalsNumericInput)).BeginInit();
             this.SuspendLayout();
             // 
             // ModeDropDown
@@ -359,6 +359,33 @@
             this.AutomaterTab.TabIndex = 2;
             this.AutomaterTab.Text = "Automater";
             this.AutomaterTab.UseVisualStyleBackColor = true;
+            // 
+            // RegenerateVitalsLabel
+            // 
+            this.RegenerateVitalsLabel.AutoSize = true;
+            this.RegenerateVitalsLabel.Location = new System.Drawing.Point(3, 216);
+            this.RegenerateVitalsLabel.Name = "RegenerateVitalsLabel";
+            this.RegenerateVitalsLabel.Size = new System.Drawing.Size(108, 13);
+            this.RegenerateVitalsLabel.TabIndex = 19;
+            this.RegenerateVitalsLabel.Text = "Regenerate Health %";
+            // 
+            // RegenerateVitalsNumericInput
+            // 
+            this.RegenerateVitalsNumericInput.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.RegenerateVitalsNumericInput.Location = new System.Drawing.Point(154, 214);
+            this.RegenerateVitalsNumericInput.Name = "RegenerateVitalsNumericInput";
+            this.RegenerateVitalsNumericInput.Size = new System.Drawing.Size(54, 20);
+            this.RegenerateVitalsNumericInput.TabIndex = 18;
+            this.RegenerateVitalsNumericInput.Value = new decimal(new int[] {
+            60,
+            0,
+            0,
+            0});
+            this.RegenerateVitalsNumericInput.ValueChanged += new System.EventHandler(this.RegenerateVitalsNumericInput_ValueChanged);
             // 
             // ReviveButtonLocationTestButton
             // 
@@ -851,11 +878,6 @@
             // StaleStealthNumericInput
             // 
             this.StaleStealthNumericInput.Location = new System.Drawing.Point(146, 83);
-            this.StaleStealthNumericInput.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
             this.StaleStealthNumericInput.Minimum = new decimal(new int[] {
             1,
             0,
@@ -1014,38 +1036,11 @@
             this.StatusLabel.Size = new System.Drawing.Size(0, 24);
             this.StatusLabel.TabIndex = 38;
             // 
-            // RegenerateVitalsLabel
-            // 
-            this.RegenerateVitalsLabel.AutoSize = true;
-            this.RegenerateVitalsLabel.Location = new System.Drawing.Point(3, 216);
-            this.RegenerateVitalsLabel.Name = "RegenerateVitalsLabel";
-            this.RegenerateVitalsLabel.Size = new System.Drawing.Size(108, 13);
-            this.RegenerateVitalsLabel.TabIndex = 19;
-            this.RegenerateVitalsLabel.Text = "Regenerate Health %";
-            // 
-            // RegenerateVitalsNumericInput
-            // 
-            this.RegenerateVitalsNumericInput.Increment = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.RegenerateVitalsNumericInput.Location = new System.Drawing.Point(154, 214);
-            this.RegenerateVitalsNumericInput.Name = "RegenerateVitalsNumericInput";
-            this.RegenerateVitalsNumericInput.Size = new System.Drawing.Size(54, 20);
-            this.RegenerateVitalsNumericInput.TabIndex = 18;
-            this.RegenerateVitalsNumericInput.Value = new decimal(new int[] {
-            60,
-            0,
-            0,
-            0});
-            this.RegenerateVitalsNumericInput.ValueChanged += new System.EventHandler(this.RegenerateVitalsNumericInput_ValueChanged);
-            // 
             // MainUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(220, 61);
+            this.ClientSize = new System.Drawing.Size(220, 961);
             this.Controls.Add(this.StatusLabel);
             this.Controls.Add(this.OptionTabs);
             this.Controls.Add(this.ShowInfoButton);
@@ -1064,6 +1059,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.SplitDistanceNumericInput)).EndInit();
             this.AutomaterTab.ResumeLayout(false);
             this.AutomaterTab.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.RegenerateVitalsNumericInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.YReviveButtonLocationNumericInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.XReviveButtonLocationNumericInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ClosestPointDistanceNumericInput)).EndInit();
@@ -1083,7 +1079,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.StealthLevelNumericInput)).EndInit();
             this.DruidTab.ResumeLayout(false);
             this.DruidTab.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.RegenerateVitalsNumericInput)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

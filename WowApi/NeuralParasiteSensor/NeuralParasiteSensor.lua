@@ -554,6 +554,8 @@ function DataFrame_OnUpdate()
 		buffPixelValue = BitwiseOR(buffPixelValue, 8)
 	  elseif name == "Blessing of Wisdom" then
 		buffPixelValue = BitwiseOR(buffPixelValue, 16)
+	  elseif name == "Stealth" then
+		buffPixelValue = BitwiseOR(buffPixelValue, 32)
 	  end
 	  
 	end

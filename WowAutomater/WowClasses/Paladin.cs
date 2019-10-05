@@ -14,6 +14,8 @@ namespace ClassicWowNeuralParasite
 
         public BuffSpell SealOfTheCrusader;
         public BuffSpell SealOfCommand;
+        public BuffSpell SealOfJustice;
+
         public BuffSpell BlessingOfWisdom;
 
         public SealSpell Judgement;
@@ -27,6 +29,7 @@ namespace ClassicWowNeuralParasite
             SealOfCommand = new BuffSpell(VirtualKeyCode.VK_4, BuffType.SealOfCommand, 55, level: 20);
             Judgement = new SealSpell(VirtualKeyCode.VK_3, 37, 8);
             BlessingOfWisdom = new BuffSpell(VirtualKeyCode.VK_9, BuffType.BlessingOfWisdom, 45);
+            //SealOfJustice = new BuffSpell(VirtualKeyCode.VK_L, )
         }
 
         public override bool IsMelee => true;
