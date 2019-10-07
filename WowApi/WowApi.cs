@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ClassicWowNeuralParasite
 {
-    public enum TargetReaction
+    public enum TargetReactionType
     {
         NoTarget = 0,
         ExceptionallyHostile = 1,
@@ -20,7 +20,13 @@ namespace ClassicWowNeuralParasite
         Exalted = 8
     }
 
-    public enum PlayerClass
+    public enum TargetFactionType
+    {
+        None = 0,
+        Alliance = 1,
+        Horde = 2
+    }
+    public enum PlayerClassType
     {
         None = 0,
         Warrior = 1,
@@ -35,7 +41,7 @@ namespace ClassicWowNeuralParasite
         LastPlayerClass = Druid
     }
 
-    public enum ActionError
+    public enum ActionErrorType
     {
         None = 0,
         BehindTarget = 1,
@@ -76,30 +82,29 @@ namespace ClassicWowNeuralParasite
         public bool TargetInCombat = false;
         public bool IsTargetDead = false;
         public bool IsTargetElite = false;
-        public TargetReaction Reaction = TargetReaction.NoTarget;
+        public TargetReactionType Reaction = TargetReactionType.NoTarget;
         public ushort PlayerLevel = 0;
         public ushort TargetLevel = 0;
         public bool IsTargetEnemy = false;
-        public bool IsTargetAlliance = false;
         public string TargetName = string.Empty;
         public ushort TargetComboPoints = 0;
-        public ActionError PlayerActionError = ActionError.None;
+        public ActionErrorType PlayerActionError = ActionErrorType.None;
         public bool PlayerIsAttacking = false;
         public ushort AmmoCount = 0;
         public bool IsTargetPlayer = false;
-        public bool IsTargetHorde = false;
         public bool IsPlayerDead = false;
         public bool Start = false;
         public bool Found = false;
         public bool CanUseSkill = false;
         public bool IsWowForeground = false;
-        public PlayerClass Class = PlayerClass.None;
+        public PlayerClassType Class = PlayerClassType.None;
         public bool Casting = false;
         public ushort Shape = 0;
         public double dt = 0;
         public double Time = 0;
         public ushort Buffs = 0;
         public bool MouseOverTarget = false;
+        public TargetFactionType TargetFaction = TargetFactionType.None; 
 
         public override string ToString()
         {
@@ -129,14 +134,13 @@ namespace ClassicWowNeuralParasite
             output += "PlayerLevel: " + PlayerLevel.ToString() + "\r\n";
             output += "TargetLevel: " + TargetLevel.ToString() + "\r\n";
             output += "IsTargetEnemy: " + IsTargetEnemy.ToString() + "\r\n";
-            output += "IsTargetAlliance: " + IsTargetAlliance.ToString() + "\r\n";
             output += "TargetName: " + TargetName.ToString() + "\r\n";
             output += "TargetComboPoints: " + TargetComboPoints.ToString() + "\r\n";
             output += "PlayerActionError: " + PlayerActionError.ToString() + "\r\n";
             output += "PlayerIsAttacking: " + PlayerIsAttacking.ToString() + "\r\n";
             output += "AmmoCount: " + AmmoCount.ToString() + "\r\n";
             output += "IsTargetPlayer: " + IsTargetPlayer.ToString() + "\r\n";
-            output += "IsTargetHorde: " + IsTargetHorde.ToString() + "\r\n";
+            output += "Target Faction: " + TargetFaction.ToString() + "\r\n";
             output += "IsPlayerDead: " + IsPlayerDead.ToString() + "\r\n";
             output += "Start: " + Start.ToString() + "\r\n";
             output += "Found: " + Found.ToString() + "\r\n";
@@ -330,7 +334,7 @@ namespace ClassicWowNeuralParasite
                     parsedPlayerData.PlayerInCombat = inCombatPixel.R == PIXEL_SET ? true : false;
 
                     Color classPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((45 * m_ApiYScale)));
-                    parsedPlayerData.Class = (PlayerClass)GetTwoBytePixelValue(classPixel);
+                    parsedPlayerData.Class = (PlayerClassType)GetTwoBytePixelValue(classPixel);
 
                     Color castingPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((54 * m_ApiYScale)));
                     parsedPlayerData.Casting = castingPixel.R == PIXEL_SET ? true : false;
@@ -348,7 +352,7 @@ namespace ClassicWowNeuralParasite
                     parsedPlayerData.IsTargetElite = isElitePixel.R == PIXEL_SET ? true : false;
 
                     Color reactionPixel = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((12 * m_ApiYScale)));
-                    parsedPlayerData.Reaction = (TargetReaction)GetTwoBytePixelValue(reactionPixel);
+                    parsedPlayerData.Reaction = (TargetReactionType)GetTwoBytePixelValue(reactionPixel);
 
                     Color targetLevelPixel = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((15 * m_ApiYScale)));
                     parsedPlayerData.TargetLevel = GetTwoBytePixelValue(targetLevelPixel);
@@ -358,9 +362,6 @@ namespace ClassicWowNeuralParasite
 
                     Color isEnemyPixel = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((21 * m_ApiYScale)));
                     parsedPlayerData.IsTargetEnemy = isEnemyPixel.R == PIXEL_SET ? true : false;
-
-                    Color isAlliancePixel = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((24 * m_ApiYScale)));
-                    parsedPlayerData.IsTargetAlliance = isAlliancePixel.R == PIXEL_SET ? true : false;
 
                     parsedPlayerData.TargetName = string.Empty;
 
@@ -405,7 +406,7 @@ namespace ClassicWowNeuralParasite
                     parsedPlayerData.TargetComboPoints = GetTwoBytePixelValue(comboPointsPixel);
 
                     Color errorPixel = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((18 * m_ApiYScale)));
-                    parsedPlayerData.PlayerActionError = (ActionError)GetTwoBytePixelValue(errorPixel);
+                    parsedPlayerData.PlayerActionError = (ActionErrorType)GetTwoBytePixelValue(errorPixel);
 
                     Color attackingPixel = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((21 * m_ApiYScale)));
                     parsedPlayerData.PlayerIsAttacking = attackingPixel.R == PIXEL_SET ? true : false;
@@ -419,8 +420,8 @@ namespace ClassicWowNeuralParasite
                     Color targetCombatPixel = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((30 * m_ApiYScale)));
                     parsedPlayerData.TargetInCombat = targetCombatPixel.R == PIXEL_SET ? true : false;
 
-                    Color hordePixel = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((33 * m_ApiYScale)));
-                    parsedPlayerData.IsTargetHorde = hordePixel.R == PIXEL_SET ? true : false;
+                    Color targetFactionPixel = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((33 * m_ApiYScale)));
+                    parsedPlayerData.TargetFaction = (TargetFactionType)GetTwoBytePixelValue(targetFactionPixel);
 
                     Color deadPixel = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((36 * m_ApiYScale)));
                     parsedPlayerData.IsPlayerDead = deadPixel.R == PIXEL_SET ? true : false;

@@ -69,7 +69,7 @@ namespace ClassicWowNeuralParasite
         private static bool m_NoWalk = false;
         private static bool m_ResetCoordinates = true;
 
-        private static PlayerClass m_CurrentClass = PlayerClass.None;
+        private static PlayerClassType m_CurrentClass = PlayerClassType.None;
 
         public static double RegisterDelay = 0.1;
         public static double XReviveButtonLocation = 32500;
@@ -79,13 +79,14 @@ namespace ClassicWowNeuralParasite
         public static double RegenerateVitalsHealthPercentage = 60;
 
         private static volatile bool m_WalkBackwards = false;
+        private static volatile bool m_Turn = true;
+        private static bool m_TurnDirection = true;
 
         private static bool m_Ghosted = false;
-        private static bool m_Fighting = false;
-        private static bool m_FarTarget = false;
         private static bool m_Potion = false;
         private static bool m_Idle = false;
         private static bool m_StartedEating = false;
+        private static bool m_FarTarget = false;
 
         private static Stopwatch m_ReviveSw = new Stopwatch();
 
@@ -103,10 +104,13 @@ namespace ClassicWowNeuralParasite
 
         private static void WoWAPIUpdateEvent(object sender, EventArgs wea)
         {
-            if (WowApi.CurrentPlayerData.PlayerActionError == ActionError.BehindTarget || 
-                WowApi.CurrentPlayerData.PlayerActionError == ActionError.FacingWrongWay)
+            if (WowApi.CurrentPlayerData.PlayerActionError == ActionErrorType.BehindTarget || 
+                WowApi.CurrentPlayerData.PlayerActionError == ActionErrorType.FacingWrongWay)
+            {
                 m_WalkBackwards = true;
-
+                m_Turn = true;
+            }
+                
             CheckClass();
         }
 
@@ -117,31 +121,31 @@ namespace ClassicWowNeuralParasite
                 m_CurrentClass = WowApi.CurrentPlayerData.Class;
                 switch (WowApi.CurrentPlayerData.Class)
                 {
-                    case PlayerClass.Warrior:
+                    case PlayerClassType.Warrior:
                         m_WowClassAutomater = Warrior;
                         break;
-                    case PlayerClass.Paladin:
+                    case PlayerClassType.Paladin:
                         m_WowClassAutomater = Paladin;
                         break;
-                    case PlayerClass.Rogue:
+                    case PlayerClassType.Rogue:
                         m_WowClassAutomater = Rogue;
                         break;
-                    case PlayerClass.Priest:
+                    case PlayerClassType.Priest:
                         m_WowClassAutomater = Priest;
                         break;
-                    case PlayerClass.Mage:
+                    case PlayerClassType.Mage:
                         m_WowClassAutomater = Mage;
                         break;
-                    case PlayerClass.Warlock:
+                    case PlayerClassType.Warlock:
                         m_WowClassAutomater = Warlock;
                         break;
-                    case PlayerClass.Hunter:
+                    case PlayerClassType.Hunter:
                         m_WowClassAutomater = Hunter;
                         break;
-                    case PlayerClass.Shaman:
+                    case PlayerClassType.Shaman:
                         m_WowClassAutomater = Shaman;
                         break;
-                    case PlayerClass.Druid:
+                    case PlayerClassType.Druid:
                         m_WowClassAutomater = Druid;
                         break;
                     default:
@@ -386,7 +390,9 @@ namespace ClassicWowNeuralParasite
 
             Input.KeyUp(VirtualKeyCode.LSHIFT);
 
-            if(SkinLoot)
+            Helper.WaitSeconds(1.0);
+
+            if (SkinLoot)
             {
                 Helper.WaitSeconds(0.250);
                 Input.KeyDown(VirtualKeyCode.LSHIFT);
@@ -473,7 +479,6 @@ namespace ClassicWowNeuralParasite
                 WaypointFollower.StopFollowingWaypoints();
 
                 m_CurrentActionMode = ActionMode.KillTarget;
-                m_WalkBackwards = false;
                 return;
             }
 
@@ -490,13 +495,11 @@ namespace ClassicWowNeuralParasite
             if (WowApi.CurrentPlayerData.IsPlayerDead)
             {
                 m_Potion = false;
-                m_Fighting = false;
                 m_CurrentActionMode = ActionMode.Revive;
             }
             else if (!WowApi.CurrentPlayerData.PlayerInCombat)
             {
                 m_Potion = false;
-                m_Fighting = false;
                 m_CurrentActionMode = ActionMode.LootTarget;
             }
             // Wrong target
@@ -504,46 +507,43 @@ namespace ClassicWowNeuralParasite
                       !WowApi.CurrentPlayerData.TargetInCombat ||
                       WowApi.CurrentPlayerData.IsTargetPlayer)
             {
-                if (!m_Fighting)
-                {
-                    Input.KeyDown(VirtualKeyCode.VK_S);
-                    Helper.WaitSeconds(0.25);
-                    Input.KeyUp(VirtualKeyCode.VK_S);
-                    Input.KeyPress(VirtualKeyCode.TAB);
-                    Helper.WaitSeconds(RegisterDelay);
-                }
-            }
-            // Wait for enemy to be close
-            else if (!WowApi.CurrentPlayerData.IsInCloseRange)
-            {
-                if (!m_FarTarget && m_WowClassAutomater.IsMelee)
-                {
-                    Input.KeyDown(VirtualKeyCode.VK_S);
-                    Helper.WaitSeconds(0.25);
-                    Input.KeyUp(VirtualKeyCode.VK_S);
-                }
-
-                m_FarTarget = true;
-            }
-            else if (m_FarTarget && WowApi.CurrentPlayerData.IsInCloseRange)
-            {
-                if(m_WowClassAutomater.IsMelee)
-                {
-                    Input.KeyDown(VirtualKeyCode.VK_S);
-                    Helper.WaitSeconds(0.25);
-                    Input.KeyUp(VirtualKeyCode.VK_S);
-                    Helper.WaitSeconds(0.75);
-                }
-
-                m_FarTarget = false;
+                Input.KeyPress(VirtualKeyCode.VK_G);
+                Helper.WaitSeconds(RegisterDelay);
             }
             else if (m_WalkBackwards)
             {
                 Input.KeyDown(VirtualKeyCode.VK_S);
-                Helper.WaitSeconds(0.25);
+                Helper.WaitSeconds(0.125);
                 Input.KeyUp(VirtualKeyCode.VK_S);
-                Helper.WaitSeconds(RegisterDelay);
                 m_WalkBackwards = false;
+            }
+            else if (m_Turn)
+            {
+                if (m_TurnDirection)
+                    Input.KeyDown(VirtualKeyCode.VK_D);
+                else
+                    Input.KeyDown(VirtualKeyCode.VK_A);
+                Helper.WaitSeconds(0.125);
+                if (m_TurnDirection)
+                    Input.KeyUp(VirtualKeyCode.VK_D);
+                else
+                    Input.KeyUp(VirtualKeyCode.VK_A);
+
+                m_TurnDirection = !m_TurnDirection;
+                m_Turn = false;
+            }
+            // Wait for enemy to be close
+            else if (!WowApi.CurrentPlayerData.IsInCloseRange)
+            {
+                m_FarTarget = true;
+                m_WalkBackwards = true;
+                Helper.WaitSeconds(1.0);
+            }
+            else if (m_FarTarget && WowApi.CurrentPlayerData.IsInCloseRange)
+            {
+                m_FarTarget = false;
+                m_WalkBackwards = true;
+                Helper.WaitSeconds(1.0);
             }
             else if (!WowApi.CurrentPlayerData.PlayerIsAttacking)
             {
@@ -558,10 +558,8 @@ namespace ClassicWowNeuralParasite
                 Input.KeyPress(VirtualKeyCode.VK_0);
                 m_Potion = true;
             }
-            else if (WowApi.CurrentPlayerData.CanUseSkill)
+            else
             {
-                m_Fighting = true;
-
                 m_WowClassAutomater.KillTarget();
             }
 

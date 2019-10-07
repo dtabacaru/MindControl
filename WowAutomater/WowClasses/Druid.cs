@@ -37,7 +37,7 @@ namespace ClassicWowNeuralParasite
         public Spell TigersFury;
         public Spell Rake;
         public Spell Claw;
-        public Spell Rip;
+        public ComboPointSpell Rip;
         public Spell HealingTouch;
         public Spell Wrath;
 
@@ -46,14 +46,14 @@ namespace ClassicWowNeuralParasite
             Attack = new Action(VirtualKeyCode.VK_1);
             Target = new Action(VirtualKeyCode.TAB);
 
-            Motw = new BuffSpell(VirtualKeyCode.VK_P, BuffType.MarkOfTheWild, MOTW_MANA_COST, MOTW_COOLDOWN_TIME);
-            Thorns = new BuffSpell(VirtualKeyCode.VK_L, BuffType.Thorns, THORNS_MANA_COST, THORNS_COOLDOWN_TIME);
+            Motw = new BuffSpell(VirtualKeyCode.VK_P, BuffType.MarkOfTheWild, MOTW_MANA_COST);
+            Thorns = new BuffSpell(VirtualKeyCode.VK_L, BuffType.Thorns, THORNS_MANA_COST);
 
             Roar = new Spell(VirtualKeyCode.VK_R, ROAR_MANA_COST, ROAR_COOLDOWN_TIME);
             TigersFury = new Spell(VirtualKeyCode.VK_5, FURY_MANA_COST, FURY_COOLDOWN_TIME);
             Rake = new Spell(VirtualKeyCode.VK_6, RAKE_MANA_COST, useOnce: true);
             Claw = new Spell(VirtualKeyCode.VK_2, CLAW_MANA_COST);
-            Rip = new Spell(VirtualKeyCode.VK_3, RIP_MANA_COST, comboPointsCost: RIP_COMBO_POINTS);
+            Rip = new ComboPointSpell(VirtualKeyCode.VK_3, RIP_COMBO_POINTS, RIP_COMBO_POINTS, RIP_MANA_COST);
             HealingTouch = new Spell(VirtualKeyCode.VK_3, HEALING_TOUCH_MANA_COST, healthPercentage: HEALING_TOUCH_HEALTH_PERCENTAGE);
             Wrath = new Spell(VirtualKeyCode.VK_2, WRATH_MANA_COST);
             Maul = new Spell(VirtualKeyCode.VK_2, MAUL_MANA_COST);

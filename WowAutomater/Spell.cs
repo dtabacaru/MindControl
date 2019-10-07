@@ -8,7 +8,6 @@ namespace ClassicWowNeuralParasite
         public Timer CooldownTimer = new Timer();
         public VirtualKeyCode HotKey;
         public ushort ManaCost;
-        public ushort ComboPointsCost;
         public double CooldownTime;
         public double PlayerHealthPercentage;
         public ushort Level;
@@ -21,7 +20,6 @@ namespace ClassicWowNeuralParasite
             get
             {
                 if (WowApi.CurrentPlayerData.PlayerMana >= ManaCost &&
-                    WowApi.CurrentPlayerData.TargetComboPoints >= ComboPointsCost &&
                     !WowApi.CurrentPlayerData.Casting &&
                     WowApi.CurrentPlayerData.CanUseSkill &&
                     WowApi.CurrentPlayerData.PlayerHealthPercentage <= PlayerHealthPercentage &&
@@ -37,14 +35,12 @@ namespace ClassicWowNeuralParasite
         public Spell(VirtualKeyCode hotKey, 
                      ushort manaCost = 0, 
                      double cooldownTime = 0, 
-                     ushort comboPointsCost = 0, 
                      double healthPercentage = 100,
                      ushort level = 1,
                      bool useOnce = false)
         {
             HotKey = hotKey;
             ManaCost = manaCost;
-            ComboPointsCost = comboPointsCost;
             CooldownTime = cooldownTime;
             PlayerHealthPercentage = healthPercentage;
             Level = level;

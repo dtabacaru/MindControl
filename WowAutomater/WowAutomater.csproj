@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Action.cs" />
     <Compile Include="BuffSpell.cs" />
+    <Compile Include="ComboPointSpell.cs" />
     <Compile Include="FinishingSpell.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="Input.cs" />

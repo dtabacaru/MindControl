@@ -15,9 +15,6 @@ namespace ClassicWowNeuralParasite
         public bool ThrowFlag = false;
         public int StealthCooldown = 10;
 
-        private volatile bool m_CanStealth = true;
-
-        public Timer StealthTimer = new Timer();
         public Timer StaleStealthTimer = new Timer();
 
         public Action Attack;
@@ -27,9 +24,9 @@ namespace ClassicWowNeuralParasite
         public BuffSpell Stealth;
 
         public Spell SinisterStrike;
-        public Spell SliceAndDice;
-        public Spell Rupture;
-        public Spell KidneyShot;
+        public ComboPointSpell SliceAndDice;
+        public ComboPointSpell Rupture;
+        public ComboPointSpell KidneyShot;
         public Spell Evasion;
 
         public FinishingSpell Eviscerate;
@@ -44,16 +41,21 @@ namespace ClassicWowNeuralParasite
             Stealth = new BuffSpell(VirtualKeyCode.VK_T, BuffType.Stealth, cooldownTime: 10);
             SinisterStrike = new Spell(VirtualKeyCode.VK_2,45);
             Eviscerate = new FinishingSpell(VirtualKeyCode.VK_3, 5, 25, 35);
-            SliceAndDice = new Spell(VirtualKeyCode.VK_5, 25, comboPointsCost: 1, level: 10, useOnce: true);
-            Rupture = new Spell(VirtualKeyCode.VK_6, 25, 6 + 3 * 2, comboPointsCost: 3, level: 20);
-            KidneyShot = new Spell(VirtualKeyCode.VK_7, 25, 20, 3, level: 30);
+            SliceAndDice = new ComboPointSpell(VirtualKeyCode.VK_5, 1, 1, 25, level: 10, useOnce: true);
+            Rupture = new ComboPointSpell(VirtualKeyCode.VK_6,3,5, 25, 6 + 3 * 2, level: 20);
+            KidneyShot = new ComboPointSpell(VirtualKeyCode.VK_7,3,5, 25, 20, level: 30);
             Evasion = new Spell(VirtualKeyCode.VK_L, cooldownTime: 5 * 60, healthPercentage: 40, level: 8);
-
-            StealthTimer.Interval = StealthCooldown * 1000;
-            StealthTimer.Elapsed += CanStealthTimer_Elapsed;
 
             StaleStealthTimer.Interval = StealthCooldown * 1000;
             StaleStealthTimer.Elapsed += StaleStealthTimer_Elapsed;
+
+            WowApi.UpdateEvent += WowApi_UpdateEvent;
+        }
+
+        private void WowApi_UpdateEvent(object sender, EventArgs ea)
+        {
+            if (WowApi.CurrentPlayerData.PlayerActionError == ActionErrorType.FacingWrongWay)
+                Target.Act();
         }
 
         private void StaleStealthTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -64,12 +66,8 @@ namespace ClassicWowNeuralParasite
             }
 
             StaleStealthTimer.Stop();
-        }
-
-        private void CanStealthTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            m_CanStealth = true;
-            StealthTimer.Stop();
+            Stealth.CooldownTimer.Stop();
+            Stealth.CooldownTimer.Start();
         }
 
         public enum RogueFindTargetMode
@@ -89,7 +87,7 @@ namespace ClassicWowNeuralParasite
                 FindTargetMode = RogueFindTargetMode.Throw;
             }
             else if ( (StealthFlag && WowApi.CurrentPlayerData.PlayerLevel > StealthLevel) && 
-                      (ThrowFlag && WowApi.CurrentPlayerData.AmmoCount > 0) )
+                      (ThrowFlag && WowApi.CurrentPlayerData.AmmoCount > 1) )
             {
                 FindTargetMode = RogueFindTargetMode.StealthAndThrow;
             }
@@ -97,7 +95,7 @@ namespace ClassicWowNeuralParasite
             {
                 FindTargetMode = RogueFindTargetMode.Stealth;
             }
-            else if (ThrowFlag && WowApi.CurrentPlayerData.AmmoCount > 0)
+            else if (ThrowFlag && WowApi.CurrentPlayerData.AmmoCount > 1)
             {
                 FindTargetMode = RogueFindTargetMode.Throw;
             }
@@ -111,92 +109,88 @@ namespace ClassicWowNeuralParasite
         {
             WaypointFollower.FollowWaypoints(true);
 
-            Target.Act();
+            CheckFindMode();
+            bool validTarget = false;
 
-            if (WowApi.CurrentPlayerData.PlayerHasTarget)
+            if (FindTargetMode == RogueFindTargetMode.StealthAndThrow)
             {
-                CheckFindMode();
+                if (Stealth.CanCastSpell)
+                    Stealth.CastSpell();
 
-                bool validEnemy = false;
+                validTarget = WowApi.CurrentPlayerData.PlayerHasTarget &&
+                            WowApi.CurrentPlayerData.TargetHealth == 100 &&
+                            !WowApi.CurrentPlayerData.TargetInCombat &&
+                            WowApi.CurrentPlayerData.TargetFaction == 0 &&
+                            WowApi.CurrentPlayerData.IsInFarRange &&
+                            !WowApi.CurrentPlayerData.IsInCloseRange;
 
-                if (FindTargetMode == RogueFindTargetMode.Throw)
+                if (validTarget)
                 {
-                    validEnemy = WowApi.CurrentPlayerData.TargetHealth == 100 &&
-                                !WowApi.CurrentPlayerData.TargetInCombat &&
-                                !WowApi.CurrentPlayerData.IsTargetPlayer &&
-                                WowApi.CurrentPlayerData.IsInFarRange &&
-                                !WowApi.CurrentPlayerData.IsInCloseRange;
+                    WaypointFollower.StopFollowingWaypoints();
 
-                    if (validEnemy)
-                    {
-                        WaypointFollower.StopFollowingWaypoints();
-
-                        // Throw dagger
-                        Helper.WaitSeconds(1);
-                        Throw.Act();
-                        Helper.WaitSeconds(3);
-                    }
+                    Helper.WaitSeconds(1);
+                    Throw.Act();
+                    Helper.WaitSeconds(3);
                 }
-                else if (FindTargetMode == RogueFindTargetMode.Stealth)
+            }
+            else if (FindTargetMode == RogueFindTargetMode.Throw)
+            {
+                validTarget = WowApi.CurrentPlayerData.PlayerHasTarget &&
+                            WowApi.CurrentPlayerData.TargetHealth == 100 &&
+                            !WowApi.CurrentPlayerData.TargetInCombat &&
+                            WowApi.CurrentPlayerData.TargetFaction == 0 &&
+                            WowApi.CurrentPlayerData.IsInFarRange &&
+                            !WowApi.CurrentPlayerData.IsInCloseRange;
+
+                if (validTarget)
                 {
-                    validEnemy = WowApi.CurrentPlayerData.TargetHealth == 100 &&
-                                !WowApi.CurrentPlayerData.TargetInCombat &&
-                                !WowApi.CurrentPlayerData.IsTargetPlayer &&
-                                WowApi.CurrentPlayerData.IsInFarRange;
+                    WaypointFollower.StopFollowingWaypoints();
 
-                    if (validEnemy && WowApi.CurrentPlayerData.CanUseSkill)
-                    {
-                        if (Stealth.CanCastSpell)
-                        {
-                            Stealth.CastSpell();
-                            StaleStealthTimer.Start();
-                        }
-
-                        if (WowApi.CurrentPlayerData.IsInCloseRange)
-                        {
-                            Input.KeyPress(VirtualKeyCode.VK_2);
-                            Helper.WaitSeconds(0.1);
-                        }
-
-                    }
+                    Helper.WaitSeconds(1);
+                    Throw.Act();
+                    Helper.WaitSeconds(3);
                 }
-                else if (FindTargetMode == RogueFindTargetMode.StealthAndThrow)
+            }
+            else if (FindTargetMode == RogueFindTargetMode.Stealth)
+            {
+                if (Stealth.CanCastSpell)
                 {
-                    if (Stealth.CanCastSpell)
-                        Stealth.CastSpell();
-
-                    validEnemy = WowApi.CurrentPlayerData.TargetHealth == 100 &&
-                                !WowApi.CurrentPlayerData.TargetInCombat &&
-                                !WowApi.CurrentPlayerData.IsTargetPlayer &&
-                                WowApi.CurrentPlayerData.IsInFarRange &&
-                                !WowApi.CurrentPlayerData.IsInCloseRange;
-
-                    if (validEnemy)
-                    {
-                        WaypointFollower.StopFollowingWaypoints();
-
-                        // Throw dagger
-                        Helper.WaitSeconds(1);
-                        Throw.Act();
-                        Helper.WaitSeconds(3);
-                    }
+                    Stealth.CastSpell();
+                    StaleStealthTimer.Start();
                 }
-                else
-                {
-                    validEnemy = WowApi.CurrentPlayerData.TargetHealth == 100 &&
-                                !WowApi.CurrentPlayerData.TargetInCombat &&
-                                !WowApi.CurrentPlayerData.IsTargetPlayer &&
-                                WowApi.CurrentPlayerData.IsInCloseRange;
 
-                    if (validEnemy)
+                validTarget = WowApi.CurrentPlayerData.PlayerHasTarget &&
+                            WowApi.CurrentPlayerData.TargetHealth == 100 &&
+                            !WowApi.CurrentPlayerData.TargetInCombat &&
+                            WowApi.CurrentPlayerData.TargetFaction == 0 &&
+                            WowApi.CurrentPlayerData.IsInCloseRange;
+
+                if (validTarget)
+                {
+                    if (WowApi.CurrentPlayerData.IsInCloseRange)
                     {
                         Input.KeyPress(VirtualKeyCode.VK_2);
                         Helper.WaitSeconds(0.1);
                     }
                 }
-
-
             }
+            else
+            {
+                validTarget = WowApi.CurrentPlayerData.PlayerHasTarget &&
+                            WowApi.CurrentPlayerData.TargetHealth == 100 &&
+                            !WowApi.CurrentPlayerData.TargetInCombat &&
+                            WowApi.CurrentPlayerData.TargetFaction == 0 &&
+                            WowApi.CurrentPlayerData.IsInCloseRange;
+
+                if (validTarget)
+                {
+                    Input.KeyPress(VirtualKeyCode.VK_2);
+                    Helper.WaitSeconds(0.1);
+                }
+            }
+
+            if(!validTarget)
+                Target.Act();
         }
 
         public override void AutoAttackTarget()

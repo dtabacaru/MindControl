@@ -15,10 +15,9 @@ namespace ClassicWowNeuralParasite
                           BuffType buff,
                           ushort manaCost = 0,
                           double cooldownTime = 0,
-                          ushort comboPointsCost = 0,
                           double healthPercentage = 100,
                           ushort level = 1,
-                          bool useOnce = false) : base(hotKey, manaCost, cooldownTime, comboPointsCost, healthPercentage, level, useOnce)
+                          bool useOnce = false) : base(hotKey, manaCost, cooldownTime, healthPercentage, level, useOnce)
         {
             Buff = buff;
         }
@@ -28,7 +27,6 @@ namespace ClassicWowNeuralParasite
             get
             {
                 if (WowApi.CurrentPlayerData.PlayerMana >= ManaCost &&
-                    WowApi.CurrentPlayerData.TargetComboPoints >= ComboPointsCost &&
                     !WowApi.CurrentPlayerData.Casting &&
                     WowApi.CurrentPlayerData.CanUseSkill &&
                     WowApi.CurrentPlayerData.PlayerHealthPercentage <= PlayerHealthPercentage &&

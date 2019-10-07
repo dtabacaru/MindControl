@@ -347,8 +347,8 @@ namespace ClassicWowNeuralParasite
 
             // OptionTabs.SelectedIndex == 3 "Classes" tab
             if (OptionTabs.SelectedIndex == 3 && 
-                WowApi.CurrentPlayerData.Class > PlayerClass.None && 
-                WowApi.CurrentPlayerData.Class <= PlayerClass.LastPlayerClass)
+                WowApi.CurrentPlayerData.Class > PlayerClassType.None && 
+                WowApi.CurrentPlayerData.Class <= PlayerClassType.LastPlayerClass)
             {
                 ClassTabs.SelectedIndex = (int)WowApi.CurrentPlayerData.Class - 1;
             }
@@ -371,12 +371,13 @@ namespace ClassicWowNeuralParasite
 
         private void SliceNDiceCPNumericInput_ValueChanged(object sender, EventArgs e)
         {
-            WowAutomater.Rogue.SliceAndDice.ComboPointsCost = (ushort)SliceNDiceCPNumericInput.Value ;
+            WowAutomater.Rogue.SliceAndDice.MaximumComboPointsCost = (ushort)SliceNDiceCPNumericInput.Value ;
+            WowAutomater.Rogue.SliceAndDice.MinimumComboPointsCost = (ushort)SliceNDiceCPNumericInput.Value;
         }
 
         private void RuptureCPNumericInput_ValueChanged(object sender, EventArgs e)
         {
-            WowAutomater.Rogue.Rupture.ComboPointsCost = (ushort)RuptureCPNumericInput.Value;
+            WowAutomater.Rogue.Rupture.MinimumComboPointsCost = (ushort)RuptureCPNumericInput.Value;
         }
 
         private void EvisceratePercentageNumericInput_ValueChanged(object sender, EventArgs e)
@@ -438,11 +439,6 @@ namespace ClassicWowNeuralParasite
         private void StealthCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             WowAutomater.Rogue.StealthFlag = StealthCheckBox.Checked;
-        }
-
-        private void StealthCooldownNumericInput_ValueChanged(object sender, EventArgs e)
-        {
-            WowAutomater.Rogue.StealthTimer.Interval = (double)(StealthCooldownNumericInput.Value * 1000);
         }
 
         private void EvasionPercentaceNumericInput_ValueChanged(object sender, EventArgs e)

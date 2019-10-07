@@ -69,8 +69,6 @@
             this.WarriorTab = new System.Windows.Forms.TabPage();
             this.PaladinTab = new System.Windows.Forms.TabPage();
             this.RogueTab = new System.Windows.Forms.TabPage();
-            this.StealthCooldownNumericInput = new System.Windows.Forms.NumericUpDown();
-            this.StealthCooldownLabel = new System.Windows.Forms.Label();
             this.EvasionPercentageLabel = new System.Windows.Forms.Label();
             this.EvasionPercentaceNumericInput = new System.Windows.Forms.NumericUpDown();
             this.AlwaysThrowCheckBox = new System.Windows.Forms.CheckBox();
@@ -112,7 +110,6 @@
             this.ClassesTab.SuspendLayout();
             this.ClassTabs.SuspendLayout();
             this.RogueTab.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.StealthCooldownNumericInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.EvasionPercentaceNumericInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.EvisceratePercentageNumericInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.RuptureCPNumericInput)).BeginInit();
@@ -670,8 +667,6 @@
             // 
             // RogueTab
             // 
-            this.RogueTab.Controls.Add(this.StealthCooldownNumericInput);
-            this.RogueTab.Controls.Add(this.StealthCooldownLabel);
             this.RogueTab.Controls.Add(this.EvasionPercentageLabel);
             this.RogueTab.Controls.Add(this.EvasionPercentaceNumericInput);
             this.RogueTab.Controls.Add(this.AlwaysThrowCheckBox);
@@ -695,42 +690,10 @@
             this.RogueTab.Text = "Rogue";
             this.RogueTab.UseVisualStyleBackColor = true;
             // 
-            // StealthCooldownNumericInput
-            // 
-            this.StealthCooldownNumericInput.Location = new System.Drawing.Point(146, 57);
-            this.StealthCooldownNumericInput.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.StealthCooldownNumericInput.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.StealthCooldownNumericInput.Name = "StealthCooldownNumericInput";
-            this.StealthCooldownNumericInput.Size = new System.Drawing.Size(54, 20);
-            this.StealthCooldownNumericInput.TabIndex = 20;
-            this.StealthCooldownNumericInput.Value = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.StealthCooldownNumericInput.ValueChanged += new System.EventHandler(this.StealthCooldownNumericInput_ValueChanged);
-            // 
-            // StealthCooldownLabel
-            // 
-            this.StealthCooldownLabel.AutoSize = true;
-            this.StealthCooldownLabel.Location = new System.Drawing.Point(4, 59);
-            this.StealthCooldownLabel.Name = "StealthCooldownLabel";
-            this.StealthCooldownLabel.Size = new System.Drawing.Size(115, 13);
-            this.StealthCooldownLabel.TabIndex = 19;
-            this.StealthCooldownLabel.Text = "Stealth cooldown (sec)";
-            // 
             // EvasionPercentageLabel
             // 
             this.EvasionPercentageLabel.AutoSize = true;
-            this.EvasionPercentageLabel.Location = new System.Drawing.Point(4, 209);
+            this.EvasionPercentageLabel.Location = new System.Drawing.Point(4, 183);
             this.EvasionPercentageLabel.Name = "EvasionPercentageLabel";
             this.EvasionPercentageLabel.Size = new System.Drawing.Size(102, 13);
             this.EvasionPercentageLabel.TabIndex = 18;
@@ -738,7 +701,7 @@
             // 
             // EvasionPercentaceNumericInput
             // 
-            this.EvasionPercentaceNumericInput.Location = new System.Drawing.Point(146, 207);
+            this.EvasionPercentaceNumericInput.Location = new System.Drawing.Point(146, 181);
             this.EvasionPercentaceNumericInput.Name = "EvasionPercentaceNumericInput";
             this.EvasionPercentaceNumericInput.Size = new System.Drawing.Size(54, 20);
             this.EvasionPercentaceNumericInput.TabIndex = 17;
@@ -752,7 +715,7 @@
             // AlwaysThrowCheckBox
             // 
             this.AlwaysThrowCheckBox.AutoSize = true;
-            this.AlwaysThrowCheckBox.Location = new System.Drawing.Point(146, 109);
+            this.AlwaysThrowCheckBox.Location = new System.Drawing.Point(146, 83);
             this.AlwaysThrowCheckBox.Name = "AlwaysThrowCheckBox";
             this.AlwaysThrowCheckBox.Size = new System.Drawing.Size(15, 14);
             this.AlwaysThrowCheckBox.TabIndex = 16;
@@ -762,7 +725,7 @@
             // AlwaysThrowLabel
             // 
             this.AlwaysThrowLabel.AutoSize = true;
-            this.AlwaysThrowLabel.Location = new System.Drawing.Point(4, 109);
+            this.AlwaysThrowLabel.Location = new System.Drawing.Point(4, 83);
             this.AlwaysThrowLabel.Name = "AlwaysThrowLabel";
             this.AlwaysThrowLabel.Size = new System.Drawing.Size(69, 13);
             this.AlwaysThrowLabel.TabIndex = 15;
@@ -783,7 +746,7 @@
             // RuptureCPLabel
             // 
             this.RuptureCPLabel.AutoSize = true;
-            this.RuptureCPLabel.Location = new System.Drawing.Point(4, 157);
+            this.RuptureCPLabel.Location = new System.Drawing.Point(4, 131);
             this.RuptureCPLabel.Name = "RuptureCPLabel";
             this.RuptureCPLabel.Size = new System.Drawing.Size(111, 13);
             this.RuptureCPLabel.TabIndex = 9;
@@ -801,7 +764,7 @@
             // SliceNDiceCPLabel
             // 
             this.SliceNDiceCPLabel.AutoSize = true;
-            this.SliceNDiceCPLabel.Location = new System.Drawing.Point(4, 131);
+            this.SliceNDiceCPLabel.Location = new System.Drawing.Point(4, 105);
             this.SliceNDiceCPLabel.Name = "SliceNDiceCPLabel";
             this.SliceNDiceCPLabel.Size = new System.Drawing.Size(140, 13);
             this.SliceNDiceCPLabel.TabIndex = 8;
@@ -810,7 +773,7 @@
             // EvisceratePercentageLabel
             // 
             this.EvisceratePercentageLabel.AutoSize = true;
-            this.EvisceratePercentageLabel.Location = new System.Drawing.Point(4, 183);
+            this.EvisceratePercentageLabel.Location = new System.Drawing.Point(4, 157);
             this.EvisceratePercentageLabel.Name = "EvisceratePercentageLabel";
             this.EvisceratePercentageLabel.Size = new System.Drawing.Size(114, 13);
             this.EvisceratePercentageLabel.TabIndex = 7;
@@ -818,7 +781,7 @@
             // 
             // EvisceratePercentageNumericInput
             // 
-            this.EvisceratePercentageNumericInput.Location = new System.Drawing.Point(146, 181);
+            this.EvisceratePercentageNumericInput.Location = new System.Drawing.Point(146, 155);
             this.EvisceratePercentageNumericInput.Name = "EvisceratePercentageNumericInput";
             this.EvisceratePercentageNumericInput.Size = new System.Drawing.Size(54, 20);
             this.EvisceratePercentageNumericInput.TabIndex = 6;
@@ -831,7 +794,7 @@
             // 
             // RuptureCPNumericInput
             // 
-            this.RuptureCPNumericInput.Location = new System.Drawing.Point(146, 155);
+            this.RuptureCPNumericInput.Location = new System.Drawing.Point(146, 129);
             this.RuptureCPNumericInput.Maximum = new decimal(new int[] {
             5,
             0,
@@ -854,7 +817,7 @@
             // 
             // SliceNDiceCPNumericInput
             // 
-            this.SliceNDiceCPNumericInput.Location = new System.Drawing.Point(146, 129);
+            this.SliceNDiceCPNumericInput.Location = new System.Drawing.Point(146, 103);
             this.SliceNDiceCPNumericInput.Maximum = new decimal(new int[] {
             5,
             0,
@@ -877,7 +840,7 @@
             // 
             // StaleStealthNumericInput
             // 
-            this.StaleStealthNumericInput.Location = new System.Drawing.Point(146, 83);
+            this.StaleStealthNumericInput.Location = new System.Drawing.Point(146, 57);
             this.StaleStealthNumericInput.Minimum = new decimal(new int[] {
             1,
             0,
@@ -896,7 +859,7 @@
             // StaleStealthLabel
             // 
             this.StaleStealthLabel.AutoSize = true;
-            this.StaleStealthLabel.Location = new System.Drawing.Point(4, 85);
+            this.StaleStealthLabel.Location = new System.Drawing.Point(4, 59);
             this.StaleStealthLabel.Name = "StaleStealthLabel";
             this.StaleStealthLabel.Size = new System.Drawing.Size(131, 13);
             this.StaleStealthLabel.TabIndex = 2;
@@ -1040,7 +1003,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(220, 961);
+            this.ClientSize = new System.Drawing.Size(220, 61);
             this.Controls.Add(this.StatusLabel);
             this.Controls.Add(this.OptionTabs);
             this.Controls.Add(this.ShowInfoButton);
@@ -1070,7 +1033,6 @@
             this.ClassTabs.ResumeLayout(false);
             this.RogueTab.ResumeLayout(false);
             this.RogueTab.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.StealthCooldownNumericInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.EvasionPercentaceNumericInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.EvisceratePercentageNumericInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.RuptureCPNumericInput)).EndInit();
@@ -1120,8 +1082,6 @@
         private System.Windows.Forms.TabPage WarriorTab;
         private System.Windows.Forms.TabPage PaladinTab;
         private System.Windows.Forms.TabPage RogueTab;
-        private System.Windows.Forms.NumericUpDown StealthCooldownNumericInput;
-        private System.Windows.Forms.Label StealthCooldownLabel;
         private System.Windows.Forms.Label EvasionPercentageLabel;
         private System.Windows.Forms.NumericUpDown EvasionPercentaceNumericInput;
         private System.Windows.Forms.CheckBox AlwaysThrowCheckBox;
