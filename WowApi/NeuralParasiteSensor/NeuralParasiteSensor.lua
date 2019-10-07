@@ -167,7 +167,9 @@ function DataFrame_OnUpdate()
 	if map == nil then 
 		Set3Byte3PixelValue(0,XPositionR,XPositionG,XPositionB)
 		Set3Byte3PixelValue(0,YPositionR,YPositionG,YPositionB)
+		Set2BytePixelValue(0,MapIdPixel);
 		
+		debugString = debugString .. "Map: 0\n";
 		debugString = debugString .. "X: 0\n";
 		debugString = debugString .. "Y: 0\n";
 	else
@@ -175,7 +177,9 @@ function DataFrame_OnUpdate()
 	
 		Set3Byte3PixelValue(position.x,XPositionR,XPositionG,XPositionB)
 		Set3Byte3PixelValue(position.y,YPositionR,YPositionG,YPositionB)
+		Set2BytePixelValue(map,MapIdPixel);
 		
+		debugString = debugString .. "Map: " .. map .. "\n";
 		debugString = debugString .. "X: " .. position.x*100 .. "\n";
 		debugString = debugString .. "Y: " .. position.y*100 .. "\n";
 	end
@@ -326,20 +330,16 @@ function DataFrame_OnUpdate()
 		debugString = debugString .. "Is Enemy: False" .. "\n";
 	end
 	
-	if UnitFactionGroup("target") == "Alliance" then
-		AlliancePixel:SetColorTexture(1, 1, 1, 1);
-		debugString = debugString .. "Alliance: True" .. "\n";
-	else
-		AlliancePixel:SetColorTexture(0, 0, 0, 1);
-		debugString = debugString .. "Alliance: False" .. "\n";
-	end
-	
-	if UnitFactionGroup("target") == "Horde" then
-		HordePixel:SetColorTexture(1, 1, 1, 1);
-		debugString = debugString .. "Horde: True" .. "\n";
-	else
-		HordePixel:SetColorTexture(0, 0, 0, 1);
-		debugString = debugString .. "Horde: False" .. "\n";
+	local targetFaction = UnitFactionGroup("target");
+	if targetFaction == nil then
+		Set2BytePixelValue(0,TargetFactionPixel);
+		debugString = debugString .. "Target Faction: 0" .. "\n";
+	elseif targetFaction == "Alliance" then
+		Set2BytePixelValue(1,TargetFactionPixel);
+		debugString = debugString .. "Target Faction: 1" .. "\n";
+	elseif targetFaction == "Horde" then
+		Set2BytePixelValue(2,TargetFactionPixel);
+		debugString = debugString .. "Target Faction: 2" .. "\n";
 	end
 	
 	local comboPoints = GetComboPoints("player", "target");
@@ -367,14 +367,6 @@ function DataFrame_OnUpdate()
 		TargetCombatPixel:SetColorTexture(0, 0, 0, 1);
 		debugString = debugString .. "Target Combat: False" .. "\n";
 	end	
-	
-	if UnitFactionGroup("target") == "Horde" then
-		HordePixel:SetColorTexture(1, 1, 1, 1);
-		debugString = debugString .. "Horde: True" .. "\n";
-	else
-		HordePixel:SetColorTexture(0, 0, 0, 1);
-		debugString = debugString .. "Horde: False" .. "\n";
-	end
 	
 	if UnitIsDead("player") then
 		DeadPixel:SetColorTexture(1, 1, 1, 1);
