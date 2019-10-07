@@ -82,8 +82,6 @@ namespace ClassicWowNeuralParasite
 
         public static double RegenerateVitalsHealthPercentage = 60;
 
-        private static volatile bool m_WalkBackwards = false;
-        private static volatile bool m_Turn = true;
         private static bool m_TurnDirection = true;
 
         private static bool m_Ghosted = false;
@@ -111,8 +109,7 @@ namespace ClassicWowNeuralParasite
             if (WowApi.CurrentPlayerData.PlayerActionError == ActionErrorType.BehindTarget || 
                 WowApi.CurrentPlayerData.PlayerActionError == ActionErrorType.FacingWrongWay)
             {
-                m_WalkBackwards = true;
-                m_Turn = true;
+                WalkBackward(true);
             }
                 
             CheckClass();
@@ -495,6 +492,33 @@ namespace ClassicWowNeuralParasite
             m_WowClassAutomater.AutoAttackTarget();
         }
 
+        private static void WalkBackward(bool turn)
+        {
+            Input.KeyDown(VirtualKeyCode.VK_S);
+
+            if (turn)
+            {
+                if (m_TurnDirection)
+                    Input.KeyDown(VirtualKeyCode.VK_D);
+                else
+                    Input.KeyDown(VirtualKeyCode.VK_A);
+            }
+
+            Helper.WaitSeconds(0.125);
+
+            Input.KeyUp(VirtualKeyCode.VK_S);
+
+            if (turn)
+            {
+                if (m_TurnDirection)
+                    Input.KeyUp(VirtualKeyCode.VK_D);
+                else
+                    Input.KeyUp(VirtualKeyCode.VK_A);
+            }
+
+            m_TurnDirection = !m_TurnDirection;
+        }
+
         private static void KillTarget()
         {
             if (WowApi.CurrentPlayerData.IsPlayerDead)
@@ -502,60 +526,30 @@ namespace ClassicWowNeuralParasite
                 m_Potion = false;
                 m_CurrentActionMode = ActionMode.Revive;
             }
-            else if (!WowApi.CurrentPlayerData.PlayerInCombat)
+            else if (!WowApi.CurrentPlayerData.PlayerInCombat || WowApi.CurrentPlayerData.TargetHealth == 0)
             {
                 m_Potion = false;
                 m_CurrentActionMode = ActionMode.LootTarget;
             }
-            else if (m_WalkBackwards)
-            {
-                Input.KeyDown(VirtualKeyCode.VK_S);
-
-                if (m_Turn)
-                {
-                    if (m_TurnDirection)
-                        Input.KeyDown(VirtualKeyCode.VK_D);
-                    else
-                        Input.KeyDown(VirtualKeyCode.VK_A);
-                }
-
-                Helper.WaitSeconds(0.125);
-
-                Input.KeyUp(VirtualKeyCode.VK_S);
-
-                if (m_Turn)
-                {
-                    if (m_TurnDirection)
-                        Input.KeyUp(VirtualKeyCode.VK_D);
-                    else
-                        Input.KeyUp(VirtualKeyCode.VK_A);
-                }
-
-                m_WalkBackwards = false;
-                m_Turn = false;
-                m_TurnDirection = !m_TurnDirection;
-            }
-            else if (!WowApi.CurrentPlayerData.PlayerHasTarget || 
-                     !WowApi.CurrentPlayerData.TargetInCombat ||
+            else if (!WowApi.CurrentPlayerData.TargetInCombat ||
                      WowApi.CurrentPlayerData.TargetFaction > 0)
             {
+                WalkBackward(true);
                 Input.KeyPress(VirtualKeyCode.TAB);
                 Helper.WaitSeconds(RegisterDelay);
-                m_WalkBackwards = true;
-                m_Turn = true;
             }
             // Wait for enemy to be close
             else if (!WowApi.CurrentPlayerData.IsInCloseRange)
             {
                 m_FarTarget = true;
-                m_WalkBackwards = true;
-                Helper.WaitSeconds(1.0);
+                WalkBackward(false);
+                Helper.WaitSeconds(0.5);
             }
             else if (m_FarTarget && WowApi.CurrentPlayerData.IsInCloseRange)
             {
                 m_FarTarget = false;
-                m_WalkBackwards = true;
-                Helper.WaitSeconds(1.0);
+                WalkBackward(false);
+                Helper.WaitSeconds(0.5);
             }
             else if (!WowApi.CurrentPlayerData.PlayerIsAttacking)
             {
@@ -563,7 +557,7 @@ namespace ClassicWowNeuralParasite
                 Helper.WaitSeconds(RegisterDelay);
 
                 if(m_WowClassAutomater.IsMelee)
-                    m_WalkBackwards = true;
+                    WalkBackward(false);
             }
             else if (WowApi.CurrentPlayerData.PlayerHealthPercentage < 10 && !m_Potion)
             {
