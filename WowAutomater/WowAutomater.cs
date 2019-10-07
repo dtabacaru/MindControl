@@ -531,9 +531,9 @@ namespace ClassicWowNeuralParasite
                 m_Potion = false;
                 m_CurrentActionMode = ActionMode.LootTarget;
             }
-            else if (WowApi.CurrentPlayerData.TargetHealth == 0)
+            else if (!WowApi.CurrentPlayerData.PlayerHasTarget)
             {
-                // Wait to go out of combat or target to hit you
+                // Wait to be attacked
             }
             else if (!WowApi.CurrentPlayerData.TargetInCombat ||
                      WowApi.CurrentPlayerData.TargetFaction > 0)
@@ -542,7 +542,6 @@ namespace ClassicWowNeuralParasite
                 Input.KeyPress(VirtualKeyCode.TAB);
                 Helper.WaitSeconds(RegisterDelay);
             }
-            // Wait for enemy to be close
             else if (!WowApi.CurrentPlayerData.IsInCloseRange)
             {
                 m_FarTarget = true;
