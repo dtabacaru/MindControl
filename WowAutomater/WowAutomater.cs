@@ -526,10 +526,14 @@ namespace ClassicWowNeuralParasite
                 m_Potion = false;
                 m_CurrentActionMode = ActionMode.Revive;
             }
-            else if (!WowApi.CurrentPlayerData.PlayerInCombat || WowApi.CurrentPlayerData.TargetHealth == 0)
+            else if (!WowApi.CurrentPlayerData.PlayerInCombat)
             {
                 m_Potion = false;
                 m_CurrentActionMode = ActionMode.LootTarget;
+            }
+            else if (WowApi.CurrentPlayerData.TargetHealth == 0)
+            {
+                // Wait to go out of combat or target to hit you
             }
             else if (!WowApi.CurrentPlayerData.TargetInCombat ||
                      WowApi.CurrentPlayerData.TargetFaction > 0)
