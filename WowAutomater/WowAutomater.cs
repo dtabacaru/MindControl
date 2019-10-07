@@ -507,15 +507,6 @@ namespace ClassicWowNeuralParasite
                 m_Potion = false;
                 m_CurrentActionMode = ActionMode.LootTarget;
             }
-            else if (!WowApi.CurrentPlayerData.PlayerHasTarget || 
-                     !WowApi.CurrentPlayerData.TargetInCombat ||
-                     WowApi.CurrentPlayerData.TargetFaction > 0)
-            {
-                Input.KeyPress(VirtualKeyCode.TAB);
-                Helper.WaitSeconds(RegisterDelay);
-                m_WalkBackwards = true;
-                m_Turn = true;
-            }
             else if (m_WalkBackwards)
             {
                 Input.KeyDown(VirtualKeyCode.VK_S);
@@ -543,6 +534,15 @@ namespace ClassicWowNeuralParasite
                 m_WalkBackwards = false;
                 m_Turn = false;
                 m_TurnDirection = !m_TurnDirection;
+            }
+            else if (!WowApi.CurrentPlayerData.PlayerHasTarget || 
+                     !WowApi.CurrentPlayerData.TargetInCombat ||
+                     WowApi.CurrentPlayerData.TargetFaction > 0)
+            {
+                Input.KeyPress(VirtualKeyCode.TAB);
+                Helper.WaitSeconds(RegisterDelay);
+                m_WalkBackwards = true;
+                m_Turn = true;
             }
             // Wait for enemy to be close
             else if (!WowApi.CurrentPlayerData.IsInCloseRange)
