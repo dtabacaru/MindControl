@@ -44,6 +44,10 @@ namespace ClassicWowNeuralParasite
                 m_CurrentActionMode = value;
                 m_SetActionMode = value;
             }
+            get
+            {
+                return m_CurrentActionMode;
+            }
         }
 
         private static ActionMode m_SetActionMode = ActionMode.FindTarget;
@@ -478,6 +482,7 @@ namespace ClassicWowNeuralParasite
             {
                 WaypointFollower.StopFollowingWaypoints();
 
+                Helper.WaitSeconds(0.5);
                 m_CurrentActionMode = ActionMode.KillTarget;
                 return;
             }
@@ -502,35 +507,42 @@ namespace ClassicWowNeuralParasite
                 m_Potion = false;
                 m_CurrentActionMode = ActionMode.LootTarget;
             }
-            // Wrong target
-            else if (!WowApi.CurrentPlayerData.PlayerHasTarget ||
-                      !WowApi.CurrentPlayerData.TargetInCombat ||
-                      WowApi.CurrentPlayerData.IsTargetPlayer)
+            else if (!WowApi.CurrentPlayerData.PlayerHasTarget || 
+                     !WowApi.CurrentPlayerData.TargetInCombat ||
+                     WowApi.CurrentPlayerData.TargetFaction > 0)
             {
-                Input.KeyPress(VirtualKeyCode.VK_G);
+                Input.KeyPress(VirtualKeyCode.TAB);
                 Helper.WaitSeconds(RegisterDelay);
+                m_WalkBackwards = true;
+                m_Turn = true;
             }
             else if (m_WalkBackwards)
             {
                 Input.KeyDown(VirtualKeyCode.VK_S);
-                Helper.WaitSeconds(0.125);
-                Input.KeyUp(VirtualKeyCode.VK_S);
-                m_WalkBackwards = false;
-            }
-            else if (m_Turn)
-            {
-                if (m_TurnDirection)
-                    Input.KeyDown(VirtualKeyCode.VK_D);
-                else
-                    Input.KeyDown(VirtualKeyCode.VK_A);
-                Helper.WaitSeconds(0.125);
-                if (m_TurnDirection)
-                    Input.KeyUp(VirtualKeyCode.VK_D);
-                else
-                    Input.KeyUp(VirtualKeyCode.VK_A);
 
-                m_TurnDirection = !m_TurnDirection;
+                if (m_Turn)
+                {
+                    if (m_TurnDirection)
+                        Input.KeyDown(VirtualKeyCode.VK_D);
+                    else
+                        Input.KeyDown(VirtualKeyCode.VK_A);
+                }
+
+                Helper.WaitSeconds(0.125);
+
+                Input.KeyUp(VirtualKeyCode.VK_S);
+
+                if (m_Turn)
+                {
+                    if (m_TurnDirection)
+                        Input.KeyUp(VirtualKeyCode.VK_D);
+                    else
+                        Input.KeyUp(VirtualKeyCode.VK_A);
+                }
+
+                m_WalkBackwards = false;
                 m_Turn = false;
+                m_TurnDirection = !m_TurnDirection;
             }
             // Wait for enemy to be close
             else if (!WowApi.CurrentPlayerData.IsInCloseRange)

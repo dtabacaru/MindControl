@@ -40,7 +40,7 @@ namespace ClassicWowNeuralParasite
 
             Stealth = new BuffSpell(VirtualKeyCode.VK_T, BuffType.Stealth, cooldownTime: 10);
             SinisterStrike = new Spell(VirtualKeyCode.VK_2,45);
-            Eviscerate = new FinishingSpell(VirtualKeyCode.VK_3, 5, 25, 35);
+            Eviscerate = new FinishingSpell(VirtualKeyCode.VK_3, 25, 5, 5, 35);
             SliceAndDice = new ComboPointSpell(VirtualKeyCode.VK_5, 1, 1, 25, level: 10, useOnce: true);
             Rupture = new ComboPointSpell(VirtualKeyCode.VK_6,3,5, 25, 6 + 3 * 2, level: 20);
             KidneyShot = new ComboPointSpell(VirtualKeyCode.VK_7,3,5, 25, 20, level: 30);
@@ -54,7 +54,8 @@ namespace ClassicWowNeuralParasite
 
         private void WowApi_UpdateEvent(object sender, EventArgs ea)
         {
-            if (WowApi.CurrentPlayerData.PlayerActionError == ActionErrorType.FacingWrongWay)
+            if (WowApi.CurrentPlayerData.PlayerActionError == ActionErrorType.FacingWrongWay &&
+                WowAutomater.CurrentActionMode == ActionMode.FindTarget)
                 Target.Act();
         }
 
