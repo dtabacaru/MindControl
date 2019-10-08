@@ -471,5 +471,10 @@ namespace ClassicWowNeuralParasite
         {
             WowAutomater.RegenerateVitalsHealthPercentage = (double)RegenerateVitalsNumericInput.Value;
         }
+
+        private void AutoLootLabelCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            WowAutomater.AutoLoot = AutoLootLabelCheckbox.Checked;
+        }
     }
 }

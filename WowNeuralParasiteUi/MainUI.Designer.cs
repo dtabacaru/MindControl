@@ -95,6 +95,8 @@
             this.PassiveHumanoidLabel = new System.Windows.Forms.Label();
             this.ShowInfoButton = new System.Windows.Forms.Button();
             this.StatusLabel = new System.Windows.Forms.Label();
+            this.AutoLootLabelCheckbox = new System.Windows.Forms.CheckBox();
+            this.AutoLootLabel = new System.Windows.Forms.Label();
             this.OptionTabs.SuspendLayout();
             this.InfoTab.SuspendLayout();
             this.PathsTab.SuspendLayout();
@@ -333,6 +335,8 @@
             // 
             // AutomaterTab
             // 
+            this.AutomaterTab.Controls.Add(this.AutoLootLabelCheckbox);
+            this.AutomaterTab.Controls.Add(this.AutoLootLabel);
             this.AutomaterTab.Controls.Add(this.RegenerateVitalsLabel);
             this.AutomaterTab.Controls.Add(this.RegenerateVitalsNumericInput);
             this.AutomaterTab.Controls.Add(this.ReviveButtonLocationTestButton);
@@ -451,6 +455,8 @@
             // SkinLootCheckbox
             // 
             this.SkinLootCheckbox.AutoSize = true;
+            this.SkinLootCheckbox.Checked = true;
+            this.SkinLootCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.SkinLootCheckbox.Location = new System.Drawing.Point(154, 113);
             this.SkinLootCheckbox.Name = "SkinLootCheckbox";
             this.SkinLootCheckbox.Size = new System.Drawing.Size(15, 14);
@@ -715,6 +721,8 @@
             // AlwaysThrowCheckBox
             // 
             this.AlwaysThrowCheckBox.AutoSize = true;
+            this.AlwaysThrowCheckBox.Checked = true;
+            this.AlwaysThrowCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.AlwaysThrowCheckBox.Location = new System.Drawing.Point(146, 83);
             this.AlwaysThrowCheckBox.Name = "AlwaysThrowCheckBox";
             this.AlwaysThrowCheckBox.Size = new System.Drawing.Size(15, 14);
@@ -999,6 +1007,25 @@
             this.StatusLabel.Size = new System.Drawing.Size(0, 24);
             this.StatusLabel.TabIndex = 38;
             // 
+            // AutoLootLabelCheckbox
+            // 
+            this.AutoLootLabelCheckbox.AutoSize = true;
+            this.AutoLootLabelCheckbox.Location = new System.Drawing.Point(154, 240);
+            this.AutoLootLabelCheckbox.Name = "AutoLootLabelCheckbox";
+            this.AutoLootLabelCheckbox.Size = new System.Drawing.Size(15, 14);
+            this.AutoLootLabelCheckbox.TabIndex = 21;
+            this.AutoLootLabelCheckbox.UseVisualStyleBackColor = true;
+            this.AutoLootLabelCheckbox.CheckedChanged += new System.EventHandler(this.AutoLootLabelCheckbox_CheckedChanged);
+            // 
+            // AutoLootLabel
+            // 
+            this.AutoLootLabel.AutoSize = true;
+            this.AutoLootLabel.Location = new System.Drawing.Point(3, 240);
+            this.AutoLootLabel.Name = "AutoLootLabel";
+            this.AutoLootLabel.Size = new System.Drawing.Size(49, 13);
+            this.AutoLootLabel.TabIndex = 20;
+            this.AutoLootLabel.Text = "Auto loot";
+            // 
             // MainUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1113,6 +1140,8 @@
         private System.Windows.Forms.Label PassiveHumanoidLabel;
         private System.Windows.Forms.Label RegenerateVitalsLabel;
         private System.Windows.Forms.NumericUpDown RegenerateVitalsNumericInput;
+        private System.Windows.Forms.CheckBox AutoLootLabelCheckbox;
+        private System.Windows.Forms.Label AutoLootLabel;
     }
 }
 

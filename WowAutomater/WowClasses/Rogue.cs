@@ -12,7 +12,7 @@ namespace ClassicWowNeuralParasite
     {
         public int StealthLevel = 10;
         public bool StealthFlag = true;
-        public bool ThrowFlag = false;
+        public bool ThrowFlag = true;
         public int StealthCooldown = 10;
 
         public Timer StaleStealthTimer = new Timer();
@@ -22,6 +22,8 @@ namespace ClassicWowNeuralParasite
         public Action Throw;
 
         public BuffSpell Stealth;
+
+        public Spell EquipAmmo;
 
         public Spell SinisterStrike;
         public ComboPointSpell SliceAndDice;
@@ -45,6 +47,7 @@ namespace ClassicWowNeuralParasite
             Rupture = new ComboPointSpell(VirtualKeyCode.VK_6,3,5, 25, 6 + 3 * 2, level: 20);
             KidneyShot = new ComboPointSpell(VirtualKeyCode.VK_7,3,5, 25, 20, level: 30);
             Evasion = new Spell(VirtualKeyCode.VK_L, cooldownTime: 5 * 60, healthPercentage: 40, level: 8);
+            EquipAmmo = new Spell(VirtualKeyCode.VK_Z, cooldownTime: 10);
 
             StaleStealthTimer.Interval = StealthCooldown * 1000;
             StaleStealthTimer.Elapsed += StaleStealthTimer_Elapsed;
@@ -57,6 +60,9 @@ namespace ClassicWowNeuralParasite
             if (WowApi.CurrentPlayerData.PlayerActionError == ActionErrorType.FacingWrongWay &&
                 WowAutomater.CurrentActionMode == ActionMode.FindTarget)
                 Target.Act();
+
+            if (WowAutomater.CurrentActionMode == ActionMode.KillTarget)
+                StaleStealthTimer.Stop();
         }
 
         private void StaleStealthTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -88,16 +94,22 @@ namespace ClassicWowNeuralParasite
                 FindTargetMode = RogueFindTargetMode.Throw;
             }
             else if ( (StealthFlag && WowApi.CurrentPlayerData.PlayerLevel > StealthLevel) && 
-                      (ThrowFlag && WowApi.CurrentPlayerData.AmmoCount > 1) )
+                      ThrowFlag)
             {
+                if (WowApi.CurrentPlayerData.AmmoCount == 1 && EquipAmmo.CanCastSpell)
+                    EquipAmmo.CastSpell();
+
                 FindTargetMode = RogueFindTargetMode.StealthAndThrow;
             }
             else if (StealthFlag && WowApi.CurrentPlayerData.PlayerLevel > StealthLevel)
             {
                 FindTargetMode = RogueFindTargetMode.Stealth;
             }
-            else if (ThrowFlag && WowApi.CurrentPlayerData.AmmoCount > 1)
+            else if (ThrowFlag)
             {
+                if (WowApi.CurrentPlayerData.AmmoCount == 1 && EquipAmmo.CanCastSpell)
+                    EquipAmmo.CastSpell();
+
                 FindTargetMode = RogueFindTargetMode.Throw;
             }
             else
@@ -206,10 +218,10 @@ namespace ClassicWowNeuralParasite
                 SliceAndDice.CastSpell();
             else if (Eviscerate.CanCastSpell)
                 Eviscerate.CastSpell();
-            else if (KidneyShot.CanCastSpell)
-                KidneyShot.CastSpell();
             else if (Rupture.CanCastSpell)
                 Rupture.CastSpell();
+            else if (KidneyShot.CanCastSpell)
+                KidneyShot.CastSpell();
             else if (SinisterStrike.CanCastSpell)
                 SinisterStrike.CastSpell();
         }

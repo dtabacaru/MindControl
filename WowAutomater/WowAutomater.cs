@@ -78,7 +78,7 @@ namespace ClassicWowNeuralParasite
         public static double RegisterDelay = 0.1;
         public static double XReviveButtonLocation = 32500;
         public static double YReviveButtonLocation = 14000;
-        public static volatile bool SkinLoot = false;
+        public static volatile bool SkinLoot = true;
 
         public static double RegenerateVitalsHealthPercentage = 60;
 
@@ -89,6 +89,8 @@ namespace ClassicWowNeuralParasite
         private static bool m_Idle = false;
         private static bool m_StartedEating = false;
         private static bool m_FarTarget = false;
+
+        public static bool AutoLoot = false;
 
         private static Stopwatch m_ReviveSw = new Stopwatch();
 
@@ -358,76 +360,41 @@ namespace ClassicWowNeuralParasite
 
         private static void LootTarget()
         {
-            Helper.WaitSeconds(0.250);
-            Input.KeyDown(VirtualKeyCode.LSHIFT);
+            if(!AutoLoot)
+                Input.KeyDown(VirtualKeyCode.LSHIFT);
 
-            Input.MoveMouseTo(33300, 30000);
-            Input.RightClick();
-            Helper.WaitSeconds(0.250);
+            for (int x = 20000; x < 48000; x += 1500)
+            {
+                for (int y = 18000; y < 52000; y += 1500)
+                {
+                    Input.MoveMouseTo(x, y);
+                    Input.RightClick();
+                }
+            }
 
-            Input.MoveMouseTo(33300, 40000);
-            Input.RightClick();
-            Helper.WaitSeconds(0.250);
+            Helper.WaitSeconds(2.5);
 
-            Input.MoveMouseTo(43300, 40000);
-            Input.RightClick();
-            Helper.WaitSeconds(0.250);
-
-            Input.MoveMouseTo(23300, 40000);
-            Input.RightClick();
-            Helper.WaitSeconds(0.250);
-
-            Input.MoveMouseTo(33300, 50000);
-            Input.RightClick();
-            Helper.WaitSeconds(0.250);
-
-            Input.MoveMouseTo(43300, 50000);
-            Input.RightClick();
-            Helper.WaitSeconds(0.250);
-
-            Input.MoveMouseTo(23300, 50000);
-            Input.RightClick();
-            Helper.WaitSeconds(0.250);
-
-            Input.KeyUp(VirtualKeyCode.LSHIFT);
-
-            Helper.WaitSeconds(1.0);
+            if (!AutoLoot)
+                Input.KeyUp(VirtualKeyCode.LSHIFT);
 
             if (SkinLoot)
             {
-                Helper.WaitSeconds(0.250);
-                Input.KeyDown(VirtualKeyCode.LSHIFT);
+                if (!AutoLoot)
+                    Input.KeyDown(VirtualKeyCode.LSHIFT);
 
-                Input.MoveMouseTo(33300, 30000);
-                Input.RightClick();
-                Helper.WaitSeconds(0.250);   
+                for (int x = 20000; x < 48000; x += 1500)
+                {
+                    for (int y = 18000; y < 52000; y += 1500)
+                    {
+                        Input.MoveMouseTo(x, y);
+                        Input.RightClick();
+                    }
+                }
 
-                Input.MoveMouseTo(33300, 40000);
-                Input.RightClick();
-                Helper.WaitSeconds(0.250);
+                Helper.WaitSeconds(4);
 
-                Input.MoveMouseTo(43300, 40000);
-                Input.RightClick();
-                Helper.WaitSeconds(0.250);
-
-                Input.MoveMouseTo(23300, 40000);
-                Input.RightClick();
-                Helper.WaitSeconds(0.250);
-
-                Input.MoveMouseTo(33300, 50000);
-                Input.RightClick();
-                Helper.WaitSeconds(0.250);
-
-                Input.MoveMouseTo(43300, 50000);
-                Input.RightClick();
-                Helper.WaitSeconds(0.250);
-
-                Input.MoveMouseTo(23300, 50000);
-                Input.RightClick();
-                Helper.WaitSeconds(0.250);
-
-                Helper.WaitSeconds(4.000);
-                Input.KeyUp(VirtualKeyCode.LSHIFT);
+                if (!AutoLoot)
+                    Input.KeyUp(VirtualKeyCode.LSHIFT);
             }
 
             if (WowApi.CurrentPlayerData.PlayerInCombat)
