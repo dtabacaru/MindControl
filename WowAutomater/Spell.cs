@@ -19,11 +19,11 @@ namespace ClassicWowNeuralParasite
         {
             get
             {
-                if (WowApi.CurrentPlayerData.PlayerMana >= ManaCost &&
-                    !WowApi.CurrentPlayerData.Casting &&
-                    WowApi.CurrentPlayerData.CanUseSkill &&
-                    WowApi.CurrentPlayerData.PlayerHealthPercentage <= PlayerHealthPercentage &&
-                    WowApi.CurrentPlayerData.PlayerLevel >= Level &&
+                if (WowApi.PlayerData.PlayerMana >= ManaCost &&
+                    !WowApi.PlayerData.Casting &&
+                    WowApi.PlayerData.CanUseSkill &&
+                    WowApi.PlayerData.PlayerHealthPercentage <= PlayerHealthPercentage &&
+                    WowApi.PlayerData.PlayerLevel >= Level &&
                     !Used &&
                     CooledDown)
                     return true;
@@ -84,7 +84,7 @@ namespace ClassicWowNeuralParasite
 
         private void WowApi_UpdateEvent(object sender, System.EventArgs ea)
         {
-            if (!WowApi.CurrentPlayerData.PlayerInCombat || !WowApi.CurrentPlayerData.PlayerHasTarget)
+            if (!WowApi.PlayerData.PlayerInCombat || !WowApi.PlayerData.PlayerHasTarget)
                 Used = false;
         }
     }

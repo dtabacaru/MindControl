@@ -23,13 +23,13 @@ namespace ClassicWowNeuralParasite
         {
             get
             {
-                if (WowApi.CurrentPlayerData.PlayerMana >= ManaCost &&
-                    !WowApi.CurrentPlayerData.Casting &&
-                    WowApi.CurrentPlayerData.CanUseSkill &&
-                    WowApi.CurrentPlayerData.PlayerHealthPercentage <= PlayerHealthPercentage &&
-                    WowApi.CurrentPlayerData.PlayerLevel >= Level &&
-                    (((int)WowApi.CurrentPlayerData.Buffs & (int)BuffType.SealOfCommand) > 0 ||
-                      ((int)WowApi.CurrentPlayerData.Buffs & (int)BuffType.SealOfTheCrusader) > 0) &&
+                if (WowApi.PlayerData.PlayerMana >= ManaCost &&
+                    !WowApi.PlayerData.Casting &&
+                    WowApi.PlayerData.CanUseSkill &&
+                    WowApi.PlayerData.PlayerHealthPercentage <= PlayerHealthPercentage &&
+                    WowApi.PlayerData.PlayerLevel >= Level &&
+                    (((int)WowApi.PlayerData.Buffs & (int)BuffType.SealOfCommand) > 0 ||
+                      ((int)WowApi.PlayerData.Buffs & (int)BuffType.SealOfTheCrusader) > 0) &&
                     !Used &&
                     CooledDown)
                     return true;

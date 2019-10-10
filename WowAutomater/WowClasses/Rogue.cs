@@ -14,6 +14,7 @@ namespace ClassicWowNeuralParasite
         public bool StealthFlag = true;
         public bool ThrowFlag = true;
         public int StealthCooldown = 10;
+        public bool RuptureFirst = true;
 
         public Timer StaleStealthTimer = new Timer();
 
@@ -57,7 +58,7 @@ namespace ClassicWowNeuralParasite
 
         private void WowApi_UpdateEvent(object sender, EventArgs ea)
         {
-            if (WowApi.CurrentPlayerData.PlayerActionError == ActionErrorType.FacingWrongWay &&
+            if (WowApi.PlayerData.PlayerActionError == ActionErrorType.FacingWrongWay &&
                 WowAutomater.CurrentActionMode == ActionMode.FindTarget)
                 Target.Act();
 
@@ -67,7 +68,7 @@ namespace ClassicWowNeuralParasite
 
         private void StaleStealthTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if ((WowApi.CurrentPlayerData.Buffs & (int)BuffType.Stealth) > 0)
+            if ((WowApi.PlayerData.Buffs & (int)BuffType.Stealth) > 0)
             {
                 Input.KeyPress(VirtualKeyCode.VK_T);
             }
@@ -89,25 +90,25 @@ namespace ClassicWowNeuralParasite
 
         private void CheckFindMode()
         {
-            if (WowApi.CurrentPlayerData.PlayerLevel < 5)
+            if (WowApi.PlayerData.PlayerLevel < 5)
             {
                 FindTargetMode = RogueFindTargetMode.Throw;
             }
-            else if ( (StealthFlag && WowApi.CurrentPlayerData.PlayerLevel > StealthLevel) && 
+            else if ( (StealthFlag && WowApi.PlayerData.PlayerLevel > StealthLevel) && 
                       ThrowFlag)
             {
-                if (WowApi.CurrentPlayerData.AmmoCount == 1 && EquipAmmo.CanCastSpell)
+                if (WowApi.PlayerData.AmmoCount == 1 && EquipAmmo.CanCastSpell)
                     EquipAmmo.CastSpell();
 
                 FindTargetMode = RogueFindTargetMode.StealthAndThrow;
             }
-            else if (StealthFlag && WowApi.CurrentPlayerData.PlayerLevel > StealthLevel)
+            else if (StealthFlag && WowApi.PlayerData.PlayerLevel > StealthLevel)
             {
                 FindTargetMode = RogueFindTargetMode.Stealth;
             }
             else if (ThrowFlag)
             {
-                if (WowApi.CurrentPlayerData.AmmoCount == 1 && EquipAmmo.CanCastSpell)
+                if (WowApi.PlayerData.AmmoCount == 1 && EquipAmmo.CanCastSpell)
                     EquipAmmo.CastSpell();
 
                 FindTargetMode = RogueFindTargetMode.Throw;
@@ -130,12 +131,12 @@ namespace ClassicWowNeuralParasite
                 if (Stealth.CanCastSpell)
                     Stealth.CastSpell();
 
-                validTarget = WowApi.CurrentPlayerData.PlayerHasTarget &&
-                            WowApi.CurrentPlayerData.TargetHealth == 100 &&
-                            !WowApi.CurrentPlayerData.TargetInCombat &&
-                            WowApi.CurrentPlayerData.TargetFaction == 0 &&
-                            WowApi.CurrentPlayerData.IsInFarRange &&
-                            !WowApi.CurrentPlayerData.IsInCloseRange;
+                validTarget = WowApi.PlayerData.PlayerHasTarget &&
+                            WowApi.PlayerData.TargetHealth == 100 &&
+                            !WowApi.PlayerData.TargetInCombat &&
+                            WowApi.PlayerData.TargetFaction == 0 &&
+                            WowApi.PlayerData.IsInFarRange &&
+                            !WowApi.PlayerData.IsInCloseRange;
 
                 if (validTarget)
                 {
@@ -148,12 +149,12 @@ namespace ClassicWowNeuralParasite
             }
             else if (FindTargetMode == RogueFindTargetMode.Throw)
             {
-                validTarget = WowApi.CurrentPlayerData.PlayerHasTarget &&
-                            WowApi.CurrentPlayerData.TargetHealth == 100 &&
-                            !WowApi.CurrentPlayerData.TargetInCombat &&
-                            WowApi.CurrentPlayerData.TargetFaction == 0 &&
-                            WowApi.CurrentPlayerData.IsInFarRange &&
-                            !WowApi.CurrentPlayerData.IsInCloseRange;
+                validTarget = WowApi.PlayerData.PlayerHasTarget &&
+                            WowApi.PlayerData.TargetHealth == 100 &&
+                            !WowApi.PlayerData.TargetInCombat &&
+                            WowApi.PlayerData.TargetFaction == 0 &&
+                            WowApi.PlayerData.IsInFarRange &&
+                            !WowApi.PlayerData.IsInCloseRange;
 
                 if (validTarget)
                 {
@@ -172,15 +173,15 @@ namespace ClassicWowNeuralParasite
                     StaleStealthTimer.Start();
                 }
 
-                validTarget = WowApi.CurrentPlayerData.PlayerHasTarget &&
-                            WowApi.CurrentPlayerData.TargetHealth == 100 &&
-                            !WowApi.CurrentPlayerData.TargetInCombat &&
-                            WowApi.CurrentPlayerData.TargetFaction == 0 &&
-                            WowApi.CurrentPlayerData.IsInCloseRange;
+                validTarget = WowApi.PlayerData.PlayerHasTarget &&
+                            WowApi.PlayerData.TargetHealth == 100 &&
+                            !WowApi.PlayerData.TargetInCombat &&
+                            WowApi.PlayerData.TargetFaction == 0 &&
+                            WowApi.PlayerData.IsInCloseRange;
 
                 if (validTarget)
                 {
-                    if (WowApi.CurrentPlayerData.IsInCloseRange)
+                    if (WowApi.PlayerData.IsInCloseRange)
                     {
                         Input.KeyPress(VirtualKeyCode.VK_2);
                         Helper.WaitSeconds(0.1);
@@ -189,11 +190,11 @@ namespace ClassicWowNeuralParasite
             }
             else
             {
-                validTarget = WowApi.CurrentPlayerData.PlayerHasTarget &&
-                            WowApi.CurrentPlayerData.TargetHealth == 100 &&
-                            !WowApi.CurrentPlayerData.TargetInCombat &&
-                            WowApi.CurrentPlayerData.TargetFaction == 0 &&
-                            WowApi.CurrentPlayerData.IsInCloseRange;
+                validTarget = WowApi.PlayerData.PlayerHasTarget &&
+                            WowApi.PlayerData.TargetHealth == 100 &&
+                            !WowApi.PlayerData.TargetInCombat &&
+                            WowApi.PlayerData.TargetFaction == 0 &&
+                            WowApi.PlayerData.IsInCloseRange;
 
                 if (validTarget)
                 {
@@ -208,20 +209,33 @@ namespace ClassicWowNeuralParasite
 
         public override void AutoAttackTarget()
         {
-            if (!WowApi.CurrentPlayerData.PlayerInCombat)
+            if (!WowApi.PlayerData.PlayerInCombat)
                 return;
-            else if (!WowApi.CurrentPlayerData.PlayerHasTarget)
+            else if (!WowApi.PlayerData.PlayerHasTarget)
                 Target.Act();
-            else if (!WowApi.CurrentPlayerData.PlayerIsAttacking)
+            else if (!WowApi.PlayerData.PlayerIsAttacking)
                 Attack.Act();
             else if (SliceAndDice.CanCastSpell)
                 SliceAndDice.CastSpell();
             else if (Eviscerate.CanCastSpell)
                 Eviscerate.CastSpell();
-            else if (Rupture.CanCastSpell)
-                Rupture.CastSpell();
-            else if (KidneyShot.CanCastSpell)
-                KidneyShot.CastSpell();
+            else if (Eviscerate.CanCastSpell || Rupture.CanCastSpell)
+            {
+                if(RuptureFirst)
+                {
+                    if (Rupture.CanCastSpell)
+                        Rupture.CastSpell();
+                    else if (KidneyShot.CanCastSpell)
+                        KidneyShot.CastSpell();
+                }
+                else
+                {
+                    if (KidneyShot.CanCastSpell)
+                        KidneyShot.CastSpell();
+                    else if (Rupture.CanCastSpell)
+                        Rupture.CastSpell();
+                }
+            }
             else if (SinisterStrike.CanCastSpell)
                 SinisterStrike.CastSpell();
         }

@@ -1,0 +1,25 @@
+--Automater
+Split distance: 0.25
+Turn tolerance (rad): 0.08
+Position tolerance: 0.075
+Register delay (sec): 0.10
+Recompute waypoint distance: 1.00
+Skin after loot: true
+X revive button location: 325
+Y revive button location: 145
+Regenerate health %: 60
+Auto loot: false
+-- Paladin
+First seal: None
+-- Rogue
+Stealth: true
+Stealth level: 10
+Remove stealth after (sec): 10
+Always throw: true
+Slice and dice combo points: 1
+Rupture combo points: 3
+Eviscerate percentage: 25
+Evasion percentage: 40
+Rupture first: true
+-- Druid
+Passive humanoid: true

@@ -29,10 +29,10 @@ namespace ClassicWowNeuralParasite
             {
                 WowApi.Sync.WaitOne();
 
-                if (WowApi.CurrentPlayerData.Found)
+                if (WowApi.PlayerData.Found)
                 {
-                    double currentX = WowApi.CurrentPlayerData.PlayerXPosition;
-                    double currentY = WowApi.CurrentPlayerData.PlayerYPosition;
+                    double currentX = WowApi.PlayerData.PlayerXPosition;
+                    double currentY = WowApi.PlayerData.PlayerYPosition;
 
                     if (lastSplitX == -1)
                     {

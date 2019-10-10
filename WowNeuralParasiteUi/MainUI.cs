@@ -23,6 +23,11 @@ namespace ClassicWowNeuralParasite
         {
             InitializeComponent();
 
+            if (File.Exists("Config.ftw"))
+            {
+                ReadConfigString(File.ReadAllText("Config.ftw"));
+            }      
+
             if (!File.Exists("targetpath.txt"))
             {
                 File.WriteAllText("targetpath.txt", ";");
@@ -103,6 +108,139 @@ namespace ClassicWowNeuralParasite
             YTextBox.Text += wea.Y.ToString("N3") + ", ";
         }
 
+        private void ReadConfigString(string configString)
+        {
+            string[] configStrings = configString.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            
+            foreach (string config in configStrings)
+            {
+                // Ignore comments
+                if (config.Substring(0, 2) == "--")
+                    continue;
+
+                ParseConfig(config);
+            }
+        }
+
+        private void ParseConfig(string config)
+        {
+            string[] configParts = config.Split(':');
+
+            if (configParts.Length != 2)
+                throw new Exception("Unknown line in config: " + config);
+
+            string configName = configParts[0].Trim();
+            string configValue = configParts[1].Trim();
+
+            switch (configName)
+            {
+                case "Split distance":
+                    RecordWowPath.SplitDistance = Convert.ToDouble(configValue);
+                    SplitDistanceNumericInput.Value = Convert.ToDecimal(configValue);
+                    break;
+                case "Turn tolerance (rad)":
+                    WaypointFollower.TurnToleranceRad = Convert.ToDouble(configValue);
+                    TurnToleranceNumericInput.Value = Convert.ToDecimal(configValue);
+                    break;
+                case "Position tolerance":
+                    WaypointFollower.PositionTolerance = Convert.ToDouble(configValue);
+                    PositionToleranceNumericInput.Value = Convert.ToDecimal(configValue);
+                    break;
+                case "Register delay (sec)":
+                    WowAutomater.RegisterDelay = Convert.ToDouble(configValue);
+                    RegisterDelayNumericInput.Value = Convert.ToDecimal(configValue);
+                    break;
+                case "Recompute waypoint distance":
+                    WaypointFollower.ClosestPointDistance = Convert.ToDouble(configValue);
+                    ClosestPointDistanceNumericInput.Value = Convert.ToDecimal(configValue);
+                    break;
+                case "Skin after loot":
+                    WowAutomater.SkinLoot = Convert.ToBoolean(configValue);
+                    SkinLootCheckbox.Checked = Convert.ToBoolean(configValue);
+                    break;
+                case "X revive button location":
+                    WowAutomater.XReviveButtonLocation = Convert.ToDouble(configValue) * 100;
+                    XReviveButtonLocationNumericInput.Value = Convert.ToDecimal(configValue);
+                    break;
+                case "Y revive button location":
+                    WowAutomater.YReviveButtonLocation = Convert.ToDouble(configValue) * 100;
+                    YReviveButtonLocationNumericInput.Value = Convert.ToDecimal(configValue);
+                    break;
+                case "Regenerate health %":
+                    WowAutomater.RegenerateVitalsHealthPercentage = Convert.ToDouble(configValue);
+                    RegenerateVitalsNumericInput.Value = Convert.ToDecimal(configValue);
+                    break;
+                case "Auto loot":
+                    WowAutomater.AutoLoot = Convert.ToBoolean(configValue);
+                    AutoLootLabelCheckbox.Checked = Convert.ToBoolean(configValue);
+                    break;
+                case "First seal":
+                    
+                    switch (configValue)
+                    {
+                        case "None":
+                            WowAutomater.Paladin.FirstSeal = FirstSealType.None;
+                            FirstSealCrusaderButton.Checked = true;
+                            break;
+                        case "Crusader":
+                            WowAutomater.Paladin.FirstSeal = FirstSealType.Crusader;
+                            FirstSealCrusaderButton.Checked = true;
+                            break;
+                        case "Justice":
+                            WowAutomater.Paladin.FirstSeal = FirstSealType.Justice;
+                            FirstSealJusticeButton.Checked = true;
+                            break;
+                        default:
+                            throw new Exception("Unknown line in config: " + config);
+                    }
+
+                    break;
+                case "Stealth":
+                    WowAutomater.Rogue.StealthFlag = Convert.ToBoolean(configValue);
+                    StealthCheckBox.Checked = Convert.ToBoolean(configValue);
+                    break;
+                case "Stealth level":
+                    WowAutomater.Rogue.StealthLevel = Convert.ToInt32(configValue);
+                    StealthLevelNumericInput.Value = Convert.ToDecimal(configValue);
+                    break;
+                case "Remove stealth after (sec)":
+                    WowAutomater.Rogue.StaleStealthTimer.Interval = Convert.ToDouble(configValue) * 1000;
+                    StaleStealthNumericInput.Value = Convert.ToDecimal(configValue);
+                    break;
+                case "Always throw":
+                    WowAutomater.Rogue.ThrowFlag = Convert.ToBoolean(configValue);
+                    AlwaysThrowCheckBox.Checked = Convert.ToBoolean(configValue);
+                    break;
+                case "Slice and dice combo points":
+                    WowAutomater.Rogue.SliceAndDice.MinimumComboPointsCost = Convert.ToUInt16(configValue);
+                    WowAutomater.Rogue.SliceAndDice.MaximumComboPointsCost = Convert.ToUInt16(configValue);
+                    SliceNDiceCPNumericInput.Value = Convert.ToDecimal(configValue);
+                    break;
+                case "Rupture combo points":
+                    WowAutomater.Rogue.Rupture.MinimumComboPointsCost = Convert.ToUInt16(configValue);
+                    RuptureCPNumericInput.Value = Convert.ToDecimal(configValue);
+                    break;
+                case "Eviscerate percentage":
+                    WowAutomater.Rogue.Eviscerate.TargetHealthPercentage = Convert.ToDouble(configValue);
+                    EvisceratePercentageNumericInput.Value = Convert.ToDecimal(configValue);
+                    break;
+                case "Evasion percentage":
+                    WowAutomater.Rogue.Evasion.PlayerHealthPercentage = Convert.ToDouble(configValue);
+                    EvasionPercentaceNumericInput.Value = Convert.ToDecimal(configValue);
+                    break;
+                case "Rupture first":
+                    WowAutomater.Rogue.RuptureFirst = Convert.ToBoolean(configValue);
+                    RuptureFirstCheckBox.Checked = Convert.ToBoolean(configValue);
+                    break;
+                case "Passive humanoid":
+                    WowAutomater.Druid.Passive = Convert.ToBoolean(configValue);
+                    PassiveHumanoidCheckBox.Checked = Convert.ToBoolean(configValue);
+                    break;
+                default:
+                    throw new Exception("Unknown line in config: " + config);
+            }
+        }
+
         private void ReadPaths()
         {
             string allpaths = File.ReadAllText("targetpath.txt");
@@ -141,10 +279,10 @@ namespace ClassicWowNeuralParasite
                 return;
             }
 
-            DataTextBox.Text = WowApi.CurrentPlayerData.ToString();
+            DataTextBox.Text = WowApi.PlayerData.ToString();
             StatusLabel.Text = WowAutomaterStatusString;
 
-            if (WowApi.CurrentPlayerData.Found)
+            if (WowApi.PlayerData.Found)
             {
                 RecordButton.Enabled = true;
                 InfoTab.BackColor = m_GreenColor;
@@ -347,10 +485,10 @@ namespace ClassicWowNeuralParasite
 
             // OptionTabs.SelectedIndex == 3 "Classes" tab
             if (OptionTabs.SelectedIndex == 3 && 
-                WowApi.CurrentPlayerData.Class > PlayerClassType.None && 
-                WowApi.CurrentPlayerData.Class <= PlayerClassType.LastPlayerClass)
+                WowApi.PlayerData.Class > PlayerClassType.None && 
+                WowApi.PlayerData.Class <= PlayerClassType.LastPlayerClass)
             {
-                ClassTabs.SelectedIndex = (int)WowApi.CurrentPlayerData.Class - 1;
+                ClassTabs.SelectedIndex = (int)WowApi.PlayerData.Class - 1;
             }
         }
 
@@ -476,5 +614,11 @@ namespace ClassicWowNeuralParasite
         {
             WowAutomater.AutoLoot = AutoLootLabelCheckbox.Checked;
         }
+
+        private void RuptureFirstCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            WowAutomater.Rogue.RuptureFirst = RuptureFirstCheckBox.Checked;
+        }
+
     }
 }

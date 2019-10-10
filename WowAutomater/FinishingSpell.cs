@@ -28,13 +28,13 @@ namespace ClassicWowNeuralParasite
         {
             get
             {
-                if (WowApi.CurrentPlayerData.PlayerMana >= ManaCost &&
-                   ((WowApi.CurrentPlayerData.TargetComboPoints >= MinimumComboPointsCost && WowApi.CurrentPlayerData.TargetComboPoints <= MaximumComboPointsCost) ||
-                   (WowApi.CurrentPlayerData.TargetHealth < TargetHealthPercentage && WowApi.CurrentPlayerData.TargetComboPoints >= 1)) &&
-                   !WowApi.CurrentPlayerData.Casting &&
-                    WowApi.CurrentPlayerData.CanUseSkill &&
-                    WowApi.CurrentPlayerData.PlayerHealthPercentage <= PlayerHealthPercentage &&
-                    WowApi.CurrentPlayerData.PlayerLevel >= Level &&
+                if (WowApi.PlayerData.PlayerMana >= ManaCost &&
+                   ((WowApi.PlayerData.TargetComboPoints >= MinimumComboPointsCost && WowApi.PlayerData.TargetComboPoints <= MaximumComboPointsCost) ||
+                   (WowApi.PlayerData.TargetHealth < TargetHealthPercentage && WowApi.PlayerData.TargetComboPoints >= 1)) &&
+                   !WowApi.PlayerData.Casting &&
+                    WowApi.PlayerData.CanUseSkill &&
+                    WowApi.PlayerData.PlayerHealthPercentage <= PlayerHealthPercentage &&
+                    WowApi.PlayerData.PlayerLevel >= Level &&
                     !Used &&
                     CooledDown)
                     return true;

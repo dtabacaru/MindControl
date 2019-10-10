@@ -47,6 +47,8 @@
             this.XTextBox = new System.Windows.Forms.TextBox();
             this.XLabel = new System.Windows.Forms.Label();
             this.AutomaterTab = new System.Windows.Forms.TabPage();
+            this.AutoLootLabelCheckbox = new System.Windows.Forms.CheckBox();
+            this.AutoLootLabel = new System.Windows.Forms.Label();
             this.RegenerateVitalsLabel = new System.Windows.Forms.Label();
             this.RegenerateVitalsNumericInput = new System.Windows.Forms.NumericUpDown();
             this.ReviveButtonLocationTestButton = new System.Windows.Forms.Button();
@@ -68,7 +70,13 @@
             this.ClassTabs = new System.Windows.Forms.TabControl();
             this.WarriorTab = new System.Windows.Forms.TabPage();
             this.PaladinTab = new System.Windows.Forms.TabPage();
+            this.FirstSealJusticeButton = new System.Windows.Forms.RadioButton();
+            this.FirstSealCrusaderButton = new System.Windows.Forms.RadioButton();
+            this.FirstSealNoneButton = new System.Windows.Forms.RadioButton();
+            this.FirstSealLabel = new System.Windows.Forms.Label();
             this.RogueTab = new System.Windows.Forms.TabPage();
+            this.RuptureFirstCheckBox = new System.Windows.Forms.CheckBox();
+            this.RuptureFirstLabel = new System.Windows.Forms.Label();
             this.EvasionPercentageLabel = new System.Windows.Forms.Label();
             this.EvasionPercentaceNumericInput = new System.Windows.Forms.NumericUpDown();
             this.AlwaysThrowCheckBox = new System.Windows.Forms.CheckBox();
@@ -95,8 +103,6 @@
             this.PassiveHumanoidLabel = new System.Windows.Forms.Label();
             this.ShowInfoButton = new System.Windows.Forms.Button();
             this.StatusLabel = new System.Windows.Forms.Label();
-            this.AutoLootLabelCheckbox = new System.Windows.Forms.CheckBox();
-            this.AutoLootLabel = new System.Windows.Forms.Label();
             this.OptionTabs.SuspendLayout();
             this.InfoTab.SuspendLayout();
             this.PathsTab.SuspendLayout();
@@ -111,6 +117,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.TurnToleranceNumericInput)).BeginInit();
             this.ClassesTab.SuspendLayout();
             this.ClassTabs.SuspendLayout();
+            this.PaladinTab.SuspendLayout();
             this.RogueTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.EvasionPercentaceNumericInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.EvisceratePercentageNumericInput)).BeginInit();
@@ -198,7 +205,7 @@
             this.ReversePathButton.Name = "ReversePathButton";
             this.ReversePathButton.Size = new System.Drawing.Size(200, 25);
             this.ReversePathButton.TabIndex = 43;
-            this.ReversePathButton.Text = "Reverse Path";
+            this.ReversePathButton.Text = "Reverse path";
             this.ReversePathButton.UseVisualStyleBackColor = true;
             this.ReversePathButton.Click += new System.EventHandler(this.ReversePathButton_Click);
             // 
@@ -246,7 +253,7 @@
             this.SaveFileButton.Name = "SaveFileButton";
             this.SaveFileButton.Size = new System.Drawing.Size(200, 25);
             this.SaveFileButton.TabIndex = 40;
-            this.SaveFileButton.Text = "Save Path To File";
+            this.SaveFileButton.Text = "Save path to file";
             this.SaveFileButton.UseVisualStyleBackColor = true;
             this.SaveFileButton.Click += new System.EventHandler(this.SaveFileButton_Click);
             // 
@@ -272,7 +279,7 @@
             this.RecordButton.Name = "RecordButton";
             this.RecordButton.Size = new System.Drawing.Size(200, 25);
             this.RecordButton.TabIndex = 38;
-            this.RecordButton.Text = "Record Path";
+            this.RecordButton.Text = "Record path";
             this.RecordButton.UseVisualStyleBackColor = false;
             this.RecordButton.Click += new System.EventHandler(this.RecordButton_Click);
             // 
@@ -283,7 +290,7 @@
             this.OKButton.Name = "OKButton";
             this.OKButton.Size = new System.Drawing.Size(200, 37);
             this.OKButton.TabIndex = 37;
-            this.OKButton.Text = "Apply Path";
+            this.OKButton.Text = "Apply path";
             this.OKButton.UseVisualStyleBackColor = true;
             this.OKButton.Click += new System.EventHandler(this.OKButton_Click);
             // 
@@ -293,7 +300,7 @@
             this.LoadFileButton.Name = "LoadFileButton";
             this.LoadFileButton.Size = new System.Drawing.Size(200, 25);
             this.LoadFileButton.TabIndex = 36;
-            this.LoadFileButton.Text = "Load Path From File";
+            this.LoadFileButton.Text = "Load path from file";
             this.LoadFileButton.UseVisualStyleBackColor = true;
             this.LoadFileButton.Click += new System.EventHandler(this.LoadFileButton_Click);
             // 
@@ -361,14 +368,33 @@
             this.AutomaterTab.Text = "Automater";
             this.AutomaterTab.UseVisualStyleBackColor = true;
             // 
+            // AutoLootLabelCheckbox
+            // 
+            this.AutoLootLabelCheckbox.AutoSize = true;
+            this.AutoLootLabelCheckbox.Location = new System.Drawing.Point(154, 242);
+            this.AutoLootLabelCheckbox.Name = "AutoLootLabelCheckbox";
+            this.AutoLootLabelCheckbox.Size = new System.Drawing.Size(15, 14);
+            this.AutoLootLabelCheckbox.TabIndex = 21;
+            this.AutoLootLabelCheckbox.UseVisualStyleBackColor = true;
+            this.AutoLootLabelCheckbox.CheckedChanged += new System.EventHandler(this.AutoLootLabelCheckbox_CheckedChanged);
+            // 
+            // AutoLootLabel
+            // 
+            this.AutoLootLabel.AutoSize = true;
+            this.AutoLootLabel.Location = new System.Drawing.Point(3, 242);
+            this.AutoLootLabel.Name = "AutoLootLabel";
+            this.AutoLootLabel.Size = new System.Drawing.Size(49, 13);
+            this.AutoLootLabel.TabIndex = 20;
+            this.AutoLootLabel.Text = "Auto loot";
+            // 
             // RegenerateVitalsLabel
             // 
             this.RegenerateVitalsLabel.AutoSize = true;
-            this.RegenerateVitalsLabel.Location = new System.Drawing.Point(3, 216);
+            this.RegenerateVitalsLabel.Location = new System.Drawing.Point(3, 218);
             this.RegenerateVitalsLabel.Name = "RegenerateVitalsLabel";
-            this.RegenerateVitalsLabel.Size = new System.Drawing.Size(108, 13);
+            this.RegenerateVitalsLabel.Size = new System.Drawing.Size(106, 13);
             this.RegenerateVitalsLabel.TabIndex = 19;
-            this.RegenerateVitalsLabel.Text = "Regenerate Health %";
+            this.RegenerateVitalsLabel.Text = "Regenerate health %";
             // 
             // RegenerateVitalsNumericInput
             // 
@@ -377,7 +403,7 @@
             0,
             0,
             0});
-            this.RegenerateVitalsNumericInput.Location = new System.Drawing.Point(154, 214);
+            this.RegenerateVitalsNumericInput.Location = new System.Drawing.Point(154, 216);
             this.RegenerateVitalsNumericInput.Name = "RegenerateVitalsNumericInput";
             this.RegenerateVitalsNumericInput.Size = new System.Drawing.Size(54, 20);
             this.RegenerateVitalsNumericInput.TabIndex = 18;
@@ -390,11 +416,11 @@
             // 
             // ReviveButtonLocationTestButton
             // 
-            this.ReviveButtonLocationTestButton.Location = new System.Drawing.Point(154, 185);
+            this.ReviveButtonLocationTestButton.Location = new System.Drawing.Point(8, 185);
             this.ReviveButtonLocationTestButton.Name = "ReviveButtonLocationTestButton";
-            this.ReviveButtonLocationTestButton.Size = new System.Drawing.Size(54, 23);
+            this.ReviveButtonLocationTestButton.Size = new System.Drawing.Size(196, 25);
             this.ReviveButtonLocationTestButton.TabIndex = 17;
-            this.ReviveButtonLocationTestButton.Text = "Test";
+            this.ReviveButtonLocationTestButton.Text = "Test revive button location";
             this.ReviveButtonLocationTestButton.UseVisualStyleBackColor = true;
             this.ReviveButtonLocationTestButton.Click += new System.EventHandler(this.ReviveButtonLocationTestButton_Click);
             // 
@@ -403,9 +429,9 @@
             this.YReviveButtonLocationLabel.AutoSize = true;
             this.YReviveButtonLocationLabel.Location = new System.Drawing.Point(3, 161);
             this.YReviveButtonLocationLabel.Name = "YReviveButtonLocationLabel";
-            this.YReviveButtonLocationLabel.Size = new System.Drawing.Size(126, 13);
+            this.YReviveButtonLocationLabel.Size = new System.Drawing.Size(122, 13);
             this.YReviveButtonLocationLabel.TabIndex = 16;
-            this.YReviveButtonLocationLabel.Text = "Y Revie Button Location ";
+            this.YReviveButtonLocationLabel.Text = "Y revive button location ";
             // 
             // YReviveButtonLocationNumericInput
             // 
@@ -430,9 +456,9 @@
             this.XReviveButtonLocationLabel.AutoSize = true;
             this.XReviveButtonLocationLabel.Location = new System.Drawing.Point(3, 135);
             this.XReviveButtonLocationLabel.Name = "XReviveButtonLocationLabel";
-            this.XReviveButtonLocationLabel.Size = new System.Drawing.Size(126, 13);
+            this.XReviveButtonLocationLabel.Size = new System.Drawing.Size(122, 13);
             this.XReviveButtonLocationLabel.TabIndex = 14;
-            this.XReviveButtonLocationLabel.Text = "X Revie Button Location ";
+            this.XReviveButtonLocationLabel.Text = "X revive button location ";
             // 
             // XReviveButtonLocationNumericInput
             // 
@@ -663,6 +689,10 @@
             // 
             // PaladinTab
             // 
+            this.PaladinTab.Controls.Add(this.FirstSealJusticeButton);
+            this.PaladinTab.Controls.Add(this.FirstSealCrusaderButton);
+            this.PaladinTab.Controls.Add(this.FirstSealNoneButton);
+            this.PaladinTab.Controls.Add(this.FirstSealLabel);
             this.PaladinTab.Location = new System.Drawing.Point(4, 22);
             this.PaladinTab.Name = "PaladinTab";
             this.PaladinTab.Padding = new System.Windows.Forms.Padding(3);
@@ -671,8 +701,51 @@
             this.PaladinTab.Text = "Paladin";
             this.PaladinTab.UseVisualStyleBackColor = true;
             // 
+            // FirstSealJusticeButton
+            // 
+            this.FirstSealJusticeButton.AutoSize = true;
+            this.FirstSealJusticeButton.Location = new System.Drawing.Point(115, 55);
+            this.FirstSealJusticeButton.Name = "FirstSealJusticeButton";
+            this.FirstSealJusticeButton.Size = new System.Drawing.Size(58, 17);
+            this.FirstSealJusticeButton.TabIndex = 19;
+            this.FirstSealJusticeButton.Text = "Justice";
+            this.FirstSealJusticeButton.UseVisualStyleBackColor = true;
+            // 
+            // FirstSealCrusaderButton
+            // 
+            this.FirstSealCrusaderButton.AutoSize = true;
+            this.FirstSealCrusaderButton.Location = new System.Drawing.Point(115, 32);
+            this.FirstSealCrusaderButton.Name = "FirstSealCrusaderButton";
+            this.FirstSealCrusaderButton.Size = new System.Drawing.Size(67, 17);
+            this.FirstSealCrusaderButton.TabIndex = 18;
+            this.FirstSealCrusaderButton.Text = "Crusader";
+            this.FirstSealCrusaderButton.UseVisualStyleBackColor = true;
+            // 
+            // FirstSealNoneButton
+            // 
+            this.FirstSealNoneButton.AutoSize = true;
+            this.FirstSealNoneButton.Checked = true;
+            this.FirstSealNoneButton.Location = new System.Drawing.Point(115, 9);
+            this.FirstSealNoneButton.Name = "FirstSealNoneButton";
+            this.FirstSealNoneButton.Size = new System.Drawing.Size(51, 17);
+            this.FirstSealNoneButton.TabIndex = 17;
+            this.FirstSealNoneButton.TabStop = true;
+            this.FirstSealNoneButton.Text = "None";
+            this.FirstSealNoneButton.UseVisualStyleBackColor = true;
+            // 
+            // FirstSealLabel
+            // 
+            this.FirstSealLabel.AutoSize = true;
+            this.FirstSealLabel.Location = new System.Drawing.Point(4, 11);
+            this.FirstSealLabel.Name = "FirstSealLabel";
+            this.FirstSealLabel.Size = new System.Drawing.Size(48, 13);
+            this.FirstSealLabel.TabIndex = 15;
+            this.FirstSealLabel.Text = "First seal";
+            // 
             // RogueTab
             // 
+            this.RogueTab.Controls.Add(this.RuptureFirstCheckBox);
+            this.RogueTab.Controls.Add(this.RuptureFirstLabel);
             this.RogueTab.Controls.Add(this.EvasionPercentageLabel);
             this.RogueTab.Controls.Add(this.EvasionPercentaceNumericInput);
             this.RogueTab.Controls.Add(this.AlwaysThrowCheckBox);
@@ -695,6 +768,27 @@
             this.RogueTab.TabIndex = 2;
             this.RogueTab.Text = "Rogue";
             this.RogueTab.UseVisualStyleBackColor = true;
+            // 
+            // RuptureFirstCheckBox
+            // 
+            this.RuptureFirstCheckBox.AutoSize = true;
+            this.RuptureFirstCheckBox.Checked = true;
+            this.RuptureFirstCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.RuptureFirstCheckBox.Location = new System.Drawing.Point(146, 207);
+            this.RuptureFirstCheckBox.Name = "RuptureFirstCheckBox";
+            this.RuptureFirstCheckBox.Size = new System.Drawing.Size(15, 14);
+            this.RuptureFirstCheckBox.TabIndex = 20;
+            this.RuptureFirstCheckBox.UseVisualStyleBackColor = true;
+            this.RuptureFirstCheckBox.CheckedChanged += new System.EventHandler(this.RuptureFirstCheckBox_CheckedChanged);
+            // 
+            // RuptureFirstLabel
+            // 
+            this.RuptureFirstLabel.AutoSize = true;
+            this.RuptureFirstLabel.Location = new System.Drawing.Point(4, 207);
+            this.RuptureFirstLabel.Name = "RuptureFirstLabel";
+            this.RuptureFirstLabel.Size = new System.Drawing.Size(64, 13);
+            this.RuptureFirstLabel.TabIndex = 19;
+            this.RuptureFirstLabel.Text = "Rupture first";
             // 
             // EvasionPercentageLabel
             // 
@@ -978,9 +1072,9 @@
             this.PassiveHumanoidLabel.AutoSize = true;
             this.PassiveHumanoidLabel.Location = new System.Drawing.Point(4, 10);
             this.PassiveHumanoidLabel.Name = "PassiveHumanoidLabel";
-            this.PassiveHumanoidLabel.Size = new System.Drawing.Size(95, 13);
+            this.PassiveHumanoidLabel.Size = new System.Drawing.Size(93, 13);
             this.PassiveHumanoidLabel.TabIndex = 15;
-            this.PassiveHumanoidLabel.Text = "Passive Humanoid";
+            this.PassiveHumanoidLabel.Text = "Passive humanoid";
             // 
             // ShowInfoButton
             // 
@@ -1007,30 +1101,11 @@
             this.StatusLabel.Size = new System.Drawing.Size(0, 24);
             this.StatusLabel.TabIndex = 38;
             // 
-            // AutoLootLabelCheckbox
-            // 
-            this.AutoLootLabelCheckbox.AutoSize = true;
-            this.AutoLootLabelCheckbox.Location = new System.Drawing.Point(154, 240);
-            this.AutoLootLabelCheckbox.Name = "AutoLootLabelCheckbox";
-            this.AutoLootLabelCheckbox.Size = new System.Drawing.Size(15, 14);
-            this.AutoLootLabelCheckbox.TabIndex = 21;
-            this.AutoLootLabelCheckbox.UseVisualStyleBackColor = true;
-            this.AutoLootLabelCheckbox.CheckedChanged += new System.EventHandler(this.AutoLootLabelCheckbox_CheckedChanged);
-            // 
-            // AutoLootLabel
-            // 
-            this.AutoLootLabel.AutoSize = true;
-            this.AutoLootLabel.Location = new System.Drawing.Point(3, 240);
-            this.AutoLootLabel.Name = "AutoLootLabel";
-            this.AutoLootLabel.Size = new System.Drawing.Size(49, 13);
-            this.AutoLootLabel.TabIndex = 20;
-            this.AutoLootLabel.Text = "Auto loot";
-            // 
             // MainUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(220, 61);
+            this.ClientSize = new System.Drawing.Size(220, 961);
             this.Controls.Add(this.StatusLabel);
             this.Controls.Add(this.OptionTabs);
             this.Controls.Add(this.ShowInfoButton);
@@ -1058,6 +1133,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.TurnToleranceNumericInput)).EndInit();
             this.ClassesTab.ResumeLayout(false);
             this.ClassTabs.ResumeLayout(false);
+            this.PaladinTab.ResumeLayout(false);
+            this.PaladinTab.PerformLayout();
             this.RogueTab.ResumeLayout(false);
             this.RogueTab.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.EvasionPercentaceNumericInput)).EndInit();
@@ -1142,6 +1219,12 @@
         private System.Windows.Forms.NumericUpDown RegenerateVitalsNumericInput;
         private System.Windows.Forms.CheckBox AutoLootLabelCheckbox;
         private System.Windows.Forms.Label AutoLootLabel;
+        private System.Windows.Forms.CheckBox RuptureFirstCheckBox;
+        private System.Windows.Forms.Label RuptureFirstLabel;
+        private System.Windows.Forms.Label FirstSealLabel;
+        private System.Windows.Forms.RadioButton FirstSealJusticeButton;
+        private System.Windows.Forms.RadioButton FirstSealCrusaderButton;
+        private System.Windows.Forms.RadioButton FirstSealNoneButton;
     }
 }
 

@@ -76,6 +76,7 @@
     <None Include="app.manifest">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Config.ftw" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -117,10 +118,11 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>xcopy "$(SolutionDir)WowApi\NeuralParasiteSensor\*.*" "NeuralParasiteSensor" /Y /I /E</PreBuildEvent>
+    <PreBuildEvent>xcopy "$(SolutionDir)WowApi\NeuralParasiteSensor\*.*" "NeuralParasiteSensor" /Y /I /E
+copy "$(ProjectDir)Config.ftw" "Config.ftw"</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>rm "$(ProjectDir)bin\ClassicWowNeuralParasite.zip"
+7z a "$(ProjectDir)bin\ClassicWowNeuralParasite.zip" "$(ProjectDir)bin\.\$(ConfigurationName)\*"</PostBuildEvent>
   </PropertyGroup>
 </Project>

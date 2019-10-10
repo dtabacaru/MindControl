@@ -63,7 +63,7 @@ namespace ClassicWowNeuralParasite
         {
             get
             {
-                switch (WowApi.CurrentPlayerData.Shape)
+                switch (WowApi.PlayerData.Shape)
                 {
                     case 0:
                         return false;
@@ -81,7 +81,7 @@ namespace ClassicWowNeuralParasite
 
         public override void AutoAttackTarget()
         {
-            switch (WowApi.CurrentPlayerData.Shape)
+            switch (WowApi.PlayerData.Shape)
             {
                 case 0:
                     AutoAttackTargetDruidHumanoid();
@@ -123,11 +123,11 @@ namespace ClassicWowNeuralParasite
 
         private void AutoAttackTargetDruidHumanoidActive()
         {
-            if (!WowApi.CurrentPlayerData.PlayerInCombat)
+            if (!WowApi.PlayerData.PlayerInCombat)
                 return;
-            else if (!WowApi.CurrentPlayerData.PlayerHasTarget)
+            else if (!WowApi.PlayerData.PlayerHasTarget)
                 Target.Act();
-            else if (!WowApi.CurrentPlayerData.PlayerIsAttacking)
+            else if (!WowApi.PlayerData.PlayerIsAttacking)
                 Attack.Act();
             else if (HealingTouch.CanCastSpell)
                 HealingTouch.CastSpell();
@@ -137,11 +137,11 @@ namespace ClassicWowNeuralParasite
 
         private void AutoAttackTargetDruidBear()
         {
-            if (!WowApi.CurrentPlayerData.PlayerInCombat)
+            if (!WowApi.PlayerData.PlayerInCombat)
                 return;
-            else if (!WowApi.CurrentPlayerData.PlayerHasTarget)
+            else if (!WowApi.PlayerData.PlayerHasTarget)
                 Target.Act();
-            else if (!WowApi.CurrentPlayerData.PlayerIsAttacking)
+            else if (!WowApi.PlayerData.PlayerIsAttacking)
                 Attack.Act();
             else if (Roar.CanCastSpell)
                 Roar.CastSpell();
@@ -151,11 +151,11 @@ namespace ClassicWowNeuralParasite
 
         private void AutoAttackTargetDruidCat()
         {
-            if (!WowApi.CurrentPlayerData.PlayerInCombat)
+            if (!WowApi.PlayerData.PlayerInCombat)
                 return;
-            else if (!WowApi.CurrentPlayerData.PlayerHasTarget)
+            else if (!WowApi.PlayerData.PlayerHasTarget)
                 Target.Act();
-            else if (!WowApi.CurrentPlayerData.PlayerIsAttacking)
+            else if (!WowApi.PlayerData.PlayerIsAttacking)
                 Attack.Act();
             else if (Rake.CanCastSpell)
                 Rake.CastSpell();
@@ -176,15 +176,15 @@ namespace ClassicWowNeuralParasite
             Helper.WaitSeconds(0.1);
 
             // Found a target
-            if (WowApi.CurrentPlayerData.PlayerHasTarget)
+            if (WowApi.PlayerData.PlayerHasTarget)
             {
-                bool validEnemy = WowApi.CurrentPlayerData.TargetHealth == 100 &&
-                                    !WowApi.CurrentPlayerData.TargetInCombat &&
-                                    !WowApi.CurrentPlayerData.IsTargetPlayer &&
-                                    WowApi.CurrentPlayerData.IsInFarRange &&
-                                    !WowApi.CurrentPlayerData.IsInCloseRange;
+                bool validEnemy = WowApi.PlayerData.TargetHealth == 100 &&
+                                    !WowApi.PlayerData.TargetInCombat &&
+                                    !WowApi.PlayerData.IsTargetPlayer &&
+                                    WowApi.PlayerData.IsInFarRange &&
+                                    !WowApi.PlayerData.IsInCloseRange;
 
-                if (validEnemy && WowApi.CurrentPlayerData.PlayerMana >= 20)
+                if (validEnemy && WowApi.PlayerData.PlayerMana >= 20)
                 {
                     WaypointFollower.StopFollowingWaypoints();
 
@@ -200,7 +200,7 @@ namespace ClassicWowNeuralParasite
 
         public override void KillTarget()
         {
-            if (WowApi.CurrentPlayerData.PlayerMana >= 20)
+            if (WowApi.PlayerData.PlayerMana >= 20)
             {
                 Input.KeyPress(VirtualKeyCode.VK_2);
             }

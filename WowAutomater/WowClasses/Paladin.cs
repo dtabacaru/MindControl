@@ -7,10 +7,19 @@ using WindowsInput.Native;
 
 namespace ClassicWowNeuralParasite
 {
+    public enum FirstSealType
+    {
+        None,
+        Crusader,
+        Justice
+    }
+
     public class PaladinAutomater : WowClassAutomater
     {
         public Action Attack;
         public Action Target;
+
+        public FirstSealType FirstSeal = FirstSealType.None;
 
         public BuffSpell SealOfTheCrusader;
         public BuffSpell SealOfCommand;
@@ -38,14 +47,26 @@ namespace ClassicWowNeuralParasite
         {
             if (BlessingOfWisdom.CanCastSpell)
                 BlessingOfWisdom.CastSpell();
-            else if (!WowApi.CurrentPlayerData.PlayerInCombat)
+            else if (!WowApi.PlayerData.PlayerInCombat)
                 return;
-            else if (!WowApi.CurrentPlayerData.PlayerHasTarget)
+            else if (!WowApi.PlayerData.PlayerHasTarget)
                 Target.Act();
-            else if (!WowApi.CurrentPlayerData.PlayerIsAttacking)
+            else if (!WowApi.PlayerData.PlayerIsAttacking)
                 Attack.Act();
-            else if (SealOfTheCrusader.CanCastSpell)
-                SealOfTheCrusader.CastSpell();
+            else if (FirstSeal != FirstSealType.None)
+            {
+                switch (FirstSeal)
+                {
+                    case FirstSealType.Crusader:
+                        if (SealOfTheCrusader.CanCastSpell)
+                            SealOfTheCrusader.CastSpell();
+                        break;
+                    case FirstSealType.Justice:
+                        if (SealOfJustice.CanCastSpell)
+                            SealOfJustice.CastSpell();
+                        break;
+                }
+            }
             else if (Judgement.CanCastSpell)
                 Judgement.CastSpell();
             else if (SealOfCommand.CanCastSpell)
@@ -59,7 +80,7 @@ namespace ClassicWowNeuralParasite
 
         public override void KillTarget()
         {
-
+            AutoAttackTarget();
         }
 
         public override void RegenerateVitals()
