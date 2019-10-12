@@ -75,6 +75,8 @@
             this.FirstSealNoneButton = new System.Windows.Forms.RadioButton();
             this.FirstSealLabel = new System.Windows.Forms.Label();
             this.RogueTab = new System.Windows.Forms.TabPage();
+            this.StealthForeverCheckBox = new System.Windows.Forms.CheckBox();
+            this.StealthForeverLabel = new System.Windows.Forms.Label();
             this.RuptureFirstCheckBox = new System.Windows.Forms.CheckBox();
             this.RuptureFirstLabel = new System.Windows.Forms.Label();
             this.EvasionPercentageLabel = new System.Windows.Forms.Label();
@@ -101,6 +103,39 @@
             this.DruidTab = new System.Windows.Forms.TabPage();
             this.PassiveHumanoidCheckBox = new System.Windows.Forms.CheckBox();
             this.PassiveHumanoidLabel = new System.Windows.Forms.Label();
+            this.JitterizerTab = new System.Windows.Forms.TabPage();
+            this.KillTargetCounterClockwiseCheckBox = new System.Windows.Forms.CheckBox();
+            this.KillTargetCounterClockwiseLabel = new System.Windows.Forms.Label();
+            this.KillTargetClockwiseCheckBox = new System.Windows.Forms.CheckBox();
+            this.KillTargetClockwiseLabel = new System.Windows.Forms.Label();
+            this.KillTargetRateNumericInput = new System.Windows.Forms.NumericUpDown();
+            this.KillTargetRightLeftCheckBox = new System.Windows.Forms.CheckBox();
+            this.KillTargetRightLeftLabel = new System.Windows.Forms.Label();
+            this.KillTargetLeftRightCheckBox = new System.Windows.Forms.CheckBox();
+            this.KillTargetLeftRightLabel = new System.Windows.Forms.Label();
+            this.KillTargetDownUpCheckBox = new System.Windows.Forms.CheckBox();
+            this.KillTargetDownUpLabel = new System.Windows.Forms.Label();
+            this.KillTargetUpDownCheckBox = new System.Windows.Forms.CheckBox();
+            this.KillTargetUpDownLabel = new System.Windows.Forms.Label();
+            this.KillTargetJumpCheckBox = new System.Windows.Forms.CheckBox();
+            this.KillTargetJumpLabel = new System.Windows.Forms.Label();
+            this.KillTargetWaitTimeNumericInput = new System.Windows.Forms.NumericUpDown();
+            this.KillTargetWaitTimeLabel = new System.Windows.Forms.Label();
+            this.KillTargetRateLabel = new System.Windows.Forms.Label();
+            this.FindTargetRightLeftCheckBox = new System.Windows.Forms.CheckBox();
+            this.FindTargetRightLeftLabel = new System.Windows.Forms.Label();
+            this.FindTargetLeftRightCheckBox = new System.Windows.Forms.CheckBox();
+            this.FindTargetLeftRightLabel = new System.Windows.Forms.Label();
+            this.FindTargetRightCheckBox = new System.Windows.Forms.CheckBox();
+            this.FindTargetRightLabel = new System.Windows.Forms.Label();
+            this.FindTargetLeftCheckBox = new System.Windows.Forms.CheckBox();
+            this.FindTargetLeftLabel = new System.Windows.Forms.Label();
+            this.FindTargetJumpCheckBox = new System.Windows.Forms.CheckBox();
+            this.FindTargetJumpLabel = new System.Windows.Forms.Label();
+            this.FindTargetWaitTimeNumericInput = new System.Windows.Forms.NumericUpDown();
+            this.FindTargetWaitTimeLabel = new System.Windows.Forms.Label();
+            this.FindTargetRateNumericInput = new System.Windows.Forms.NumericUpDown();
+            this.FindTargetRateLabel = new System.Windows.Forms.Label();
             this.ShowInfoButton = new System.Windows.Forms.Button();
             this.StatusLabel = new System.Windows.Forms.Label();
             this.OptionTabs.SuspendLayout();
@@ -126,6 +161,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.StaleStealthNumericInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.StealthLevelNumericInput)).BeginInit();
             this.DruidTab.SuspendLayout();
+            this.JitterizerTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.KillTargetRateNumericInput)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.KillTargetWaitTimeNumericInput)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.FindTargetWaitTimeNumericInput)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.FindTargetRateNumericInput)).BeginInit();
             this.SuspendLayout();
             // 
             // ModeDropDown
@@ -148,6 +188,7 @@
             this.OptionTabs.Controls.Add(this.PathsTab);
             this.OptionTabs.Controls.Add(this.AutomaterTab);
             this.OptionTabs.Controls.Add(this.ClassesTab);
+            this.OptionTabs.Controls.Add(this.JitterizerTab);
             this.OptionTabs.Location = new System.Drawing.Point(0, 63);
             this.OptionTabs.Name = "OptionTabs";
             this.OptionTabs.SelectedIndex = 0;
@@ -744,6 +785,8 @@
             // 
             // RogueTab
             // 
+            this.RogueTab.Controls.Add(this.StealthForeverCheckBox);
+            this.RogueTab.Controls.Add(this.StealthForeverLabel);
             this.RogueTab.Controls.Add(this.RuptureFirstCheckBox);
             this.RogueTab.Controls.Add(this.RuptureFirstLabel);
             this.RogueTab.Controls.Add(this.EvasionPercentageLabel);
@@ -769,12 +812,33 @@
             this.RogueTab.Text = "Rogue";
             this.RogueTab.UseVisualStyleBackColor = true;
             // 
+            // StealthForeverCheckBox
+            // 
+            this.StealthForeverCheckBox.AutoSize = true;
+            this.StealthForeverCheckBox.Checked = true;
+            this.StealthForeverCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.StealthForeverCheckBox.Location = new System.Drawing.Point(146, 57);
+            this.StealthForeverCheckBox.Name = "StealthForeverCheckBox";
+            this.StealthForeverCheckBox.Size = new System.Drawing.Size(15, 14);
+            this.StealthForeverCheckBox.TabIndex = 22;
+            this.StealthForeverCheckBox.UseVisualStyleBackColor = true;
+            this.StealthForeverCheckBox.CheckedChanged += new System.EventHandler(this.StealthForeverCheckBox_CheckedChanged);
+            // 
+            // StealthForeverLabel
+            // 
+            this.StealthForeverLabel.AutoSize = true;
+            this.StealthForeverLabel.Location = new System.Drawing.Point(4, 57);
+            this.StealthForeverLabel.Name = "StealthForeverLabel";
+            this.StealthForeverLabel.Size = new System.Drawing.Size(76, 13);
+            this.StealthForeverLabel.TabIndex = 21;
+            this.StealthForeverLabel.Text = "Stealth forever";
+            // 
             // RuptureFirstCheckBox
             // 
             this.RuptureFirstCheckBox.AutoSize = true;
             this.RuptureFirstCheckBox.Checked = true;
             this.RuptureFirstCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.RuptureFirstCheckBox.Location = new System.Drawing.Point(146, 207);
+            this.RuptureFirstCheckBox.Location = new System.Drawing.Point(146, 227);
             this.RuptureFirstCheckBox.Name = "RuptureFirstCheckBox";
             this.RuptureFirstCheckBox.Size = new System.Drawing.Size(15, 14);
             this.RuptureFirstCheckBox.TabIndex = 20;
@@ -784,7 +848,7 @@
             // RuptureFirstLabel
             // 
             this.RuptureFirstLabel.AutoSize = true;
-            this.RuptureFirstLabel.Location = new System.Drawing.Point(4, 207);
+            this.RuptureFirstLabel.Location = new System.Drawing.Point(4, 227);
             this.RuptureFirstLabel.Name = "RuptureFirstLabel";
             this.RuptureFirstLabel.Size = new System.Drawing.Size(64, 13);
             this.RuptureFirstLabel.TabIndex = 19;
@@ -793,7 +857,7 @@
             // EvasionPercentageLabel
             // 
             this.EvasionPercentageLabel.AutoSize = true;
-            this.EvasionPercentageLabel.Location = new System.Drawing.Point(4, 183);
+            this.EvasionPercentageLabel.Location = new System.Drawing.Point(4, 203);
             this.EvasionPercentageLabel.Name = "EvasionPercentageLabel";
             this.EvasionPercentageLabel.Size = new System.Drawing.Size(102, 13);
             this.EvasionPercentageLabel.TabIndex = 18;
@@ -801,7 +865,7 @@
             // 
             // EvasionPercentaceNumericInput
             // 
-            this.EvasionPercentaceNumericInput.Location = new System.Drawing.Point(146, 181);
+            this.EvasionPercentaceNumericInput.Location = new System.Drawing.Point(146, 201);
             this.EvasionPercentaceNumericInput.Name = "EvasionPercentaceNumericInput";
             this.EvasionPercentaceNumericInput.Size = new System.Drawing.Size(54, 20);
             this.EvasionPercentaceNumericInput.TabIndex = 17;
@@ -817,7 +881,7 @@
             this.AlwaysThrowCheckBox.AutoSize = true;
             this.AlwaysThrowCheckBox.Checked = true;
             this.AlwaysThrowCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.AlwaysThrowCheckBox.Location = new System.Drawing.Point(146, 83);
+            this.AlwaysThrowCheckBox.Location = new System.Drawing.Point(146, 103);
             this.AlwaysThrowCheckBox.Name = "AlwaysThrowCheckBox";
             this.AlwaysThrowCheckBox.Size = new System.Drawing.Size(15, 14);
             this.AlwaysThrowCheckBox.TabIndex = 16;
@@ -827,7 +891,7 @@
             // AlwaysThrowLabel
             // 
             this.AlwaysThrowLabel.AutoSize = true;
-            this.AlwaysThrowLabel.Location = new System.Drawing.Point(4, 83);
+            this.AlwaysThrowLabel.Location = new System.Drawing.Point(4, 103);
             this.AlwaysThrowLabel.Name = "AlwaysThrowLabel";
             this.AlwaysThrowLabel.Size = new System.Drawing.Size(69, 13);
             this.AlwaysThrowLabel.TabIndex = 15;
@@ -848,7 +912,7 @@
             // RuptureCPLabel
             // 
             this.RuptureCPLabel.AutoSize = true;
-            this.RuptureCPLabel.Location = new System.Drawing.Point(4, 131);
+            this.RuptureCPLabel.Location = new System.Drawing.Point(4, 151);
             this.RuptureCPLabel.Name = "RuptureCPLabel";
             this.RuptureCPLabel.Size = new System.Drawing.Size(111, 13);
             this.RuptureCPLabel.TabIndex = 9;
@@ -866,7 +930,7 @@
             // SliceNDiceCPLabel
             // 
             this.SliceNDiceCPLabel.AutoSize = true;
-            this.SliceNDiceCPLabel.Location = new System.Drawing.Point(4, 105);
+            this.SliceNDiceCPLabel.Location = new System.Drawing.Point(4, 125);
             this.SliceNDiceCPLabel.Name = "SliceNDiceCPLabel";
             this.SliceNDiceCPLabel.Size = new System.Drawing.Size(140, 13);
             this.SliceNDiceCPLabel.TabIndex = 8;
@@ -875,7 +939,7 @@
             // EvisceratePercentageLabel
             // 
             this.EvisceratePercentageLabel.AutoSize = true;
-            this.EvisceratePercentageLabel.Location = new System.Drawing.Point(4, 157);
+            this.EvisceratePercentageLabel.Location = new System.Drawing.Point(4, 177);
             this.EvisceratePercentageLabel.Name = "EvisceratePercentageLabel";
             this.EvisceratePercentageLabel.Size = new System.Drawing.Size(114, 13);
             this.EvisceratePercentageLabel.TabIndex = 7;
@@ -883,7 +947,7 @@
             // 
             // EvisceratePercentageNumericInput
             // 
-            this.EvisceratePercentageNumericInput.Location = new System.Drawing.Point(146, 155);
+            this.EvisceratePercentageNumericInput.Location = new System.Drawing.Point(146, 175);
             this.EvisceratePercentageNumericInput.Name = "EvisceratePercentageNumericInput";
             this.EvisceratePercentageNumericInput.Size = new System.Drawing.Size(54, 20);
             this.EvisceratePercentageNumericInput.TabIndex = 6;
@@ -896,7 +960,7 @@
             // 
             // RuptureCPNumericInput
             // 
-            this.RuptureCPNumericInput.Location = new System.Drawing.Point(146, 129);
+            this.RuptureCPNumericInput.Location = new System.Drawing.Point(146, 149);
             this.RuptureCPNumericInput.Maximum = new decimal(new int[] {
             5,
             0,
@@ -919,7 +983,7 @@
             // 
             // SliceNDiceCPNumericInput
             // 
-            this.SliceNDiceCPNumericInput.Location = new System.Drawing.Point(146, 103);
+            this.SliceNDiceCPNumericInput.Location = new System.Drawing.Point(146, 123);
             this.SliceNDiceCPNumericInput.Maximum = new decimal(new int[] {
             5,
             0,
@@ -942,7 +1006,7 @@
             // 
             // StaleStealthNumericInput
             // 
-            this.StaleStealthNumericInput.Location = new System.Drawing.Point(146, 57);
+            this.StaleStealthNumericInput.Location = new System.Drawing.Point(146, 77);
             this.StaleStealthNumericInput.Minimum = new decimal(new int[] {
             1,
             0,
@@ -961,7 +1025,7 @@
             // StaleStealthLabel
             // 
             this.StaleStealthLabel.AutoSize = true;
-            this.StaleStealthLabel.Location = new System.Drawing.Point(4, 59);
+            this.StaleStealthLabel.Location = new System.Drawing.Point(4, 79);
             this.StaleStealthLabel.Name = "StaleStealthLabel";
             this.StaleStealthLabel.Size = new System.Drawing.Size(131, 13);
             this.StaleStealthLabel.TabIndex = 2;
@@ -1076,6 +1140,431 @@
             this.PassiveHumanoidLabel.TabIndex = 15;
             this.PassiveHumanoidLabel.Text = "Passive humanoid";
             // 
+            // JitterizerTab
+            // 
+            this.JitterizerTab.Controls.Add(this.KillTargetCounterClockwiseCheckBox);
+            this.JitterizerTab.Controls.Add(this.KillTargetCounterClockwiseLabel);
+            this.JitterizerTab.Controls.Add(this.KillTargetClockwiseCheckBox);
+            this.JitterizerTab.Controls.Add(this.KillTargetClockwiseLabel);
+            this.JitterizerTab.Controls.Add(this.KillTargetRateNumericInput);
+            this.JitterizerTab.Controls.Add(this.KillTargetRightLeftCheckBox);
+            this.JitterizerTab.Controls.Add(this.KillTargetRightLeftLabel);
+            this.JitterizerTab.Controls.Add(this.KillTargetLeftRightCheckBox);
+            this.JitterizerTab.Controls.Add(this.KillTargetLeftRightLabel);
+            this.JitterizerTab.Controls.Add(this.KillTargetDownUpCheckBox);
+            this.JitterizerTab.Controls.Add(this.KillTargetDownUpLabel);
+            this.JitterizerTab.Controls.Add(this.KillTargetUpDownCheckBox);
+            this.JitterizerTab.Controls.Add(this.KillTargetUpDownLabel);
+            this.JitterizerTab.Controls.Add(this.KillTargetJumpCheckBox);
+            this.JitterizerTab.Controls.Add(this.KillTargetJumpLabel);
+            this.JitterizerTab.Controls.Add(this.KillTargetWaitTimeNumericInput);
+            this.JitterizerTab.Controls.Add(this.KillTargetWaitTimeLabel);
+            this.JitterizerTab.Controls.Add(this.KillTargetRateLabel);
+            this.JitterizerTab.Controls.Add(this.FindTargetRightLeftCheckBox);
+            this.JitterizerTab.Controls.Add(this.FindTargetRightLeftLabel);
+            this.JitterizerTab.Controls.Add(this.FindTargetLeftRightCheckBox);
+            this.JitterizerTab.Controls.Add(this.FindTargetLeftRightLabel);
+            this.JitterizerTab.Controls.Add(this.FindTargetRightCheckBox);
+            this.JitterizerTab.Controls.Add(this.FindTargetRightLabel);
+            this.JitterizerTab.Controls.Add(this.FindTargetLeftCheckBox);
+            this.JitterizerTab.Controls.Add(this.FindTargetLeftLabel);
+            this.JitterizerTab.Controls.Add(this.FindTargetJumpCheckBox);
+            this.JitterizerTab.Controls.Add(this.FindTargetJumpLabel);
+            this.JitterizerTab.Controls.Add(this.FindTargetWaitTimeNumericInput);
+            this.JitterizerTab.Controls.Add(this.FindTargetWaitTimeLabel);
+            this.JitterizerTab.Controls.Add(this.FindTargetRateNumericInput);
+            this.JitterizerTab.Controls.Add(this.FindTargetRateLabel);
+            this.JitterizerTab.Location = new System.Drawing.Point(4, 22);
+            this.JitterizerTab.Name = "JitterizerTab";
+            this.JitterizerTab.Size = new System.Drawing.Size(214, 633);
+            this.JitterizerTab.TabIndex = 4;
+            this.JitterizerTab.Text = "Jitterizer";
+            this.JitterizerTab.UseVisualStyleBackColor = true;
+            // 
+            // KillTargetCounterClockwiseCheckBox
+            // 
+            this.KillTargetCounterClockwiseCheckBox.AutoSize = true;
+            this.KillTargetCounterClockwiseCheckBox.Checked = true;
+            this.KillTargetCounterClockwiseCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.KillTargetCounterClockwiseCheckBox.Location = new System.Drawing.Point(154, 331);
+            this.KillTargetCounterClockwiseCheckBox.Name = "KillTargetCounterClockwiseCheckBox";
+            this.KillTargetCounterClockwiseCheckBox.Size = new System.Drawing.Size(15, 14);
+            this.KillTargetCounterClockwiseCheckBox.TabIndex = 41;
+            this.KillTargetCounterClockwiseCheckBox.UseVisualStyleBackColor = true;
+            this.KillTargetCounterClockwiseCheckBox.CheckedChanged += new System.EventHandler(this.KillTargetCounterClockwiseCheckBox_CheckedChanged);
+            // 
+            // KillTargetCounterClockwiseLabel
+            // 
+            this.KillTargetCounterClockwiseLabel.AutoSize = true;
+            this.KillTargetCounterClockwiseLabel.Location = new System.Drawing.Point(3, 331);
+            this.KillTargetCounterClockwiseLabel.Name = "KillTargetCounterClockwiseLabel";
+            this.KillTargetCounterClockwiseLabel.Size = new System.Drawing.Size(142, 13);
+            this.KillTargetCounterClockwiseLabel.TabIndex = 40;
+            this.KillTargetCounterClockwiseLabel.Text = "Kill target counter clockwise:";
+            // 
+            // KillTargetClockwiseCheckBox
+            // 
+            this.KillTargetClockwiseCheckBox.AutoSize = true;
+            this.KillTargetClockwiseCheckBox.Checked = true;
+            this.KillTargetClockwiseCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.KillTargetClockwiseCheckBox.Location = new System.Drawing.Point(154, 311);
+            this.KillTargetClockwiseCheckBox.Name = "KillTargetClockwiseCheckBox";
+            this.KillTargetClockwiseCheckBox.Size = new System.Drawing.Size(15, 14);
+            this.KillTargetClockwiseCheckBox.TabIndex = 39;
+            this.KillTargetClockwiseCheckBox.UseVisualStyleBackColor = true;
+            this.KillTargetClockwiseCheckBox.CheckedChanged += new System.EventHandler(this.KillTargetClockwiseCheckBox_CheckedChanged);
+            // 
+            // KillTargetClockwiseLabel
+            // 
+            this.KillTargetClockwiseLabel.AutoSize = true;
+            this.KillTargetClockwiseLabel.Location = new System.Drawing.Point(3, 311);
+            this.KillTargetClockwiseLabel.Name = "KillTargetClockwiseLabel";
+            this.KillTargetClockwiseLabel.Size = new System.Drawing.Size(103, 13);
+            this.KillTargetClockwiseLabel.TabIndex = 38;
+            this.KillTargetClockwiseLabel.Text = "Kill target clockwise:";
+            // 
+            // KillTargetRateNumericInput
+            // 
+            this.KillTargetRateNumericInput.DecimalPlaces = 3;
+            this.KillTargetRateNumericInput.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            196608});
+            this.KillTargetRateNumericInput.Location = new System.Drawing.Point(154, 159);
+            this.KillTargetRateNumericInput.Maximum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            65536});
+            this.KillTargetRateNumericInput.Name = "KillTargetRateNumericInput";
+            this.KillTargetRateNumericInput.Size = new System.Drawing.Size(54, 20);
+            this.KillTargetRateNumericInput.TabIndex = 37;
+            this.KillTargetRateNumericInput.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            131072});
+            this.KillTargetRateNumericInput.ValueChanged += new System.EventHandler(this.KillTargetRateNumericInput_ValueChanged);
+            // 
+            // KillTargetRightLeftCheckBox
+            // 
+            this.KillTargetRightLeftCheckBox.AutoSize = true;
+            this.KillTargetRightLeftCheckBox.Checked = true;
+            this.KillTargetRightLeftCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.KillTargetRightLeftCheckBox.Location = new System.Drawing.Point(154, 291);
+            this.KillTargetRightLeftCheckBox.Name = "KillTargetRightLeftCheckBox";
+            this.KillTargetRightLeftCheckBox.Size = new System.Drawing.Size(15, 14);
+            this.KillTargetRightLeftCheckBox.TabIndex = 36;
+            this.KillTargetRightLeftCheckBox.UseVisualStyleBackColor = true;
+            this.KillTargetRightLeftCheckBox.CheckedChanged += new System.EventHandler(this.KillTargetRightLeftCheckBox_CheckedChanged);
+            // 
+            // KillTargetRightLeftLabel
+            // 
+            this.KillTargetRightLeftLabel.AutoSize = true;
+            this.KillTargetRightLeftLabel.Location = new System.Drawing.Point(3, 291);
+            this.KillTargetRightLeftLabel.Name = "KillTargetRightLeftLabel";
+            this.KillTargetRightLeftLabel.Size = new System.Drawing.Size(90, 13);
+            this.KillTargetRightLeftLabel.TabIndex = 35;
+            this.KillTargetRightLeftLabel.Text = "Kill target rightleft:";
+            // 
+            // KillTargetLeftRightCheckBox
+            // 
+            this.KillTargetLeftRightCheckBox.AutoSize = true;
+            this.KillTargetLeftRightCheckBox.Checked = true;
+            this.KillTargetLeftRightCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.KillTargetLeftRightCheckBox.Location = new System.Drawing.Point(154, 271);
+            this.KillTargetLeftRightCheckBox.Name = "KillTargetLeftRightCheckBox";
+            this.KillTargetLeftRightCheckBox.Size = new System.Drawing.Size(15, 14);
+            this.KillTargetLeftRightCheckBox.TabIndex = 34;
+            this.KillTargetLeftRightCheckBox.UseVisualStyleBackColor = true;
+            this.KillTargetLeftRightCheckBox.CheckedChanged += new System.EventHandler(this.KillTargetLeftRightCheckBox_CheckedChanged);
+            // 
+            // KillTargetLeftRightLabel
+            // 
+            this.KillTargetLeftRightLabel.AutoSize = true;
+            this.KillTargetLeftRightLabel.Location = new System.Drawing.Point(3, 271);
+            this.KillTargetLeftRightLabel.Name = "KillTargetLeftRightLabel";
+            this.KillTargetLeftRightLabel.Size = new System.Drawing.Size(90, 13);
+            this.KillTargetLeftRightLabel.TabIndex = 33;
+            this.KillTargetLeftRightLabel.Text = "Kill target leftright:";
+            // 
+            // KillTargetDownUpCheckBox
+            // 
+            this.KillTargetDownUpCheckBox.AutoSize = true;
+            this.KillTargetDownUpCheckBox.Checked = true;
+            this.KillTargetDownUpCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.KillTargetDownUpCheckBox.Location = new System.Drawing.Point(154, 251);
+            this.KillTargetDownUpCheckBox.Name = "KillTargetDownUpCheckBox";
+            this.KillTargetDownUpCheckBox.Size = new System.Drawing.Size(15, 14);
+            this.KillTargetDownUpCheckBox.TabIndex = 32;
+            this.KillTargetDownUpCheckBox.UseVisualStyleBackColor = true;
+            this.KillTargetDownUpCheckBox.CheckedChanged += new System.EventHandler(this.KillTargetDownUpCheckBox_CheckedChanged);
+            // 
+            // KillTargetDownUpLabel
+            // 
+            this.KillTargetDownUpLabel.AutoSize = true;
+            this.KillTargetDownUpLabel.Location = new System.Drawing.Point(3, 251);
+            this.KillTargetDownUpLabel.Name = "KillTargetDownUpLabel";
+            this.KillTargetDownUpLabel.Size = new System.Drawing.Size(94, 13);
+            this.KillTargetDownUpLabel.TabIndex = 31;
+            this.KillTargetDownUpLabel.Text = "Kill target downup:";
+            // 
+            // KillTargetUpDownCheckBox
+            // 
+            this.KillTargetUpDownCheckBox.AutoSize = true;
+            this.KillTargetUpDownCheckBox.Checked = true;
+            this.KillTargetUpDownCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.KillTargetUpDownCheckBox.Location = new System.Drawing.Point(154, 231);
+            this.KillTargetUpDownCheckBox.Name = "KillTargetUpDownCheckBox";
+            this.KillTargetUpDownCheckBox.Size = new System.Drawing.Size(15, 14);
+            this.KillTargetUpDownCheckBox.TabIndex = 30;
+            this.KillTargetUpDownCheckBox.UseVisualStyleBackColor = true;
+            this.KillTargetUpDownCheckBox.CheckedChanged += new System.EventHandler(this.KillTargetUpDownCheckBox_CheckedChanged);
+            // 
+            // KillTargetUpDownLabel
+            // 
+            this.KillTargetUpDownLabel.AutoSize = true;
+            this.KillTargetUpDownLabel.Location = new System.Drawing.Point(3, 231);
+            this.KillTargetUpDownLabel.Name = "KillTargetUpDownLabel";
+            this.KillTargetUpDownLabel.Size = new System.Drawing.Size(94, 13);
+            this.KillTargetUpDownLabel.TabIndex = 29;
+            this.KillTargetUpDownLabel.Text = "Kill target updown:";
+            // 
+            // KillTargetJumpCheckBox
+            // 
+            this.KillTargetJumpCheckBox.AutoSize = true;
+            this.KillTargetJumpCheckBox.Checked = true;
+            this.KillTargetJumpCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.KillTargetJumpCheckBox.Location = new System.Drawing.Point(154, 211);
+            this.KillTargetJumpCheckBox.Name = "KillTargetJumpCheckBox";
+            this.KillTargetJumpCheckBox.Size = new System.Drawing.Size(15, 14);
+            this.KillTargetJumpCheckBox.TabIndex = 28;
+            this.KillTargetJumpCheckBox.UseVisualStyleBackColor = true;
+            this.KillTargetJumpCheckBox.CheckedChanged += new System.EventHandler(this.KillTargetJumpCheckBox_CheckedChanged);
+            // 
+            // KillTargetJumpLabel
+            // 
+            this.KillTargetJumpLabel.AutoSize = true;
+            this.KillTargetJumpLabel.Location = new System.Drawing.Point(3, 211);
+            this.KillTargetJumpLabel.Name = "KillTargetJumpLabel";
+            this.KillTargetJumpLabel.Size = new System.Drawing.Size(78, 13);
+            this.KillTargetJumpLabel.TabIndex = 27;
+            this.KillTargetJumpLabel.Text = "Kill target jump:";
+            // 
+            // KillTargetWaitTimeNumericInput
+            // 
+            this.KillTargetWaitTimeNumericInput.DecimalPlaces = 2;
+            this.KillTargetWaitTimeNumericInput.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            131072});
+            this.KillTargetWaitTimeNumericInput.Location = new System.Drawing.Point(154, 185);
+            this.KillTargetWaitTimeNumericInput.Maximum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            65536});
+            this.KillTargetWaitTimeNumericInput.Name = "KillTargetWaitTimeNumericInput";
+            this.KillTargetWaitTimeNumericInput.Size = new System.Drawing.Size(54, 20);
+            this.KillTargetWaitTimeNumericInput.TabIndex = 26;
+            this.KillTargetWaitTimeNumericInput.Value = new decimal(new int[] {
+            8,
+            0,
+            0,
+            131072});
+            this.KillTargetWaitTimeNumericInput.ValueChanged += new System.EventHandler(this.KillTargetWaitTimeNumericInput_ValueChanged);
+            // 
+            // KillTargetWaitTimeLabel
+            // 
+            this.KillTargetWaitTimeLabel.AutoSize = true;
+            this.KillTargetWaitTimeLabel.Location = new System.Drawing.Point(3, 187);
+            this.KillTargetWaitTimeLabel.Name = "KillTargetWaitTimeLabel";
+            this.KillTargetWaitTimeLabel.Size = new System.Drawing.Size(97, 13);
+            this.KillTargetWaitTimeLabel.TabIndex = 25;
+            this.KillTargetWaitTimeLabel.Text = "Kill target wait time:";
+            // 
+            // KillTargetRateLabel
+            // 
+            this.KillTargetRateLabel.AutoSize = true;
+            this.KillTargetRateLabel.Location = new System.Drawing.Point(3, 161);
+            this.KillTargetRateLabel.Name = "KillTargetRateLabel";
+            this.KillTargetRateLabel.Size = new System.Drawing.Size(74, 13);
+            this.KillTargetRateLabel.TabIndex = 23;
+            this.KillTargetRateLabel.Text = "Kill target rate:";
+            // 
+            // FindTargetRightLeftCheckBox
+            // 
+            this.FindTargetRightLeftCheckBox.AutoSize = true;
+            this.FindTargetRightLeftCheckBox.Checked = true;
+            this.FindTargetRightLeftCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.FindTargetRightLeftCheckBox.Location = new System.Drawing.Point(154, 139);
+            this.FindTargetRightLeftCheckBox.Name = "FindTargetRightLeftCheckBox";
+            this.FindTargetRightLeftCheckBox.Size = new System.Drawing.Size(15, 14);
+            this.FindTargetRightLeftCheckBox.TabIndex = 22;
+            this.FindTargetRightLeftCheckBox.UseVisualStyleBackColor = true;
+            this.FindTargetRightLeftCheckBox.CheckedChanged += new System.EventHandler(this.FindTargetRightLeftCheckBox_CheckedChanged);
+            // 
+            // FindTargetRightLeftLabel
+            // 
+            this.FindTargetRightLeftLabel.AutoSize = true;
+            this.FindTargetRightLeftLabel.Location = new System.Drawing.Point(3, 139);
+            this.FindTargetRightLeftLabel.Name = "FindTargetRightLeftLabel";
+            this.FindTargetRightLeftLabel.Size = new System.Drawing.Size(97, 13);
+            this.FindTargetRightLeftLabel.TabIndex = 21;
+            this.FindTargetRightLeftLabel.Text = "Find target rightleft:";
+            // 
+            // FindTargetLeftRightCheckBox
+            // 
+            this.FindTargetLeftRightCheckBox.AutoSize = true;
+            this.FindTargetLeftRightCheckBox.Checked = true;
+            this.FindTargetLeftRightCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.FindTargetLeftRightCheckBox.Location = new System.Drawing.Point(154, 119);
+            this.FindTargetLeftRightCheckBox.Name = "FindTargetLeftRightCheckBox";
+            this.FindTargetLeftRightCheckBox.Size = new System.Drawing.Size(15, 14);
+            this.FindTargetLeftRightCheckBox.TabIndex = 20;
+            this.FindTargetLeftRightCheckBox.UseVisualStyleBackColor = true;
+            this.FindTargetLeftRightCheckBox.CheckedChanged += new System.EventHandler(this.FindTargetLeftRightCheckBox_CheckedChanged);
+            // 
+            // FindTargetLeftRightLabel
+            // 
+            this.FindTargetLeftRightLabel.AutoSize = true;
+            this.FindTargetLeftRightLabel.Location = new System.Drawing.Point(3, 119);
+            this.FindTargetLeftRightLabel.Name = "FindTargetLeftRightLabel";
+            this.FindTargetLeftRightLabel.Size = new System.Drawing.Size(97, 13);
+            this.FindTargetLeftRightLabel.TabIndex = 19;
+            this.FindTargetLeftRightLabel.Text = "Find target leftright:";
+            // 
+            // FindTargetRightCheckBox
+            // 
+            this.FindTargetRightCheckBox.AutoSize = true;
+            this.FindTargetRightCheckBox.Checked = true;
+            this.FindTargetRightCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.FindTargetRightCheckBox.Location = new System.Drawing.Point(154, 99);
+            this.FindTargetRightCheckBox.Name = "FindTargetRightCheckBox";
+            this.FindTargetRightCheckBox.Size = new System.Drawing.Size(15, 14);
+            this.FindTargetRightCheckBox.TabIndex = 18;
+            this.FindTargetRightCheckBox.UseVisualStyleBackColor = true;
+            this.FindTargetRightCheckBox.CheckedChanged += new System.EventHandler(this.FindTargetRightCheckBox_CheckedChanged);
+            // 
+            // FindTargetRightLabel
+            // 
+            this.FindTargetRightLabel.AutoSize = true;
+            this.FindTargetRightLabel.Location = new System.Drawing.Point(3, 99);
+            this.FindTargetRightLabel.Name = "FindTargetRightLabel";
+            this.FindTargetRightLabel.Size = new System.Drawing.Size(83, 13);
+            this.FindTargetRightLabel.TabIndex = 17;
+            this.FindTargetRightLabel.Text = "Find target right:";
+            // 
+            // FindTargetLeftCheckBox
+            // 
+            this.FindTargetLeftCheckBox.AutoSize = true;
+            this.FindTargetLeftCheckBox.Checked = true;
+            this.FindTargetLeftCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.FindTargetLeftCheckBox.Location = new System.Drawing.Point(154, 79);
+            this.FindTargetLeftCheckBox.Name = "FindTargetLeftCheckBox";
+            this.FindTargetLeftCheckBox.Size = new System.Drawing.Size(15, 14);
+            this.FindTargetLeftCheckBox.TabIndex = 16;
+            this.FindTargetLeftCheckBox.UseVisualStyleBackColor = true;
+            this.FindTargetLeftCheckBox.CheckedChanged += new System.EventHandler(this.FindTargetLeftCheckBox_CheckedChanged);
+            // 
+            // FindTargetLeftLabel
+            // 
+            this.FindTargetLeftLabel.AutoSize = true;
+            this.FindTargetLeftLabel.Location = new System.Drawing.Point(3, 79);
+            this.FindTargetLeftLabel.Name = "FindTargetLeftLabel";
+            this.FindTargetLeftLabel.Size = new System.Drawing.Size(77, 13);
+            this.FindTargetLeftLabel.TabIndex = 15;
+            this.FindTargetLeftLabel.Text = "Find target left:";
+            // 
+            // FindTargetJumpCheckBox
+            // 
+            this.FindTargetJumpCheckBox.AutoSize = true;
+            this.FindTargetJumpCheckBox.Checked = true;
+            this.FindTargetJumpCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.FindTargetJumpCheckBox.Location = new System.Drawing.Point(154, 59);
+            this.FindTargetJumpCheckBox.Name = "FindTargetJumpCheckBox";
+            this.FindTargetJumpCheckBox.Size = new System.Drawing.Size(15, 14);
+            this.FindTargetJumpCheckBox.TabIndex = 14;
+            this.FindTargetJumpCheckBox.UseVisualStyleBackColor = true;
+            this.FindTargetJumpCheckBox.CheckedChanged += new System.EventHandler(this.FindTargetJumpCheckBox_CheckedChanged);
+            // 
+            // FindTargetJumpLabel
+            // 
+            this.FindTargetJumpLabel.AutoSize = true;
+            this.FindTargetJumpLabel.Location = new System.Drawing.Point(3, 59);
+            this.FindTargetJumpLabel.Name = "FindTargetJumpLabel";
+            this.FindTargetJumpLabel.Size = new System.Drawing.Size(85, 13);
+            this.FindTargetJumpLabel.TabIndex = 13;
+            this.FindTargetJumpLabel.Text = "Find target jump:";
+            // 
+            // FindTargetWaitTimeNumericInput
+            // 
+            this.FindTargetWaitTimeNumericInput.DecimalPlaces = 2;
+            this.FindTargetWaitTimeNumericInput.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            131072});
+            this.FindTargetWaitTimeNumericInput.Location = new System.Drawing.Point(154, 33);
+            this.FindTargetWaitTimeNumericInput.Maximum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            65536});
+            this.FindTargetWaitTimeNumericInput.Name = "FindTargetWaitTimeNumericInput";
+            this.FindTargetWaitTimeNumericInput.Size = new System.Drawing.Size(54, 20);
+            this.FindTargetWaitTimeNumericInput.TabIndex = 7;
+            this.FindTargetWaitTimeNumericInput.Value = new decimal(new int[] {
+            8,
+            0,
+            0,
+            131072});
+            this.FindTargetWaitTimeNumericInput.ValueChanged += new System.EventHandler(this.FindTargetWaitTimeNumericInput_ValueChanged);
+            // 
+            // FindTargetWaitTimeLabel
+            // 
+            this.FindTargetWaitTimeLabel.AutoSize = true;
+            this.FindTargetWaitTimeLabel.Location = new System.Drawing.Point(3, 35);
+            this.FindTargetWaitTimeLabel.Name = "FindTargetWaitTimeLabel";
+            this.FindTargetWaitTimeLabel.Size = new System.Drawing.Size(104, 13);
+            this.FindTargetWaitTimeLabel.TabIndex = 6;
+            this.FindTargetWaitTimeLabel.Text = "Find target wait time:";
+            // 
+            // FindTargetRateNumericInput
+            // 
+            this.FindTargetRateNumericInput.DecimalPlaces = 3;
+            this.FindTargetRateNumericInput.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            196608});
+            this.FindTargetRateNumericInput.Location = new System.Drawing.Point(154, 7);
+            this.FindTargetRateNumericInput.Maximum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            65536});
+            this.FindTargetRateNumericInput.Name = "FindTargetRateNumericInput";
+            this.FindTargetRateNumericInput.Size = new System.Drawing.Size(54, 20);
+            this.FindTargetRateNumericInput.TabIndex = 5;
+            this.FindTargetRateNumericInput.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            131072});
+            this.FindTargetRateNumericInput.ValueChanged += new System.EventHandler(this.FindTargetRateNumericInput_ValueChanged);
+            // 
+            // FindTargetRateLabel
+            // 
+            this.FindTargetRateLabel.AutoSize = true;
+            this.FindTargetRateLabel.Location = new System.Drawing.Point(3, 9);
+            this.FindTargetRateLabel.Name = "FindTargetRateLabel";
+            this.FindTargetRateLabel.Size = new System.Drawing.Size(81, 13);
+            this.FindTargetRateLabel.TabIndex = 4;
+            this.FindTargetRateLabel.Text = "Find target rate:";
+            // 
             // ShowInfoButton
             // 
             this.ShowInfoButton.BackColor = System.Drawing.SystemColors.ButtonFace;
@@ -1145,6 +1634,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.StealthLevelNumericInput)).EndInit();
             this.DruidTab.ResumeLayout(false);
             this.DruidTab.PerformLayout();
+            this.JitterizerTab.ResumeLayout(false);
+            this.JitterizerTab.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.KillTargetRateNumericInput)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.KillTargetWaitTimeNumericInput)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.FindTargetWaitTimeNumericInput)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.FindTargetRateNumericInput)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1225,6 +1720,41 @@
         private System.Windows.Forms.RadioButton FirstSealJusticeButton;
         private System.Windows.Forms.RadioButton FirstSealCrusaderButton;
         private System.Windows.Forms.RadioButton FirstSealNoneButton;
+        private System.Windows.Forms.TabPage JitterizerTab;
+        private System.Windows.Forms.NumericUpDown FindTargetWaitTimeNumericInput;
+        private System.Windows.Forms.Label FindTargetWaitTimeLabel;
+        private System.Windows.Forms.NumericUpDown FindTargetRateNumericInput;
+        private System.Windows.Forms.Label FindTargetRateLabel;
+        private System.Windows.Forms.CheckBox KillTargetRightLeftCheckBox;
+        private System.Windows.Forms.Label KillTargetRightLeftLabel;
+        private System.Windows.Forms.CheckBox KillTargetLeftRightCheckBox;
+        private System.Windows.Forms.Label KillTargetLeftRightLabel;
+        private System.Windows.Forms.CheckBox KillTargetDownUpCheckBox;
+        private System.Windows.Forms.Label KillTargetDownUpLabel;
+        private System.Windows.Forms.CheckBox KillTargetUpDownCheckBox;
+        private System.Windows.Forms.Label KillTargetUpDownLabel;
+        private System.Windows.Forms.CheckBox KillTargetJumpCheckBox;
+        private System.Windows.Forms.Label KillTargetJumpLabel;
+        private System.Windows.Forms.NumericUpDown KillTargetWaitTimeNumericInput;
+        private System.Windows.Forms.Label KillTargetWaitTimeLabel;
+        private System.Windows.Forms.Label KillTargetRateLabel;
+        private System.Windows.Forms.CheckBox FindTargetRightLeftCheckBox;
+        private System.Windows.Forms.Label FindTargetRightLeftLabel;
+        private System.Windows.Forms.CheckBox FindTargetLeftRightCheckBox;
+        private System.Windows.Forms.Label FindTargetLeftRightLabel;
+        private System.Windows.Forms.CheckBox FindTargetRightCheckBox;
+        private System.Windows.Forms.Label FindTargetRightLabel;
+        private System.Windows.Forms.CheckBox FindTargetLeftCheckBox;
+        private System.Windows.Forms.Label FindTargetLeftLabel;
+        private System.Windows.Forms.CheckBox FindTargetJumpCheckBox;
+        private System.Windows.Forms.Label FindTargetJumpLabel;
+        private System.Windows.Forms.NumericUpDown KillTargetRateNumericInput;
+        private System.Windows.Forms.CheckBox KillTargetCounterClockwiseCheckBox;
+        private System.Windows.Forms.Label KillTargetCounterClockwiseLabel;
+        private System.Windows.Forms.CheckBox KillTargetClockwiseCheckBox;
+        private System.Windows.Forms.Label KillTargetClockwiseLabel;
+        private System.Windows.Forms.CheckBox StealthForeverCheckBox;
+        private System.Windows.Forms.Label StealthForeverLabel;
     }
 }
 

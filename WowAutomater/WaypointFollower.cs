@@ -22,8 +22,23 @@ namespace ClassicWowNeuralParasite
         private static List<double> m_XCoordinates = new List<double>();
         private static List<double> m_YCoordinates = new List<double>();
 
+        public static Jitterizer Jitterizer = new Jitterizer();
+
+        private static bool m_Initialized = false;
+
         public static void SetWaypoints(List<double> xCoordinates, List<double> yCoordinates)
         {
+            if(!m_Initialized)
+            {
+                Jitterizer.UpDown = false;
+                Jitterizer.DownUp = false;
+                Jitterizer.Left = true;
+                Jitterizer.Right = true;
+                Jitterizer.Clockwise = false;
+                Jitterizer.CounterClockwise = false;
+                m_Initialized = true;
+            }
+
             m_XCoordinates.Clear();
             m_YCoordinates.Clear();
 
@@ -138,32 +153,7 @@ namespace ClassicWowNeuralParasite
                             m_TurningDirection = TurningDirection.Left;
                         }
 
-                        if (Helper.RandomNumberGenerator.NextDouble() <= 0.01)
-                        {
-                            double rand = Helper.RandomNumberGenerator.NextDouble();
-                            if (rand < 0.33)
-                            {
-                                Input.KeyPress(VirtualKeyCode.SPACE);
-                            }
-                            else if (rand >= 0.33 && rand < 0.66)
-                            {
-                                Task.Run(() =>
-                                {
-                                    Input.KeyDown(VirtualKeyCode.LEFT);
-                                    Helper.WaitSeconds(0.100);
-                                    Input.KeyUp(VirtualKeyCode.LEFT);
-                                });
-                            }
-                            else
-                            {
-                                Task.Run(() =>
-                                {
-                                    Input.KeyDown(VirtualKeyCode.RIGHT);
-                                    Helper.WaitSeconds(0.100);
-                                    Input.KeyUp(VirtualKeyCode.RIGHT);
-                                });
-                            }
-                        }
+                        Jitterizer.RandomJitter();
 
                         bool xReached = Math.Abs(WowApi.PlayerData.PlayerXPosition - m_XCoordinates[m_WaypointIndex]) < PositionTolerance;
                         bool yReached = Math.Abs(WowApi.PlayerData.PlayerYPosition - m_YCoordinates[m_WaypointIndex]) < PositionTolerance;

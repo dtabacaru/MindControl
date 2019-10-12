@@ -174,13 +174,77 @@ namespace ClassicWowNeuralParasite
                     WowAutomater.AutoLoot = Convert.ToBoolean(configValue);
                     AutoLootLabelCheckbox.Checked = Convert.ToBoolean(configValue);
                     break;
+                case "Find target rate":
+                    WaypointFollower.Jitterizer.Rate = Convert.ToDouble(configValue);
+                    FindTargetRateNumericInput.Value = Convert.ToDecimal(configValue);
+                    break;
+                case "Find target wait time":
+                    WaypointFollower.Jitterizer.WaitTime = Convert.ToDouble(configValue);
+                    FindTargetWaitTimeNumericInput.Value = Convert.ToDecimal(configValue);
+                    break;
+                case "Find target jump":
+                    WaypointFollower.Jitterizer.Jump = Convert.ToBoolean(configValue);
+                    FindTargetJumpCheckBox.Checked = Convert.ToBoolean(configValue); ;
+                    break;
+                case "Find target left":
+                    WaypointFollower.Jitterizer.Left = Convert.ToBoolean(configValue);
+                    FindTargetLeftCheckBox.Checked = Convert.ToBoolean(configValue);
+                    break;
+                case "Find target right":
+                    WaypointFollower.Jitterizer.Right = Convert.ToBoolean(configValue);
+                    FindTargetRightCheckBox.Checked = Convert.ToBoolean(configValue);
+                    break;
+                case "Find target leftright":
+                    WaypointFollower.Jitterizer.LeftRight = Convert.ToBoolean(configValue);
+                    FindTargetLeftRightCheckBox.Checked =  Convert.ToBoolean(configValue);
+                    break;
+                case "Find target rightleft":
+                    WaypointFollower.Jitterizer.RightLeft = Convert.ToBoolean(configValue);
+                    FindTargetRightLeftCheckBox.Checked = Convert.ToBoolean(configValue);
+                    break;
+                case "Kill target rate":
+                    WowAutomater.Jitterizer.Rate = Convert.ToDouble(configValue);
+                    KillTargetRateNumericInput.Value = Convert.ToDecimal(configValue);
+                    break;
+                case "Kill target wait time":
+                    WowAutomater.Jitterizer.WaitTime = Convert.ToDouble(configValue);
+                    KillTargetWaitTimeNumericInput.Value = Convert.ToDecimal(configValue);
+                    break;
+                case "Kill target jump":
+                    WowAutomater.Jitterizer.Jump = Convert.ToBoolean(configValue);
+                    KillTargetJumpCheckBox.Checked = Convert.ToBoolean(configValue);
+                    break;
+                case "Kill target updown":
+                    WowAutomater.Jitterizer.UpDown = Convert.ToBoolean(configValue);
+                    KillTargetUpDownCheckBox.Checked = Convert.ToBoolean(configValue);
+                    break;
+                case "Kill target downup":
+                    WowAutomater.Jitterizer.DownUp = Convert.ToBoolean(configValue);
+                    KillTargetDownUpCheckBox.Checked = Convert.ToBoolean(configValue);
+                    break;
+                case "Kill target leftright":
+                    WowAutomater.Jitterizer.LeftRight = Convert.ToBoolean(configValue);
+                    KillTargetLeftRightCheckBox.Checked = Convert.ToBoolean(configValue);
+                    break;
+                case "Kill target rightleft":
+                    WowAutomater.Jitterizer.RightLeft = Convert.ToBoolean(configValue);
+                    KillTargetRightLeftCheckBox.Checked = Convert.ToBoolean(configValue);
+                    break;
+                case "Kill target clockwise":
+                    WowAutomater.Jitterizer.Clockwise = Convert.ToBoolean(configValue);
+                    KillTargetClockwiseCheckBox.Checked = Convert.ToBoolean(configValue);
+                    break;
+                case "Kill target counter clockwise":
+                    WowAutomater.Jitterizer.CounterClockwise = Convert.ToBoolean(configValue);
+                    KillTargetCounterClockwiseCheckBox.Checked = Convert.ToBoolean(configValue);
+                    break;
                 case "First seal":
                     
                     switch (configValue)
                     {
                         case "None":
                             WowAutomater.Paladin.FirstSeal = FirstSealType.None;
-                            FirstSealCrusaderButton.Checked = true;
+                            FirstSealNoneButton.Checked = true;
                             break;
                         case "Crusader":
                             WowAutomater.Paladin.FirstSeal = FirstSealType.Crusader;
@@ -202,6 +266,10 @@ namespace ClassicWowNeuralParasite
                 case "Stealth level":
                     WowAutomater.Rogue.StealthLevel = Convert.ToInt32(configValue);
                     StealthLevelNumericInput.Value = Convert.ToDecimal(configValue);
+                    break;
+                case "Stealth forever":
+                    WowAutomater.Rogue.AlwaysStealth = Convert.ToBoolean(configValue);
+                    StealthForeverCheckBox.Checked = Convert.ToBoolean(configValue);
                     break;
                 case "Remove stealth after (sec)":
                     WowAutomater.Rogue.StaleStealthTimer.Interval = Convert.ToDouble(configValue) * 1000;
@@ -620,5 +688,89 @@ namespace ClassicWowNeuralParasite
             WowAutomater.Rogue.RuptureFirst = RuptureFirstCheckBox.Checked;
         }
 
+        private void FindTargetRateNumericInput_ValueChanged(object sender, EventArgs e)
+        {
+            WaypointFollower.Jitterizer.Rate = (double)FindTargetRateNumericInput.Value;
+        }
+
+        private void FindTargetWaitTimeNumericInput_ValueChanged(object sender, EventArgs e)
+        {
+            WaypointFollower.Jitterizer.WaitTime = (double)FindTargetWaitTimeNumericInput.Value;
+        }
+
+        private void FindTargetJumpCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            WaypointFollower.Jitterizer.Jump = FindTargetJumpCheckBox.Checked;
+        }
+
+        private void FindTargetLeftCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            WaypointFollower.Jitterizer.Left = FindTargetLeftCheckBox.Checked;
+        }
+
+        private void FindTargetRightCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            WaypointFollower.Jitterizer.Right = FindTargetRightCheckBox.Checked;
+        }
+
+        private void FindTargetLeftRightCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            WaypointFollower.Jitterizer.LeftRight = FindTargetLeftRightCheckBox.Checked;
+        }
+
+        private void FindTargetRightLeftCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            WaypointFollower.Jitterizer.RightLeft = FindTargetRightLeftCheckBox.Checked;
+        }
+
+        private void KillTargetRateNumericInput_ValueChanged(object sender, EventArgs e)
+        {
+            WowAutomater.Jitterizer.Rate = (double)KillTargetRateNumericInput.Value;
+        }
+
+        private void KillTargetWaitTimeNumericInput_ValueChanged(object sender, EventArgs e)
+        {
+            WowAutomater.Jitterizer.WaitTime = (double)KillTargetWaitTimeNumericInput.Value;
+        }
+
+        private void KillTargetJumpCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            WowAutomater.Jitterizer.Jump = KillTargetJumpCheckBox.Checked;
+        }
+
+        private void KillTargetUpDownCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            WowAutomater.Jitterizer.UpDown = KillTargetUpDownCheckBox.Checked;
+        }
+
+        private void KillTargetDownUpCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            WowAutomater.Jitterizer.DownUp = KillTargetDownUpCheckBox.Checked;
+        }
+
+        private void KillTargetLeftRightCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            WowAutomater.Jitterizer.LeftRight = KillTargetLeftRightCheckBox.Checked;
+        }
+
+        private void KillTargetRightLeftCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            WowAutomater.Jitterizer.RightLeft = KillTargetRightLeftCheckBox.Checked;
+        }
+
+        private void KillTargetClockwiseCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            WowAutomater.Jitterizer.Clockwise = KillTargetClockwiseCheckBox.Checked;
+        }
+
+        private void KillTargetCounterClockwiseCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            WowAutomater.Jitterizer.CounterClockwise = KillTargetCounterClockwiseCheckBox.Checked;
+        }
+
+        private void StealthForeverCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            WowAutomater.Rogue.AlwaysStealth = StealthForeverCheckBox.Checked;
+        }
     }
 }

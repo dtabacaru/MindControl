@@ -15,6 +15,7 @@ namespace ClassicWowNeuralParasite
         public bool ThrowFlag = true;
         public int StealthCooldown = 10;
         public bool RuptureFirst = true;
+        public bool AlwaysStealth = true;
 
         public Timer StaleStealthTimer = new Timer();
 
@@ -90,27 +91,24 @@ namespace ClassicWowNeuralParasite
 
         private void CheckFindMode()
         {
+            if (WowApi.PlayerData.AmmoCount == 1 && EquipAmmo.CanCastSpell && ThrowFlag)
+                EquipAmmo.CastSpell();
+
             if (WowApi.PlayerData.PlayerLevel < 5)
             {
                 FindTargetMode = RogueFindTargetMode.Throw;
             }
             else if ( (StealthFlag && WowApi.PlayerData.PlayerLevel > StealthLevel) && 
-                      ThrowFlag)
+                      ThrowFlag && WowApi.PlayerData.AmmoCount > 1)
             {
-                if (WowApi.PlayerData.AmmoCount == 1 && EquipAmmo.CanCastSpell)
-                    EquipAmmo.CastSpell();
-
                 FindTargetMode = RogueFindTargetMode.StealthAndThrow;
             }
             else if (StealthFlag && WowApi.PlayerData.PlayerLevel > StealthLevel)
             {
                 FindTargetMode = RogueFindTargetMode.Stealth;
             }
-            else if (ThrowFlag)
+            else if (ThrowFlag && WowApi.PlayerData.AmmoCount > 1)
             {
-                if (WowApi.PlayerData.AmmoCount == 1 && EquipAmmo.CanCastSpell)
-                    EquipAmmo.CastSpell();
-
                 FindTargetMode = RogueFindTargetMode.Throw;
             }
             else
@@ -129,7 +127,12 @@ namespace ClassicWowNeuralParasite
             if (FindTargetMode == RogueFindTargetMode.StealthAndThrow)
             {
                 if (Stealth.CanCastSpell)
+                {
                     Stealth.CastSpell();
+
+                    if (!AlwaysStealth)
+                        StaleStealthTimer.Start();
+                }
 
                 validTarget = WowApi.PlayerData.PlayerHasTarget &&
                             WowApi.PlayerData.TargetHealth == 100 &&
@@ -144,7 +147,7 @@ namespace ClassicWowNeuralParasite
 
                     Helper.WaitSeconds(1);
                     Throw.Act();
-                    Helper.WaitSeconds(3);
+                    Helper.WaitSeconds(2);
                 }
             }
             else if (FindTargetMode == RogueFindTargetMode.Throw)
@@ -162,7 +165,7 @@ namespace ClassicWowNeuralParasite
 
                     Helper.WaitSeconds(1);
                     Throw.Act();
-                    Helper.WaitSeconds(3);
+                    Helper.WaitSeconds(2);
                 }
             }
             else if (FindTargetMode == RogueFindTargetMode.Stealth)
@@ -170,7 +173,9 @@ namespace ClassicWowNeuralParasite
                 if (Stealth.CanCastSpell)
                 {
                     Stealth.CastSpell();
-                    StaleStealthTimer.Start();
+
+                    if(!AlwaysStealth)
+                        StaleStealthTimer.Start();
                 }
 
                 validTarget = WowApi.PlayerData.PlayerHasTarget &&

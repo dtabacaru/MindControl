@@ -47,6 +47,7 @@
     <Compile Include="FinishingSpell.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="Input.cs" />
+    <Compile Include="Jitterizer.cs" />
     <Compile Include="RecordWowPath.cs" />
     <Compile Include="SealSpell.cs" />
     <Compile Include="Spell.cs" />

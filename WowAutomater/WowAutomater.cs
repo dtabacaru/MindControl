@@ -82,13 +82,13 @@ namespace ClassicWowNeuralParasite
 
         public static double RegenerateVitalsHealthPercentage = 60;
 
-        private static bool m_TurnDirection = true;
+        private static bool m_WaddleDirection = true;
+        private static bool m_Waddling = false;
 
         private static bool m_Ghosted = false;
         private static bool m_Potion = false;
         private static bool m_Idle = false;
         private static bool m_StartedEating = false;
-        private static bool m_FarTarget = false;
 
         public static bool AutoLoot = false;
 
@@ -106,13 +106,15 @@ namespace ClassicWowNeuralParasite
         public static ShamanAutomater  Shaman =  new ShamanAutomater();
         public static DruidAutomater   Druid =   new DruidAutomater();
 
+        public static Jitterizer Jitterizer = new Jitterizer();
+
         private static void WoWAPIUpdateEvent(object sender, EventArgs wea)
         {
             if ((WowApi.PlayerData.PlayerActionError == ActionErrorType.BehindTarget || 
                 WowApi.PlayerData.PlayerActionError == ActionErrorType.FacingWrongWay) && 
                 m_CurrentActionMode == ActionMode.KillTarget)
             {
-                WalkBackward(true);
+                Waddle();
             }
                 
             CheckClass();
@@ -165,8 +167,11 @@ namespace ClassicWowNeuralParasite
 
             m_ResetCoordinates = true;
 
-            m_PathXCoordinates = new List<double>(xCoordinates);
-            m_PathYCoordinates = new List<double>(yCoordinates);
+            m_PathXCoordinates.Clear();
+            m_PathXCoordinates.AddRange(xCoordinates);
+
+            m_PathYCoordinates.Clear();
+            m_PathYCoordinates.AddRange(yCoordinates);
         }
 
         public static void SetReviveCoordinates(List<double> xCoordinates, List<double> yCoordinates)
@@ -176,8 +181,11 @@ namespace ClassicWowNeuralParasite
 
             m_ResetCoordinates = true;
 
-            m_ReviveXCoordinates = new List<double>(xCoordinates);
-            m_ReviveYCoordinates = new List<double>(yCoordinates);
+            m_ReviveXCoordinates.Clear();
+            m_ReviveXCoordinates.AddRange(xCoordinates);
+
+            m_ReviveYCoordinates.Clear();
+            m_ReviveYCoordinates.AddRange(yCoordinates);
 
             if (m_ReviveXCoordinates.Count == 0)
                 m_NoDead = true;
@@ -190,8 +198,11 @@ namespace ClassicWowNeuralParasite
 
             m_ResetCoordinates = true;
 
-            m_ShopXCoordinates = new List<double>(xCoordinates);
-            m_ShopYCoordinates = new List<double>(yCoordinates);
+            m_ShopXCoordinates.Clear();
+            m_ShopXCoordinates.AddRange(xCoordinates);
+
+            m_ShopYCoordinates.Clear();
+            m_ShopYCoordinates.AddRange(yCoordinates);
 
             if (m_ShopXCoordinates.Count == 0)
                 m_NoShop = true;
@@ -204,8 +215,11 @@ namespace ClassicWowNeuralParasite
 
             m_ResetCoordinates = true;
 
-            m_WalkXCoordinates = new List<double>(xCoordinates);
-            m_WalkYCoordinates = new List<double>(yCoordinates);
+            m_WalkXCoordinates.Clear();
+            m_WalkXCoordinates.AddRange(xCoordinates);
+
+            m_WalkYCoordinates.Clear();
+            m_WalkYCoordinates.AddRange(yCoordinates);
 
             if (m_WalkXCoordinates.Count == 0)
                 m_NoWalk = true;
@@ -324,9 +338,9 @@ namespace ClassicWowNeuralParasite
 
                 WaypointFollower.SetWaypoints(ghostXCoordinates, ghostYCoordinates);
 
-                Helper.WaitSeconds(5.0);
+                Helper.WaitSeconds(2.5);
                 Input.MoveMouseTo(XReviveButtonLocation, YReviveButtonLocation);
-                Helper.WaitSeconds(0.1);
+                Helper.WaitSeconds(RegisterDelay);
                 Input.LeftClick();
                 m_Ghosted = true;
 
@@ -361,7 +375,9 @@ namespace ClassicWowNeuralParasite
 
         private static void LootTarget()
         {
-            if(!AutoLoot)
+            Helper.WaitSeconds(0.5);
+
+            if (!AutoLoot)
                 Input.KeyDown(VirtualKeyCode.LSHIFT);
 
             for (int x = 20000; x < 48000; x += 1500)
@@ -410,9 +426,7 @@ namespace ClassicWowNeuralParasite
         {
             if (!m_StartedEating)
             {
-                Helper.WaitSeconds(1.500);
-                Input.KeyPress(VirtualKeyCode.VK_X);
-                Helper.WaitSeconds(RegisterDelay);
+                Helper.WaitSeconds(1);
                 Input.KeyPress(VirtualKeyCode.VK_8);
                 Helper.WaitSeconds(RegisterDelay);
                 Input.KeyPress(VirtualKeyCode.VK_9);
@@ -460,31 +474,36 @@ namespace ClassicWowNeuralParasite
             m_WowClassAutomater.AutoAttackTarget();
         }
 
-        private static void WalkBackward(bool turn)
+        private static void Waddle()
         {
-            Input.KeyDown(VirtualKeyCode.VK_S);
+            if (m_Waddling)
+                return;
 
-            if (turn)
+            m_Waddling = true;
+
+            Task.Run(() =>
             {
-                if (m_TurnDirection)
+                Input.KeyDown(VirtualKeyCode.VK_S);
+
+                if (m_WaddleDirection)
                     Input.KeyDown(VirtualKeyCode.VK_D);
                 else
                     Input.KeyDown(VirtualKeyCode.VK_A);
-            }
 
-            Helper.WaitSeconds(0.2);
+                Helper.WaitSeconds(0.2);
 
-            Input.KeyUp(VirtualKeyCode.VK_S);
+                Input.KeyUp(VirtualKeyCode.VK_S);
 
-            if (turn)
-            {
-                if (m_TurnDirection)
+                if (m_WaddleDirection)
                     Input.KeyUp(VirtualKeyCode.VK_D);
                 else
                     Input.KeyUp(VirtualKeyCode.VK_A);
-            }
 
-            m_TurnDirection = !m_TurnDirection;
+                m_WaddleDirection = !m_WaddleDirection;
+
+                m_Waddling = false;
+            });
+                
         }
 
         private static void KillTarget()
@@ -506,29 +525,19 @@ namespace ClassicWowNeuralParasite
             else if (!WowApi.PlayerData.TargetInCombat ||
                      WowApi.PlayerData.TargetFaction > 0)
             {
-                WalkBackward(true);
+                Waddle();
                 Input.KeyPress(VirtualKeyCode.TAB);
                 Helper.WaitSeconds(RegisterDelay);
             }
             else if (!WowApi.PlayerData.IsInCloseRange)
             {
-                m_FarTarget = true;
-                WalkBackward(false);
+                Jitterizer.Jitter();
                 Helper.WaitSeconds(0.5);
             }
-            else if (m_FarTarget && WowApi.PlayerData.IsInCloseRange)
-            {
-                m_FarTarget = false;
-                WalkBackward(false);
-                Helper.WaitSeconds(0.5);
-            }
-            else if (!WowApi.PlayerData.PlayerIsAttacking)
+            else if (!WowApi.PlayerData.PlayerIsAttacking && WowApi.PlayerData.TargetHealth > 0)
             {
                 Input.KeyPress(VirtualKeyCode.VK_1);
                 Helper.WaitSeconds(RegisterDelay);
-
-                if(m_WowClassAutomater.IsMelee)
-                    WalkBackward(false);
             }
             else if (WowApi.PlayerData.PlayerHealthPercentage < 10 && !m_Potion)
             {
@@ -540,36 +549,8 @@ namespace ClassicWowNeuralParasite
                 m_WowClassAutomater.KillTarget();
             }
 
-            // Strafe randomly
-
-            if ((Helper.RandomNumberGenerator.NextDouble() <= 0.005) && m_WowClassAutomater.IsMelee)
-            {
-                if (Helper.RandomNumberGenerator.NextDouble() >= 0.5)
-                {
-                    Task.Run(() =>
-                    {
-                        Input.KeyDown(VirtualKeyCode.LEFT);
-                        Helper.WaitSeconds(0.075);
-                        Input.KeyUp(VirtualKeyCode.LEFT);
-                        Input.KeyDown(VirtualKeyCode.RIGHT);
-                        Helper.WaitSeconds(0.075);
-                        Input.KeyUp(VirtualKeyCode.RIGHT);
-                    });
-                }
-                else
-                {
-                    Task.Run(() =>
-                    {
-                        Input.KeyDown(VirtualKeyCode.UP);
-                        Helper.WaitSeconds(0.075);
-                        Input.KeyUp(VirtualKeyCode.UP);
-                        Input.KeyDown(VirtualKeyCode.DOWN);
-                        Helper.WaitSeconds(0.075);
-                        Input.KeyUp(VirtualKeyCode.DOWN);
-                    });
-                }
-            }
-
+            if(m_WowClassAutomater.IsMelee)
+                Jitterizer.RandomJitter();
         }
 
     }

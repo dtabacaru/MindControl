@@ -9,11 +9,29 @@ X revive button location: 325
 Y revive button location: 145
 Regenerate health %: 60
 Auto loot: false
+--Jitterizer
+Find target rate: 0.01
+Find target wait time: 0.08
+Find target jump: true
+Find target left: true
+Find target right: true
+Find target leftright: true
+Find target rightleft: true
+Kill target rate: 0.01
+Kill target wait time: 0.08
+Kill target jump: true
+Kill target updown: true
+Kill target downup: true
+Kill target leftright: true
+Kill target rightleft: true
+Kill target clockwise: true
+Kill target counter clockwise: true
 -- Paladin
 First seal: None
 -- Rogue
 Stealth: true
 Stealth level: 10
+Stealth forever: true
 Remove stealth after (sec): 10
 Always throw: true
 Slice and dice combo points: 1
