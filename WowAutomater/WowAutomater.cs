@@ -439,11 +439,11 @@ namespace ClassicWowNeuralParasite
             else if (WowApi.PlayerData.PlayerInCombat)
             {
                 m_StartedEating = false;
-                CurrentActionMode = ActionMode.KillTarget;
+                m_CurrentActionMode = ActionMode.KillTarget;
             }
             else if (WowApi.PlayerData.PlayerHealth == WowApi.PlayerData.MaxPlayerHealth)
             {
-                CurrentActionMode = ActionMode.FindTarget;
+                m_CurrentActionMode = ActionMode.FindTarget;
                 m_StartedEating = false;
             }
         }
