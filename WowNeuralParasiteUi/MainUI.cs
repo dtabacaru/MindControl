@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WindowsInput;
@@ -26,7 +29,7 @@ namespace ClassicWowNeuralParasite
             if (File.Exists("Config.ftw"))
             {
                 ReadConfigString(File.ReadAllText("Config.ftw"));
-            }      
+            }
 
             if (!File.Exists("targetpath.txt"))
             {
@@ -74,6 +77,56 @@ namespace ClassicWowNeuralParasite
                 }
 
             });
+
+            Task.Run(() =>
+            {
+                StartScreenshotServer();
+            });
+        }
+
+        private void StartScreenshotServer()
+        {
+            TcpListener server = new TcpListener(IPAddress.Any, 80);
+
+            server.Start();
+
+            while (true)
+            {
+                TcpClient client = server.AcceptTcpClient();
+
+                NetworkStream ns = client.GetStream();
+
+                byte[] data = new byte[8192];
+
+                ns.Read(data, 0, 8192);
+
+                Rectangle bounds = new Rectangle(0, 0, 1920, 1080);
+
+                using (Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height))
+                {
+                    using (Graphics g = Graphics.FromImage(bitmap))
+                    {
+                        g.CopyFromScreen(new Point(0, 0), Point.Empty, bounds.Size);
+                    }
+
+                    bitmap.Save("screenshot.png", System.Drawing.Imaging.ImageFormat.Png);
+                }
+
+                byte[] pngimage = File.ReadAllBytes("screenshot.png");
+
+                string test = "HTTP/1.1 200 OK\r\n";
+                test += "Content-Length: " + pngimage.Length.ToString() + "\r\n";
+                test += "Content-Type: image/png\r\n";
+                test += "Connection: Closed\r\n\r\n";
+
+                List<byte> contentBytes = new List<byte>();
+                contentBytes.AddRange(ASCIIEncoding.ASCII.GetBytes(test));
+                contentBytes.AddRange(pngimage);
+
+                ns.Write(contentBytes.ToArray(), 0, contentBytes.Count);
+
+                client.Close();
+            }
         }
 
         private void Automater_StopEvent(object sender, EventArgs ea)
