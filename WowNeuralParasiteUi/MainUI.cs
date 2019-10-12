@@ -92,40 +92,40 @@ namespace ClassicWowNeuralParasite
 
             while (true)
             {
-                TcpClient client = server.AcceptTcpClient();
-
-                NetworkStream ns = client.GetStream();
-
-                byte[] data = new byte[8192];
-
-                ns.Read(data, 0, 8192);
-
-                Rectangle bounds = new Rectangle(0, 0, 1920, 1080);
-
-                using (Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height))
+                using (TcpClient client = server.AcceptTcpClient())
                 {
-                    using (Graphics g = Graphics.FromImage(bitmap))
+                    using (NetworkStream ns = client.GetStream())
                     {
-                        g.CopyFromScreen(new Point(0, 0), Point.Empty, bounds.Size);
+                        byte[] data = new byte[8192];
+
+                        ns.Read(data, 0, 8192);
+
+                        Rectangle bounds = new Rectangle(0, 0, 1920, 1080);
+
+                        using (Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height))
+                        {
+                            using (Graphics g = Graphics.FromImage(bitmap))
+                            {
+                                g.CopyFromScreen(new Point(0, 0), Point.Empty, bounds.Size);
+                            }
+
+                            bitmap.Save("screenshot.png", System.Drawing.Imaging.ImageFormat.Png);
+                        }
+
+                        byte[] pngimage = File.ReadAllBytes("screenshot.png");
+
+                        string responseString = "HTTP/1.1 200 OK\r\n";
+                        responseString += "Content-Length: " + pngimage.Length.ToString() + "\r\n";
+                        responseString += "Content-Type: image/png\r\n";
+                        responseString += "Connection: Closed\r\n\r\n";
+
+                        List<byte> contentBytes = new List<byte>();
+                        contentBytes.AddRange(ASCIIEncoding.ASCII.GetBytes(responseString));
+                        contentBytes.AddRange(pngimage);
+
+                        ns.Write(contentBytes.ToArray(), 0, contentBytes.Count);
                     }
-
-                    bitmap.Save("screenshot.png", System.Drawing.Imaging.ImageFormat.Png);
                 }
-
-                byte[] pngimage = File.ReadAllBytes("screenshot.png");
-
-                string test = "HTTP/1.1 200 OK\r\n";
-                test += "Content-Length: " + pngimage.Length.ToString() + "\r\n";
-                test += "Content-Type: image/png\r\n";
-                test += "Connection: Closed\r\n\r\n";
-
-                List<byte> contentBytes = new List<byte>();
-                contentBytes.AddRange(ASCIIEncoding.ASCII.GetBytes(test));
-                contentBytes.AddRange(pngimage);
-
-                ns.Write(contentBytes.ToArray(), 0, contentBytes.Count);
-
-                client.Close();
             }
         }
 
