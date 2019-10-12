@@ -86,7 +86,7 @@ namespace ClassicWowNeuralParasite
 
         private void StartScreenshotServer()
         {
-            TcpListener server = new TcpListener(IPAddress.Any, 80);
+            TcpListener server = new TcpListener(IPAddress.Any, 8001);
 
             server.Start();
 
