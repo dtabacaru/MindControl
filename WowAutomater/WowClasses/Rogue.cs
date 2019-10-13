@@ -99,7 +99,7 @@ namespace ClassicWowNeuralParasite
                 FindTargetMode = RogueFindTargetMode.Throw;
             }
             else if ( (StealthFlag && WowApi.PlayerData.PlayerLevel > StealthLevel) && 
-                      ThrowFlag && WowApi.PlayerData.AmmoCount > 1)
+                      ThrowFlag)
             {
                 FindTargetMode = RogueFindTargetMode.StealthAndThrow;
             }
@@ -107,7 +107,7 @@ namespace ClassicWowNeuralParasite
             {
                 FindTargetMode = RogueFindTargetMode.Stealth;
             }
-            else if (ThrowFlag && WowApi.PlayerData.AmmoCount > 1)
+            else if (ThrowFlag)
             {
                 FindTargetMode = RogueFindTargetMode.Throw;
             }
