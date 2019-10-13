@@ -84,48 +84,60 @@ namespace ClassicWowNeuralParasite
             });
         }
 
+        private void HandleTcpClientConnection(TcpClient tcpClient)
+        {
+            try
+            {
+                using (NetworkStream ns = tcpClient.GetStream())
+                {
+                    byte[] data = new byte[16384];
+
+                    ns.Read(data, 0, 16384);
+
+                    Rectangle bounds = new Rectangle(0, 0, 1920, 1080);
+
+                    using (Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height))
+                    {
+                        using (Graphics g = Graphics.FromImage(bitmap))
+                        {
+                            g.CopyFromScreen(new Point(0, 0), Point.Empty, bounds.Size);
+                        }
+
+                        bitmap.Save("screenshot.png", System.Drawing.Imaging.ImageFormat.Png);
+                    }
+
+                    byte[] pngimage = File.ReadAllBytes("screenshot.png");
+
+                    string responseString = "HTTP/1.1 200 OK\r\n";
+                    responseString += "Content-Length: " + pngimage.Length.ToString() + "\r\n";
+                    responseString += "Content-Type: image/png\r\n";
+                    responseString += "Connection: Closed\r\n\r\n";
+
+                    List<byte> contentBytes = new List<byte>();
+                    contentBytes.AddRange(ASCIIEncoding.ASCII.GetBytes(responseString));
+                    contentBytes.AddRange(pngimage);
+
+                    ns.Write(contentBytes.ToArray(), 0, contentBytes.Count);
+                }
+            }
+            catch { }
+        }
+
         private void StartScreenshotServer()
         {
             TcpListener server = new TcpListener(IPAddress.Any, 8001);
 
-            server.Start();
+            server.Start(20);
 
             while (true)
             {
-                using (TcpClient client = server.AcceptTcpClient())
+                TcpClient tcpClient = server.AcceptTcpClient();
+
+                Task.Run(() =>
                 {
-                    using (NetworkStream ns = client.GetStream())
-                    {
-                        byte[] data = new byte[8192];
-
-                        ns.Read(data, 0, 8192);
-
-                        Rectangle bounds = new Rectangle(0, 0, 1920, 1080);
-
-                        using (Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height))
-                        {
-                            using (Graphics g = Graphics.FromImage(bitmap))
-                            {
-                                g.CopyFromScreen(new Point(0, 0), Point.Empty, bounds.Size);
-                            }
-
-                            bitmap.Save("screenshot.png", System.Drawing.Imaging.ImageFormat.Png);
-                        }
-
-                        byte[] pngimage = File.ReadAllBytes("screenshot.png");
-
-                        string responseString = "HTTP/1.1 200 OK\r\n";
-                        responseString += "Content-Length: " + pngimage.Length.ToString() + "\r\n";
-                        responseString += "Content-Type: image/png\r\n";
-                        responseString += "Connection: Closed\r\n\r\n";
-
-                        List<byte> contentBytes = new List<byte>();
-                        contentBytes.AddRange(ASCIIEncoding.ASCII.GetBytes(responseString));
-                        contentBytes.AddRange(pngimage);
-
-                        ns.Write(contentBytes.ToArray(), 0, contentBytes.Count);
-                    }
-                }
+                    HandleTcpClientConnection(tcpClient);
+                    tcpClient.Dispose();
+                });
             }
         }
 

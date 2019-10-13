@@ -291,7 +291,7 @@ namespace ClassicWowNeuralParasite
                         RegenerateVitals();
                         break;
                     case ActionMode.Revive:
-                        RunFromGraveToBody();
+                        Revive();
                         break;
                     case ActionMode.SellItems:
                         SellItems();
@@ -320,7 +320,7 @@ namespace ClassicWowNeuralParasite
             WaypointFollower.FollowWaypoints(false);
         }
 
-        private static void RunFromGraveToBody()
+        private static void Revive()
         {
             if (m_NoDead)
                 return;
@@ -361,9 +361,13 @@ namespace ClassicWowNeuralParasite
                 WaypointFollower.StopFollowingWaypoints();
                 m_Ghosted = false;
                 m_CurrentActionMode = ActionMode.RegenerateVitals;
+                m_StartedEating = false;
                 m_ReviveSw.Stop();
-
                 m_ResetCoordinates = true;
+
+                Helper.WaitSeconds(0.5);
+                Input.KeyPress(VirtualKeyCode.VK_B);
+                Helper.WaitSeconds(0.5);
             }
         }
 
@@ -413,6 +417,8 @@ namespace ClassicWowNeuralParasite
                 if (!AutoLoot)
                     Input.KeyUp(VirtualKeyCode.LSHIFT);
             }
+
+            m_StartedEating = false;
 
             if (WowApi.PlayerData.PlayerInCombat)
                 m_CurrentActionMode = ActionMode.KillTarget;
