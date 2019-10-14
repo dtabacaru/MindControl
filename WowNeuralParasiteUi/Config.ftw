@@ -9,6 +9,11 @@ X revive button location: 325
 Y revive button location: 145
 Regenerate health %: 60
 Auto loot: false
+Send whisper e-mail: false
+Whisper e-mail to: test@test.com
+SMTP account name: test@test.com
+SMTP account password: test
+SMTP server: test.com
 --Jitterizer
 Find target rate: 0.01
 Find target wait time: 0.08

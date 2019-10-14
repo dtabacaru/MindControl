@@ -9,7 +9,7 @@ using WindowsInput.Native;
 
 namespace ClassicWowNeuralParasite
 {
-    static class Helper
+    public static class Helper
     {
         public static Random RandomNumberGenerator = new Random();
 

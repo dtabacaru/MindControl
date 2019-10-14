@@ -5,12 +5,10 @@ local PI = 3.141592654;
 
 -- Globals
 
+local whisperLastUpdate = 0;
+local whisperStart = false;
 local errorLastUpdate = 0;
 local errorStart = false;
-local castLastUpdate = 0;
-local castStart = false;
-local castInterruptedLastUpdate = 0;
-local castInterruptedStart = false;
 local startedAutomater = false;
 local showDebug = false;
 local isCasting = false;
@@ -378,8 +376,10 @@ function DataFrame_OnUpdate()
 	
 	if startedAutomater == true then
 		StartPixel:SetColorTexture(1/255, 255/255, 2/255, 1);
+		StartStopIndicator:SetColorTexture(0, 1, 0, 0.2);
 	else
 		StartPixel:SetColorTexture(1, 0, 0, 1);
+		StartStopIndicator:SetColorTexture(1, 0, 0, 0.2);
 	end
 	
 	if IsCurrentAction(1)   or 
@@ -464,6 +464,17 @@ function DataFrame_OnUpdate()
 		end
 	
 		errorLastUpdate = errorLastUpdate + 1;
+	end
+	
+	if whisperStart == true then
+	
+		if whisperLastUpdate == 4 then
+			whisperLastUpdate = 0;
+			WhisperPixel:SetColorTexture(0, 0, 0, 1);
+			whisperStart = false;
+		end
+	
+		whisperLastUpdate = whisperLastUpdate + 1;
 	end
 	
 	local shapeShiftForm = GetShapeshiftForm(true);
@@ -556,6 +567,14 @@ function DataFrame_OnUpdate()
 	
 	debugString = debugString .. "Buffs: " .. buffPixelValue .."\n";
 
+	if UnitName("targettarget") == UnitName("player") then
+		TargetTargetingPlayerPixel:SetColorTexture(1, 1, 1, 1);
+		debugString = debugString .. "Target targeting you: true\n";
+	else
+		TargetTargetingPlayerPixel:SetColorTexture(0, 0, 0, 1);
+		debugString = debugString .. "Target targeting you: false\n";
+	end
+
 	SetDebugText(DebugText,debugString);
 end
 
@@ -619,4 +638,13 @@ castStopFrame:SetScript('OnEvent', function(self, event, arg1)
 	if arg1 == "player" then
 		isCasting = false;
 	end
+end)
+
+-- Whisper event
+
+local whisperFrame = CreateFrame('Frame');
+whisperFrame:RegisterEvent("CHAT_MSG_WHISPER")
+whisperFrame:SetScript('OnEvent', function(self, event)
+	WhisperPixel:SetColorTexture(1, 1, 1, 1);
+	whisperStart = true;
 end)

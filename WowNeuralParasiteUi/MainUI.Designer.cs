@@ -47,6 +47,15 @@
             this.XTextBox = new System.Windows.Forms.TextBox();
             this.XLabel = new System.Windows.Forms.Label();
             this.AutomaterTab = new System.Windows.Forms.TabPage();
+            this.SMTPPasswordLabel = new System.Windows.Forms.Label();
+            this.SMTPPasswordTextBox = new System.Windows.Forms.TextBox();
+            this.SMTPNameLabel = new System.Windows.Forms.Label();
+            this.SMTPNameTextBox = new System.Windows.Forms.TextBox();
+            this.WhisperEmailToLabel = new System.Windows.Forms.Label();
+            this.WhisperEmailToTextBox = new System.Windows.Forms.TextBox();
+            this.WhisperEmailCheckBox = new System.Windows.Forms.CheckBox();
+            this.WhisperEmailLabel = new System.Windows.Forms.Label();
+            this.WebInterfaceToggleButton = new System.Windows.Forms.Button();
             this.AutoLootLabelCheckbox = new System.Windows.Forms.CheckBox();
             this.AutoLootLabel = new System.Windows.Forms.Label();
             this.RegenerateVitalsLabel = new System.Windows.Forms.Label();
@@ -138,6 +147,8 @@
             this.FindTargetRateLabel = new System.Windows.Forms.Label();
             this.ShowInfoButton = new System.Windows.Forms.Button();
             this.StatusLabel = new System.Windows.Forms.Label();
+            this.SMTPServerLabel = new System.Windows.Forms.Label();
+            this.SMTPServerTextBox = new System.Windows.Forms.TextBox();
             this.OptionTabs.SuspendLayout();
             this.InfoTab.SuspendLayout();
             this.PathsTab.SuspendLayout();
@@ -383,6 +394,17 @@
             // 
             // AutomaterTab
             // 
+            this.AutomaterTab.Controls.Add(this.SMTPServerLabel);
+            this.AutomaterTab.Controls.Add(this.SMTPServerTextBox);
+            this.AutomaterTab.Controls.Add(this.SMTPPasswordLabel);
+            this.AutomaterTab.Controls.Add(this.SMTPPasswordTextBox);
+            this.AutomaterTab.Controls.Add(this.SMTPNameLabel);
+            this.AutomaterTab.Controls.Add(this.SMTPNameTextBox);
+            this.AutomaterTab.Controls.Add(this.WhisperEmailToLabel);
+            this.AutomaterTab.Controls.Add(this.WhisperEmailToTextBox);
+            this.AutomaterTab.Controls.Add(this.WhisperEmailCheckBox);
+            this.AutomaterTab.Controls.Add(this.WhisperEmailLabel);
+            this.AutomaterTab.Controls.Add(this.WebInterfaceToggleButton);
             this.AutomaterTab.Controls.Add(this.AutoLootLabelCheckbox);
             this.AutomaterTab.Controls.Add(this.AutoLootLabel);
             this.AutomaterTab.Controls.Add(this.RegenerateVitalsLabel);
@@ -408,6 +430,84 @@
             this.AutomaterTab.TabIndex = 2;
             this.AutomaterTab.Text = "Automater";
             this.AutomaterTab.UseVisualStyleBackColor = true;
+            // 
+            // SMTPPasswordLabel
+            // 
+            this.SMTPPasswordLabel.AutoSize = true;
+            this.SMTPPasswordLabel.Location = new System.Drawing.Point(3, 367);
+            this.SMTPPasswordLabel.Name = "SMTPPasswordLabel";
+            this.SMTPPasswordLabel.Size = new System.Drawing.Size(127, 13);
+            this.SMTPPasswordLabel.TabIndex = 30;
+            this.SMTPPasswordLabel.Text = "SMTP account password";
+            // 
+            // SMTPPasswordTextBox
+            // 
+            this.SMTPPasswordTextBox.Location = new System.Drawing.Point(8, 383);
+            this.SMTPPasswordTextBox.Name = "SMTPPasswordTextBox";
+            this.SMTPPasswordTextBox.Size = new System.Drawing.Size(196, 20);
+            this.SMTPPasswordTextBox.TabIndex = 29;
+            // 
+            // SMTPNameLabel
+            // 
+            this.SMTPNameLabel.AutoSize = true;
+            this.SMTPNameLabel.Location = new System.Drawing.Point(3, 328);
+            this.SMTPNameLabel.Name = "SMTPNameLabel";
+            this.SMTPNameLabel.Size = new System.Drawing.Size(108, 13);
+            this.SMTPNameLabel.TabIndex = 28;
+            this.SMTPNameLabel.Text = "SMTP account name";
+            // 
+            // SMTPNameTextBox
+            // 
+            this.SMTPNameTextBox.Location = new System.Drawing.Point(8, 344);
+            this.SMTPNameTextBox.Name = "SMTPNameTextBox";
+            this.SMTPNameTextBox.Size = new System.Drawing.Size(196, 20);
+            this.SMTPNameTextBox.TabIndex = 27;
+            // 
+            // WhisperEmailToLabel
+            // 
+            this.WhisperEmailToLabel.AutoSize = true;
+            this.WhisperEmailToLabel.Location = new System.Drawing.Point(3, 289);
+            this.WhisperEmailToLabel.Name = "WhisperEmailToLabel";
+            this.WhisperEmailToLabel.Size = new System.Drawing.Size(88, 13);
+            this.WhisperEmailToLabel.TabIndex = 26;
+            this.WhisperEmailToLabel.Text = "Whisper e-mail to";
+            // 
+            // WhisperEmailToTextBox
+            // 
+            this.WhisperEmailToTextBox.Location = new System.Drawing.Point(8, 305);
+            this.WhisperEmailToTextBox.Name = "WhisperEmailToTextBox";
+            this.WhisperEmailToTextBox.Size = new System.Drawing.Size(196, 20);
+            this.WhisperEmailToTextBox.TabIndex = 25;
+            // 
+            // WhisperEmailCheckBox
+            // 
+            this.WhisperEmailCheckBox.AutoSize = true;
+            this.WhisperEmailCheckBox.Location = new System.Drawing.Point(154, 262);
+            this.WhisperEmailCheckBox.Name = "WhisperEmailCheckBox";
+            this.WhisperEmailCheckBox.Size = new System.Drawing.Size(15, 14);
+            this.WhisperEmailCheckBox.TabIndex = 24;
+            this.WhisperEmailCheckBox.UseVisualStyleBackColor = true;
+            this.WhisperEmailCheckBox.CheckedChanged += new System.EventHandler(this.WhisperEmailCheckBox_CheckedChanged);
+            // 
+            // WhisperEmailLabel
+            // 
+            this.WhisperEmailLabel.AutoSize = true;
+            this.WhisperEmailLabel.Location = new System.Drawing.Point(3, 262);
+            this.WhisperEmailLabel.Name = "WhisperEmailLabel";
+            this.WhisperEmailLabel.Size = new System.Drawing.Size(101, 13);
+            this.WhisperEmailLabel.TabIndex = 23;
+            this.WhisperEmailLabel.Text = "Send whisper e-mail";
+            // 
+            // WebInterfaceToggleButton
+            // 
+            this.WebInterfaceToggleButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+            this.WebInterfaceToggleButton.Location = new System.Drawing.Point(8, 471);
+            this.WebInterfaceToggleButton.Name = "WebInterfaceToggleButton";
+            this.WebInterfaceToggleButton.Size = new System.Drawing.Size(196, 25);
+            this.WebInterfaceToggleButton.TabIndex = 22;
+            this.WebInterfaceToggleButton.Text = "Start web interface";
+            this.WebInterfaceToggleButton.UseVisualStyleBackColor = false;
+            this.WebInterfaceToggleButton.Click += new System.EventHandler(this.WebInterfaceToggleButton_Click);
             // 
             // AutoLootLabelCheckbox
             // 
@@ -620,7 +720,7 @@
             // 
             this.PositionToleranceNumericInput.DecimalPlaces = 3;
             this.PositionToleranceNumericInput.Increment = new decimal(new int[] {
-            1,
+            5,
             0,
             0,
             196608});
@@ -655,12 +755,12 @@
             // 
             // TurnToleranceNumericInput
             // 
-            this.TurnToleranceNumericInput.DecimalPlaces = 2;
+            this.TurnToleranceNumericInput.DecimalPlaces = 3;
             this.TurnToleranceNumericInput.Increment = new decimal(new int[] {
-            1,
+            5,
             0,
             0,
-            131072});
+            196608});
             this.TurnToleranceNumericInput.Location = new System.Drawing.Point(154, 7);
             this.TurnToleranceNumericInput.Maximum = new decimal(new int[] {
             1,
@@ -668,7 +768,7 @@
             0,
             65536});
             this.TurnToleranceNumericInput.Minimum = new decimal(new int[] {
-            5,
+            1,
             0,
             0,
             131072});
@@ -1590,11 +1690,27 @@
             this.StatusLabel.Size = new System.Drawing.Size(0, 24);
             this.StatusLabel.TabIndex = 38;
             // 
+            // SMTPServerLabel
+            // 
+            this.SMTPServerLabel.AutoSize = true;
+            this.SMTPServerLabel.Location = new System.Drawing.Point(3, 406);
+            this.SMTPServerLabel.Name = "SMTPServerLabel";
+            this.SMTPServerLabel.Size = new System.Drawing.Size(69, 13);
+            this.SMTPServerLabel.TabIndex = 32;
+            this.SMTPServerLabel.Text = "SMTP server";
+            // 
+            // SMTPServerTextBox
+            // 
+            this.SMTPServerTextBox.Location = new System.Drawing.Point(8, 422);
+            this.SMTPServerTextBox.Name = "SMTPServerTextBox";
+            this.SMTPServerTextBox.Size = new System.Drawing.Size(196, 20);
+            this.SMTPServerTextBox.TabIndex = 31;
+            // 
             // MainUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(220, 61);
+            this.ClientSize = new System.Drawing.Size(220, 961);
             this.Controls.Add(this.StatusLabel);
             this.Controls.Add(this.OptionTabs);
             this.Controls.Add(this.ShowInfoButton);
@@ -1755,6 +1871,17 @@
         private System.Windows.Forms.Label KillTargetClockwiseLabel;
         private System.Windows.Forms.CheckBox StealthForeverCheckBox;
         private System.Windows.Forms.Label StealthForeverLabel;
+        private System.Windows.Forms.Button WebInterfaceToggleButton;
+        private System.Windows.Forms.CheckBox WhisperEmailCheckBox;
+        private System.Windows.Forms.Label WhisperEmailLabel;
+        private System.Windows.Forms.Label SMTPPasswordLabel;
+        private System.Windows.Forms.TextBox SMTPPasswordTextBox;
+        private System.Windows.Forms.Label SMTPNameLabel;
+        private System.Windows.Forms.TextBox SMTPNameTextBox;
+        private System.Windows.Forms.Label WhisperEmailToLabel;
+        private System.Windows.Forms.TextBox WhisperEmailToTextBox;
+        private System.Windows.Forms.Label SMTPServerLabel;
+        private System.Windows.Forms.TextBox SMTPServerTextBox;
     }
 }
 

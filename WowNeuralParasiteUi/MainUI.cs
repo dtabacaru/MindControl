@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Net;
+using System.Net.Mail;
+using System.Net.Mime;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +24,10 @@ namespace ClassicWowNeuralParasite
         private Color m_RedColor = Color.FromArgb(50, 255, 0, 0);
         private Color m_GreenColor = Color.FromArgb(50, 0, 255, 0);
         private InputSimulator m_InputSimulator = new InputSimulator();
+        private AutomaterWebInterface m_WebInterface = new AutomaterWebInterface();
+        private bool m_WebInterfaceRunning = false;
+        private volatile bool m_SendEmails = true;
+        private volatile bool m_SendingEmail = false;
 
         public MainUI()
         {
@@ -65,6 +72,8 @@ namespace ClassicWowNeuralParasite
 
             WowAutomater.AutomaterStatusEvent += AutomaterStatusEvent;
 
+            WowApi.UpdateEvent += WowApi_UpdateEvent;
+
             Task.Run(() =>
             {
                 try
@@ -78,67 +87,78 @@ namespace ClassicWowNeuralParasite
 
             });
 
-            Task.Run(() =>
-            {
-                StartScreenshotServer();
-            });
         }
 
-        private void HandleTcpClientConnection(TcpClient tcpClient)
+        private void SendEmail()
         {
-            try
+            if (!m_SendingEmail && 
+                m_SendEmails && 
+                WhisperEmailToTextBox.Text != string.Empty &&
+                SMTPNameTextBox.Text != string.Empty &&
+                SMTPPasswordTextBox.Text != string.Empty &&
+                SMTPServerTextBox.Text != string.Empty) 
             {
-                using (NetworkStream ns = tcpClient.GetStream())
-                {
-                    byte[] data = new byte[16384];
-
-                    ns.Read(data, 0, 16384);
-
-                    Rectangle bounds = new Rectangle(0, 0, 1920, 1080);
-
-                    using (Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height))
-                    {
-                        using (Graphics g = Graphics.FromImage(bitmap))
-                        {
-                            g.CopyFromScreen(new Point(0, 0), Point.Empty, bounds.Size);
-                        }
-
-                        bitmap.Save("screenshot.png", System.Drawing.Imaging.ImageFormat.Png);
-                    }
-
-                    byte[] pngimage = File.ReadAllBytes("screenshot.png");
-
-                    string responseString = "HTTP/1.1 200 OK\r\n";
-                    responseString += "Content-Length: " + pngimage.Length.ToString() + "\r\n";
-                    responseString += "Content-Type: image/png\r\n";
-                    responseString += "Connection: Closed\r\n\r\n";
-
-                    List<byte> contentBytes = new List<byte>();
-                    contentBytes.AddRange(ASCIIEncoding.ASCII.GetBytes(responseString));
-                    contentBytes.AddRange(pngimage);
-
-                    ns.Write(contentBytes.ToArray(), 0, contentBytes.Count);
-                }
-            }
-            catch { }
-        }
-
-        private void StartScreenshotServer()
-        {
-            TcpListener server = new TcpListener(IPAddress.Any, 8001);
-
-            server.Start(20);
-
-            while (true)
-            {
-                TcpClient tcpClient = server.AcceptTcpClient();
+                m_SendingEmail = true;
 
                 Task.Run(() =>
                 {
-                    HandleTcpClientConnection(tcpClient);
-                    tcpClient.Dispose();
+                    System.Threading.Thread.Sleep(1000);
+
+                    try
+                    {
+                        using (SmtpClient client = new SmtpClient(SMTPServerTextBox.Text, 587)
+                        {
+                            EnableSsl = true,
+                            UseDefaultCredentials = false,
+                            Credentials = new NetworkCredential(SMTPNameTextBox.Text, SMTPPasswordTextBox.Text),
+                        })
+
+                        using (var mm = new MailMessage())
+                        {
+                            mm.To.Add(WhisperEmailToTextBox.Text);
+                            mm.From = new MailAddress(SMTPNameTextBox.Text);
+                            mm.Subject = "WowAutomaterUi: Whisper Alert";
+
+                            Rectangle bounds = new Rectangle(0, 500, 500, 500);
+
+                            using (Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height))
+                            {
+                                using (Graphics g = Graphics.FromImage(bitmap))
+                                {
+                                    g.CopyFromScreen(new Point(0, 500), Point.Empty, bounds.Size);
+                                }
+
+                                using (var memoryStream = new MemoryStream())
+                                {
+                                    bitmap.Save(memoryStream, ImageFormat.Png);
+                                    memoryStream.Position = 0;
+
+                                    var imageResource = new LinkedResource(memoryStream, "image/png") { ContentId = "added-image-id" };
+                                    var alternateView = AlternateView.CreateAlternateViewFromString(mm.Body, mm.BodyEncoding, MediaTypeNames.Text.Html);
+
+                                    alternateView.LinkedResources.Add(imageResource);
+                                    mm.AlternateViews.Add(alternateView);
+
+                                    client.Send(mm);
+                                }
+                            }
+
+                        }// using (var mm = new MailMessage())
+                    }// try
+                    catch (Exception err)
+                    {
+                        MessageBox.Show(err.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+
+                    m_SendingEmail = false;
                 });
             }
+        }
+
+        private void WowApi_UpdateEvent(object sender, EventArgs ea)
+        {
+            if (WowApi.PlayerData.Found && WowApi.PlayerData.Whisper)
+                SendEmail();
         }
 
         private void Automater_StopEvent(object sender, EventArgs ea)
@@ -238,6 +258,22 @@ namespace ClassicWowNeuralParasite
                 case "Auto loot":
                     WowAutomater.AutoLoot = Convert.ToBoolean(configValue);
                     AutoLootLabelCheckbox.Checked = Convert.ToBoolean(configValue);
+                    break;
+                case "Send whisper e-mail":
+                    m_SendEmails = Convert.ToBoolean(configValue);
+                    WhisperEmailCheckBox.Checked = Convert.ToBoolean(configValue);
+                    break;
+                case "Whisper e-mail to":
+                    WhisperEmailToTextBox.Text = configValue;
+                    break;
+                case "SMTP account name":
+                    SMTPNameTextBox.Text = configValue;
+                    break;
+                case "SMTP account password":
+                    SMTPPasswordTextBox.Text = configValue;
+                    break;
+                case "SMTP server":
+                    SMTPServerTextBox.Text = configValue;
                     break;
                 case "Find target rate":
                     WaypointFollower.Jitterizer.Rate = Convert.ToDouble(configValue);
@@ -837,5 +873,29 @@ namespace ClassicWowNeuralParasite
         {
             WowAutomater.Rogue.AlwaysStealth = StealthForeverCheckBox.Checked;
         }
+
+        private void WebInterfaceToggleButton_Click(object sender, EventArgs e)
+        {
+            if(!m_WebInterfaceRunning)
+            {
+                m_WebInterface.Start();
+                m_WebInterfaceRunning = true;
+                WebInterfaceToggleButton.Text = "Stop web interface";
+                WebInterfaceToggleButton.BackColor = System.Drawing.Color.FromArgb(255, 255, 128, 128);
+            }
+            else
+            {
+                m_WebInterface.Stop();
+                m_WebInterfaceRunning = false;
+                WebInterfaceToggleButton.Text = "Start web interface";
+                WebInterfaceToggleButton.BackColor = System.Drawing.Color.FromArgb(255, 128, 255, 128);
+            }
+        }
+
+        private void WhisperEmailCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            m_SendEmails = WhisperEmailCheckBox.Checked;
+        }
+
     }
 }

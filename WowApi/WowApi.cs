@@ -106,6 +106,7 @@ namespace ClassicWowNeuralParasite
         public bool MouseOverTarget = false;
         public TargetFactionType TargetFaction = TargetFactionType.None;
         public bool TargetTargetingPlayer = false;
+        public bool Whisper = false;
 
         public override string ToString()
         {
@@ -152,6 +153,7 @@ namespace ClassicWowNeuralParasite
             output += "Shape: " + Shape.ToString() + "\r\n";
             output += "Buffs: " + Buffs.ToString() + "\r\n";
             output += "MouseOverTarget: " + MouseOverTarget.ToString() + "\r\n";
+            output += "Whisper: " + Whisper.ToString() + "\r\n";
             output += "dt: " + dt.ToString() + "\r\n";
             output += "Time: " + Time.ToString() + "\r\n";
 
@@ -186,7 +188,7 @@ namespace ClassicWowNeuralParasite
     public static class WowApi
     {
         private const int API_WIDTH_PIXELS = 7;
-        private const int API_HEIGHT_PIXELS = 55;
+        private const int API_HEIGHT_PIXELS = 58;
         private const int SEARCH_SPACE_PIXELS = 250;
 
         private const byte FIND1_PIXEL_R = 50;
@@ -339,6 +341,9 @@ namespace ClassicWowNeuralParasite
 
                     Color castingPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((54 * m_ApiYScale)));
                     currentPlayerData.Casting = castingPixel.R == PIXEL_SET ? true : false;
+
+                    Color whisperPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((57 * m_ApiYScale)));
+                    currentPlayerData.Whisper = whisperPixel.R == PIXEL_SET ? true : false;
 
                     Color spellCanAttackTargetPixel = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((0 * m_ApiYScale)));
                     currentPlayerData.SpellCanAttackTarget = spellCanAttackTargetPixel.R == PIXEL_SET ? true : false;

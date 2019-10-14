@@ -21,7 +21,8 @@ namespace ClassicWowNeuralParasite
         SellItems,
         ReadyToStart,
         WaitingForWow,
-        WaitingForAddon
+        WaitingForAddon,
+        RemoteStop
     }
 
     public class AutomaterActionEventArgs : EventArgs
@@ -42,7 +43,6 @@ namespace ClassicWowNeuralParasite
             {
                 m_ResetCoordinates = true;
                 m_CurrentActionMode = value;
-                m_SetActionMode = value;
             }
             get
             {
@@ -50,8 +50,8 @@ namespace ClassicWowNeuralParasite
             }
         }
 
-        private static ActionMode m_SetActionMode = ActionMode.FindTarget;
-        private static volatile ActionMode m_CurrentActionMode = ActionMode.WaitingForAddon;
+        private static volatile ActionMode m_PreviousActionMode = ActionMode.FindTarget;
+        private static volatile ActionMode m_CurrentActionMode = ActionMode.FindTarget;
 
         public delegate void AutomaterActionEventHandler(object sender, AutomaterActionEventArgs wea);
         public static event AutomaterActionEventHandler AutomaterStatusEvent;
@@ -90,6 +90,11 @@ namespace ClassicWowNeuralParasite
         private static bool m_Idle = false;
         private static bool m_StartedEating = false;
 
+        private static volatile bool m_RelayFlag = false;
+        private static volatile bool m_RemoteStopFlag = false;
+
+        private static volatile string m_RelayString = string.Empty;
+
         public static bool AutoLoot = false;
 
         private static Stopwatch m_ReviveSw = new Stopwatch();
@@ -107,6 +112,163 @@ namespace ClassicWowNeuralParasite
         public static DruidAutomater   Druid =   new DruidAutomater();
 
         public static Jitterizer Jitterizer = new Jitterizer();
+
+        public static void SetRelayString(string relayString)
+        {
+            m_RelayString = relayString.Trim().ToLower();
+            m_RelayFlag = true;
+        }
+
+        public static void RemoteStop()
+        {
+            m_RemoteStopFlag = true;
+        }
+
+        public static void RemoteStart()
+        {
+            m_RemoteStopFlag = false;
+        }
+
+        private static void TypeMessage(string message)
+        {
+            foreach (char c in message)
+            {
+                switch(c)
+                {
+                    case '0':
+                        Input.KeyPress(VirtualKeyCode.VK_0);
+                        break;
+                    case '1':
+                        Input.KeyPress(VirtualKeyCode.VK_1);
+                        break;
+                    case '2':
+                        Input.KeyPress(VirtualKeyCode.VK_2);
+                        break;
+                    case '3':
+                        Input.KeyPress(VirtualKeyCode.VK_3);
+                        break;
+                    case '4':
+                        Input.KeyPress(VirtualKeyCode.VK_4);
+                        break;
+                    case '5':
+                        Input.KeyPress(VirtualKeyCode.VK_5);
+                        break;
+                    case '6':
+                        Input.KeyPress(VirtualKeyCode.VK_6);
+                        break;
+                    case '7':
+                        Input.KeyPress(VirtualKeyCode.VK_7);
+                        break;
+                    case '8':
+                        Input.KeyPress(VirtualKeyCode.VK_8);
+                        break;
+                    case '9':
+                        Input.KeyPress(VirtualKeyCode.VK_9);
+                        break;
+                    case 'a':
+                        Input.KeyPress(VirtualKeyCode.VK_A);
+                        break;
+                    case 'b':
+                        Input.KeyPress(VirtualKeyCode.VK_B);
+                        break;
+                    case 'c':
+                        Input.KeyPress(VirtualKeyCode.VK_C);
+                        break;
+                    case 'd':
+                        Input.KeyPress(VirtualKeyCode.VK_D);
+                        break;
+                    case 'e':
+                        Input.KeyPress(VirtualKeyCode.VK_E);
+                        break;
+                    case 'f':
+                        Input.KeyPress(VirtualKeyCode.VK_F);
+                        break;
+                    case 'g':
+                        Input.KeyPress(VirtualKeyCode.VK_G);
+                        break;
+                    case 'h':
+                        Input.KeyPress(VirtualKeyCode.VK_H);
+                        break;
+                    case 'i':
+                        Input.KeyPress(VirtualKeyCode.VK_I);
+                        break;
+                    case 'j':
+                        Input.KeyPress(VirtualKeyCode.VK_J);
+                        break;
+                    case 'k':
+                        Input.KeyPress(VirtualKeyCode.VK_K);
+                        break;
+                    case 'l':
+                        Input.KeyPress(VirtualKeyCode.VK_L);
+                        break;
+                    case 'm':
+                        Input.KeyPress(VirtualKeyCode.VK_M);
+                        break;
+                    case 'n':
+                        Input.KeyPress(VirtualKeyCode.VK_N);
+                        break;
+                    case 'o':
+                        Input.KeyPress(VirtualKeyCode.VK_O);
+                        break;
+                    case 'p':
+                        Input.KeyPress(VirtualKeyCode.VK_P);
+                        break;
+                    case 'q':
+                        Input.KeyPress(VirtualKeyCode.VK_Q);
+                        break;
+                    case 'r':
+                        Input.KeyPress(VirtualKeyCode.VK_R);
+                        break;
+                    case 's':
+                        Input.KeyPress(VirtualKeyCode.VK_S);
+                        break;
+                    case 't':
+                        Input.KeyPress(VirtualKeyCode.VK_T);
+                        break;
+                    case 'u':
+                        Input.KeyPress(VirtualKeyCode.VK_U);
+                        break;
+                    case 'v':
+                        Input.KeyPress(VirtualKeyCode.VK_V);
+                        break;
+                    case 'w':
+                        Input.KeyPress(VirtualKeyCode.VK_W);
+                        break;
+                    case 'x':
+                        Input.KeyPress(VirtualKeyCode.VK_X);
+                        break;
+                    case 'y':
+                        Input.KeyPress(VirtualKeyCode.VK_Y);
+                        break;
+                    case 'z':
+                        Input.KeyPress(VirtualKeyCode.VK_Z);
+                        break;
+                    case ' ':
+                        Input.KeyPress(VirtualKeyCode.SPACE);
+                        break;
+                    case '/':
+                        Input.KeyPress(VirtualKeyCode.DIVIDE);
+                        break;
+                    default:
+                        break;
+                }
+
+                Helper.WaitSeconds(0.025);
+            }
+        }
+
+        private static void Relay()
+        {
+            Helper.WaitSeconds(0.5);
+
+            Input.KeyPress(VirtualKeyCode.RETURN);
+            Helper.WaitSeconds(RegisterDelay);
+            TypeMessage(m_RelayString);
+            Input.KeyPress(VirtualKeyCode.RETURN);
+            Helper.WaitSeconds(RegisterDelay);
+
+            Helper.WaitSeconds(0.5);
+        }
 
         private static void WoWAPIUpdateEvent(object sender, EventArgs wea)
         {
@@ -234,27 +396,59 @@ namespace ClassicWowNeuralParasite
 
         private static void CheckIdle()
         {
-            if (!WowApi.PlayerData.IsWowForeground)
+            if(m_RelayFlag)
             {
                 WaypointFollower.StopFollowingWaypoints();
+                Relay();
+                m_RelayFlag = false;
+            }
+            else if (m_RemoteStopFlag)
+            {
+                if (!m_Idle)
+                {
+                    WaypointFollower.StopFollowingWaypoints();
+                    m_PreviousActionMode = m_CurrentActionMode;
+                }
+
+                m_CurrentActionMode = ActionMode.RemoteStop;
+                m_Idle = true;
+            }
+            else if (!WowApi.PlayerData.IsWowForeground)
+            {
+                if(!m_Idle)
+                {
+                    WaypointFollower.StopFollowingWaypoints();
+                    m_PreviousActionMode = m_CurrentActionMode;
+                }
+
                 m_CurrentActionMode = ActionMode.WaitingForWow;
                 m_Idle = true;
             }
             else if (!WowApi.PlayerData.Found)
             {
-                WaypointFollower.StopFollowingWaypoints();
+                if (!m_Idle)
+                {
+                    WaypointFollower.StopFollowingWaypoints();
+                    m_PreviousActionMode = m_CurrentActionMode;
+                }
+
                 m_CurrentActionMode = ActionMode.WaitingForAddon;
                 m_Idle = true;
             }
             else if (!WowApi.PlayerData.Start)
             {
-                WaypointFollower.StopFollowingWaypoints();
+                if (!m_Idle)
+                {
+                    WaypointFollower.StopFollowingWaypoints();
+                    m_PreviousActionMode = m_CurrentActionMode;
+                }
+
                 m_CurrentActionMode = ActionMode.ReadyToStart;
                 m_Idle = true;
             }
             else if (m_Idle)
             {
-                m_CurrentActionMode = m_SetActionMode;
+                m_CurrentActionMode = m_PreviousActionMode;
                 m_Idle = false;
             }
                 
@@ -517,6 +711,7 @@ namespace ClassicWowNeuralParasite
             if (WowApi.PlayerData.IsPlayerDead)
             {
                 m_Potion = false;
+                m_Ghosted = false;
                 m_CurrentActionMode = ActionMode.Revive;
             }
             else if (!WowApi.PlayerData.PlayerInCombat)
