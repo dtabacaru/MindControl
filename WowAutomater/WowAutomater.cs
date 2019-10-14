@@ -575,6 +575,14 @@ namespace ClassicWowNeuralParasite
         {
             Helper.WaitSeconds(0.5);
 
+            if (WowApi.PlayerData.IsPlayerDead)
+            {
+                m_Potion = false;
+                m_Ghosted = false;
+                m_CurrentActionMode = ActionMode.Revive;
+                return;
+            }
+
             if (!AutoLoot)
                 Input.KeyDown(VirtualKeyCode.LSHIFT);
 
@@ -708,16 +716,20 @@ namespace ClassicWowNeuralParasite
 
         private static void KillTarget()
         {
-            if (WowApi.PlayerData.IsPlayerDead)
+            if (!WowApi.PlayerData.PlayerInCombat)
             {
-                m_Potion = false;
-                m_Ghosted = false;
-                m_CurrentActionMode = ActionMode.Revive;
-            }
-            else if (!WowApi.PlayerData.PlayerInCombat)
-            {
-                m_Potion = false;
-                m_CurrentActionMode = ActionMode.LootTarget;
+                Helper.WaitSeconds(RegisterDelay);
+                if (WowApi.PlayerData.IsPlayerDead)
+                {
+                    m_Potion = false;
+                    m_Ghosted = false;
+                    m_CurrentActionMode = ActionMode.Revive;
+                }
+                else
+                {
+                    m_Potion = false;
+                    m_CurrentActionMode = ActionMode.LootTarget;
+                }
             }
             else if (!WowApi.PlayerData.PlayerHasTarget)
             {
