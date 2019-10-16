@@ -43,6 +43,7 @@ namespace ClassicWowNeuralParasite
             {
                 m_ResetCoordinates = true;
                 m_CurrentActionMode = value;
+                m_PreviousActionMode = value;
             }
             get
             {
@@ -632,7 +633,14 @@ namespace ClassicWowNeuralParasite
 
         private static void RegenerateVitals()
         {
-            if (!m_StartedEating)
+            if (WowApi.PlayerData.IsPlayerDead)
+            {
+                m_Potion = false;
+                m_Ghosted = false;
+                m_CurrentActionMode = ActionMode.Revive;
+                return;
+            }
+            else if (!m_StartedEating)
             {
                 Helper.WaitSeconds(1);
                 Input.KeyPress(VirtualKeyCode.VK_8);
