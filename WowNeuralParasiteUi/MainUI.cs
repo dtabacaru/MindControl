@@ -897,5 +897,19 @@ namespace ClassicWowNeuralParasite
             m_SendEmails = WhisperEmailCheckBox.Checked;
         }
 
+        private void FirstSealCrusaderButton_CheckedChanged(object sender, EventArgs e)
+        {
+            WowAutomater.Paladin.FirstSeal = FirstSealType.Crusader;
+        }
+
+        private void FirstSealNoneButton_CheckedChanged(object sender, EventArgs e)
+        {
+            WowAutomater.Paladin.FirstSeal = FirstSealType.None;
+        }
+
+        private void FirstSealJusticeButton_CheckedChanged(object sender, EventArgs e)
+        {
+            WowAutomater.Paladin.FirstSeal = FirstSealType.Justice;
+        }
     }
 }

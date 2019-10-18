@@ -123,7 +123,7 @@
 copy "$(ProjectDir)Config.ftw" "Config.ftw"</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>rm "$(ProjectDir)bin\ClassicWowNeuralParasite.zip"
+    <PostBuildEvent>del "$(ProjectDir)bin\ClassicWowNeuralParasite.zip"
 7z a "$(ProjectDir)bin\ClassicWowNeuralParasite.zip" "$(ProjectDir)bin\.\$(ConfigurationName)\*"</PostBuildEvent>
   </PropertyGroup>
 </Project>

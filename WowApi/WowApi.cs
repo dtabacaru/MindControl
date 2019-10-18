@@ -57,7 +57,8 @@ namespace ClassicWowNeuralParasite
         Thorns = 4,
         SealOfCommand = 8,
         BlessingOfWisdom = 16,
-        Stealth = 32
+        Stealth = 32,
+        SealOfJustice = 64
     }
 
     public class PlayerData

@@ -47,6 +47,8 @@
             this.XTextBox = new System.Windows.Forms.TextBox();
             this.XLabel = new System.Windows.Forms.Label();
             this.AutomaterTab = new System.Windows.Forms.TabPage();
+            this.SMTPServerLabel = new System.Windows.Forms.Label();
+            this.SMTPServerTextBox = new System.Windows.Forms.TextBox();
             this.SMTPPasswordLabel = new System.Windows.Forms.Label();
             this.SMTPPasswordTextBox = new System.Windows.Forms.TextBox();
             this.SMTPNameLabel = new System.Windows.Forms.Label();
@@ -147,8 +149,6 @@
             this.FindTargetRateLabel = new System.Windows.Forms.Label();
             this.ShowInfoButton = new System.Windows.Forms.Button();
             this.StatusLabel = new System.Windows.Forms.Label();
-            this.SMTPServerLabel = new System.Windows.Forms.Label();
-            this.SMTPServerTextBox = new System.Windows.Forms.TextBox();
             this.OptionTabs.SuspendLayout();
             this.InfoTab.SuspendLayout();
             this.PathsTab.SuspendLayout();
@@ -430,6 +430,22 @@
             this.AutomaterTab.TabIndex = 2;
             this.AutomaterTab.Text = "Automater";
             this.AutomaterTab.UseVisualStyleBackColor = true;
+            // 
+            // SMTPServerLabel
+            // 
+            this.SMTPServerLabel.AutoSize = true;
+            this.SMTPServerLabel.Location = new System.Drawing.Point(3, 406);
+            this.SMTPServerLabel.Name = "SMTPServerLabel";
+            this.SMTPServerLabel.Size = new System.Drawing.Size(69, 13);
+            this.SMTPServerLabel.TabIndex = 32;
+            this.SMTPServerLabel.Text = "SMTP server";
+            // 
+            // SMTPServerTextBox
+            // 
+            this.SMTPServerTextBox.Location = new System.Drawing.Point(8, 422);
+            this.SMTPServerTextBox.Name = "SMTPServerTextBox";
+            this.SMTPServerTextBox.Size = new System.Drawing.Size(196, 20);
+            this.SMTPServerTextBox.TabIndex = 31;
             // 
             // SMTPPasswordLabel
             // 
@@ -851,6 +867,7 @@
             this.FirstSealJusticeButton.TabIndex = 19;
             this.FirstSealJusticeButton.Text = "Justice";
             this.FirstSealJusticeButton.UseVisualStyleBackColor = true;
+            this.FirstSealJusticeButton.CheckedChanged += new System.EventHandler(this.FirstSealJusticeButton_CheckedChanged);
             // 
             // FirstSealCrusaderButton
             // 
@@ -861,6 +878,7 @@
             this.FirstSealCrusaderButton.TabIndex = 18;
             this.FirstSealCrusaderButton.Text = "Crusader";
             this.FirstSealCrusaderButton.UseVisualStyleBackColor = true;
+            this.FirstSealCrusaderButton.CheckedChanged += new System.EventHandler(this.FirstSealCrusaderButton_CheckedChanged);
             // 
             // FirstSealNoneButton
             // 
@@ -873,6 +891,7 @@
             this.FirstSealNoneButton.TabStop = true;
             this.FirstSealNoneButton.Text = "None";
             this.FirstSealNoneButton.UseVisualStyleBackColor = true;
+            this.FirstSealNoneButton.CheckedChanged += new System.EventHandler(this.FirstSealNoneButton_CheckedChanged);
             // 
             // FirstSealLabel
             // 
@@ -1690,27 +1709,11 @@
             this.StatusLabel.Size = new System.Drawing.Size(0, 24);
             this.StatusLabel.TabIndex = 38;
             // 
-            // SMTPServerLabel
-            // 
-            this.SMTPServerLabel.AutoSize = true;
-            this.SMTPServerLabel.Location = new System.Drawing.Point(3, 406);
-            this.SMTPServerLabel.Name = "SMTPServerLabel";
-            this.SMTPServerLabel.Size = new System.Drawing.Size(69, 13);
-            this.SMTPServerLabel.TabIndex = 32;
-            this.SMTPServerLabel.Text = "SMTP server";
-            // 
-            // SMTPServerTextBox
-            // 
-            this.SMTPServerTextBox.Location = new System.Drawing.Point(8, 422);
-            this.SMTPServerTextBox.Name = "SMTPServerTextBox";
-            this.SMTPServerTextBox.Size = new System.Drawing.Size(196, 20);
-            this.SMTPServerTextBox.TabIndex = 31;
-            // 
             // MainUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(220, 61);
+            this.ClientSize = new System.Drawing.Size(220, 961);
             this.Controls.Add(this.StatusLabel);
             this.Controls.Add(this.OptionTabs);
             this.Controls.Add(this.ShowInfoButton);
