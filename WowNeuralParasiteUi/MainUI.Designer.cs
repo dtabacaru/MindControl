@@ -47,6 +47,9 @@
             this.XTextBox = new System.Windows.Forms.TextBox();
             this.XLabel = new System.Windows.Forms.Label();
             this.AutomaterTab = new System.Windows.Forms.TabPage();
+            this.RemoteUserLabel = new System.Windows.Forms.Label();
+            this.RemoteUserTextBox = new System.Windows.Forms.TextBox();
+            this.RemoteWebInterfaceButton = new System.Windows.Forms.Button();
             this.SMTPServerLabel = new System.Windows.Forms.Label();
             this.SMTPServerTextBox = new System.Windows.Forms.TextBox();
             this.SMTPPasswordLabel = new System.Windows.Forms.Label();
@@ -149,6 +152,8 @@
             this.FindTargetRateLabel = new System.Windows.Forms.Label();
             this.ShowInfoButton = new System.Windows.Forms.Button();
             this.StatusLabel = new System.Windows.Forms.Label();
+            this.RemoteServerLabel = new System.Windows.Forms.Label();
+            this.RemoteServerTextBox = new System.Windows.Forms.TextBox();
             this.OptionTabs.SuspendLayout();
             this.InfoTab.SuspendLayout();
             this.PathsTab.SuspendLayout();
@@ -394,6 +399,11 @@
             // 
             // AutomaterTab
             // 
+            this.AutomaterTab.Controls.Add(this.RemoteServerLabel);
+            this.AutomaterTab.Controls.Add(this.RemoteServerTextBox);
+            this.AutomaterTab.Controls.Add(this.RemoteUserLabel);
+            this.AutomaterTab.Controls.Add(this.RemoteUserTextBox);
+            this.AutomaterTab.Controls.Add(this.RemoteWebInterfaceButton);
             this.AutomaterTab.Controls.Add(this.SMTPServerLabel);
             this.AutomaterTab.Controls.Add(this.SMTPServerTextBox);
             this.AutomaterTab.Controls.Add(this.SMTPPasswordLabel);
@@ -430,6 +440,33 @@
             this.AutomaterTab.TabIndex = 2;
             this.AutomaterTab.Text = "Automater";
             this.AutomaterTab.UseVisualStyleBackColor = true;
+            // 
+            // RemoteUserLabel
+            // 
+            this.RemoteUserLabel.AutoSize = true;
+            this.RemoteUserLabel.Location = new System.Drawing.Point(3, 476);
+            this.RemoteUserLabel.Name = "RemoteUserLabel";
+            this.RemoteUserLabel.Size = new System.Drawing.Size(67, 13);
+            this.RemoteUserLabel.TabIndex = 35;
+            this.RemoteUserLabel.Text = "Remote user";
+            // 
+            // RemoteUserTextBox
+            // 
+            this.RemoteUserTextBox.Location = new System.Drawing.Point(8, 492);
+            this.RemoteUserTextBox.Name = "RemoteUserTextBox";
+            this.RemoteUserTextBox.Size = new System.Drawing.Size(196, 20);
+            this.RemoteUserTextBox.TabIndex = 34;
+            // 
+            // RemoteWebInterfaceButton
+            // 
+            this.RemoteWebInterfaceButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+            this.RemoteWebInterfaceButton.Location = new System.Drawing.Point(8, 557);
+            this.RemoteWebInterfaceButton.Name = "RemoteWebInterfaceButton";
+            this.RemoteWebInterfaceButton.Size = new System.Drawing.Size(196, 25);
+            this.RemoteWebInterfaceButton.TabIndex = 33;
+            this.RemoteWebInterfaceButton.Text = "Connect to remote web interface";
+            this.RemoteWebInterfaceButton.UseVisualStyleBackColor = false;
+            this.RemoteWebInterfaceButton.Click += new System.EventHandler(this.RemoteWebInterfaceButton_Click);
             // 
             // SMTPServerLabel
             // 
@@ -517,7 +554,7 @@
             // WebInterfaceToggleButton
             // 
             this.WebInterfaceToggleButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
-            this.WebInterfaceToggleButton.Location = new System.Drawing.Point(8, 471);
+            this.WebInterfaceToggleButton.Location = new System.Drawing.Point(8, 448);
             this.WebInterfaceToggleButton.Name = "WebInterfaceToggleButton";
             this.WebInterfaceToggleButton.Size = new System.Drawing.Size(196, 25);
             this.WebInterfaceToggleButton.TabIndex = 22;
@@ -1709,6 +1746,22 @@
             this.StatusLabel.Size = new System.Drawing.Size(0, 24);
             this.StatusLabel.TabIndex = 38;
             // 
+            // RemoteServerLabel
+            // 
+            this.RemoteServerLabel.AutoSize = true;
+            this.RemoteServerLabel.Location = new System.Drawing.Point(3, 515);
+            this.RemoteServerLabel.Name = "RemoteServerLabel";
+            this.RemoteServerLabel.Size = new System.Drawing.Size(76, 13);
+            this.RemoteServerLabel.TabIndex = 37;
+            this.RemoteServerLabel.Text = "Remote server";
+            // 
+            // RemoteServerTextBox
+            // 
+            this.RemoteServerTextBox.Location = new System.Drawing.Point(8, 531);
+            this.RemoteServerTextBox.Name = "RemoteServerTextBox";
+            this.RemoteServerTextBox.Size = new System.Drawing.Size(196, 20);
+            this.RemoteServerTextBox.TabIndex = 36;
+            // 
             // MainUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1885,6 +1938,11 @@
         private System.Windows.Forms.TextBox WhisperEmailToTextBox;
         private System.Windows.Forms.Label SMTPServerLabel;
         private System.Windows.Forms.TextBox SMTPServerTextBox;
+        private System.Windows.Forms.Label RemoteUserLabel;
+        private System.Windows.Forms.TextBox RemoteUserTextBox;
+        private System.Windows.Forms.Button RemoteWebInterfaceButton;
+        private System.Windows.Forms.Label RemoteServerLabel;
+        private System.Windows.Forms.TextBox RemoteServerTextBox;
     }
 }
 

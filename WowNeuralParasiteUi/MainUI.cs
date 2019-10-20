@@ -8,6 +8,7 @@ using System.Net.Mail;
 using System.Net.Mime;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WindowsInput;
@@ -17,7 +18,7 @@ namespace ClassicWowNeuralParasite
     public partial class MainUI : Form
     {
         private string WowAutomaterStatusString = string.Empty;
-        private Timer m_ApiDataUpdateTimer = new Timer();
+        private System.Windows.Forms.Timer m_ApiDataUpdateTimer = new System.Windows.Forms.Timer();
         private bool m_InfoSHown = false;
         private bool m_Recording = false;
         private string m_FilePath = string.Empty;
@@ -66,7 +67,7 @@ namespace ClassicWowNeuralParasite
             PathTypeDropDown.SelectedIndex = 0;
 
             ModeDropDown.SelectedIndex = 0;
-            m_ApiDataUpdateTimer.Interval = 100;
+            m_ApiDataUpdateTimer.Interval = 50;
             m_ApiDataUpdateTimer.Tick += ApiDataUpdateTimer_Tick;
             m_ApiDataUpdateTimer.Enabled = true;
 
@@ -275,6 +276,12 @@ namespace ClassicWowNeuralParasite
                 case "SMTP server":
                     SMTPServerTextBox.Text = configValue;
                     break;
+                case "Remote user":
+                    RemoteUserTextBox.Text = configValue;
+                    break;
+                case "Remote server":
+                    RemoteServerTextBox.Text = configValue;
+                    break;
                 case "Find target rate":
                     WaypointFollower.Jitterizer.Rate = Convert.ToDouble(configValue);
                     FindTargetRateNumericInput.Value = Convert.ToDecimal(configValue);
@@ -440,6 +447,8 @@ namespace ClassicWowNeuralParasite
 
         }
 
+        private bool m_LastFound = true;
+
         private void ApiDataUpdateTimer_Tick(object sender, EventArgs e)
         {
             if (InvokeRequired)
@@ -451,16 +460,18 @@ namespace ClassicWowNeuralParasite
             DataTextBox.Text = WowApi.PlayerData.ToString();
             StatusLabel.Text = WowAutomaterStatusString;
 
-            if (WowApi.PlayerData.Found)
+            if (WowApi.PlayerData.Found && !m_LastFound)
             {
                 RecordButton.Enabled = true;
                 InfoTab.BackColor = m_GreenColor;
             }
-            else
+            else if(!WowApi.PlayerData.Found && m_LastFound)
             {
                 RecordButton.Enabled = false;
                 InfoTab.BackColor = m_RedColor;
             }
+
+            m_LastFound = WowApi.PlayerData.Found;
         }
 
         private void AutomaterStatusEvent(object sender, AutomaterActionEventArgs e)
@@ -910,6 +921,235 @@ namespace ClassicWowNeuralParasite
         private void FirstSealJusticeButton_CheckedChanged(object sender, EventArgs e)
         {
             WowAutomater.Paladin.FirstSeal = FirstSealType.Justice;
+        }
+
+        private const byte RELAY_BYTE = 59;
+        private const byte LOGIN_BYTE = 26;
+        private const byte START_BYTE = 53;
+        private const byte STOP_BYTE = 58;
+        private const byte SCREEN_BYTE = 97;
+        private const byte BAD_LOGIN_BYTE = 93;
+        private const int READ_BUFFER_LENGTH = 8192;
+        private const int PORT = 8002;
+        private const int SLEEP_TIME = 10; // ms
+
+        private const int LOGIN_BYTE_1 = 31;
+        private const int LOGIN_BYTE_2 = 41;
+        private const int LOGIN_LENGTH = 34;
+
+        private void ConnectToRemote(string host, string user)
+        {
+            byte[] loginBytes = new byte[LOGIN_LENGTH];
+
+            loginBytes[0] = LOGIN_BYTE_1;
+            loginBytes[1] = LOGIN_BYTE_2;
+
+            Array.Copy(ASCIIEncoding.ASCII.GetBytes(user), 0, loginBytes, 2, user.Length);
+
+            try
+            {
+                using (TcpClient tcpClient = new TcpClient(host, PORT))
+                {
+                    tcpClient.NoDelay = true;
+
+                    using (NetworkStream ns = tcpClient.GetStream())
+                    {
+                        ns.Write(loginBytes, 0, loginBytes.Length);
+
+                        byte[] dataBuffer = new byte[READ_BUFFER_LENGTH];
+
+                        while (true)
+                        {
+                            while(tcpClient.Available == 0 && !m_StopRemote && tcpClient.Connected)
+                            {
+                                if (tcpClient.Client.Poll(0, SelectMode.SelectRead))
+                                {
+                                    byte[] buff = new byte[1];
+                                    if (tcpClient.Client.Receive(buff, SocketFlags.Peek) == 0)
+                                    {
+                                        m_StopRemote = true;
+                                    }
+                                }
+
+                                System.Threading.Thread.Sleep(10);
+                            }
+
+                            if (m_StopRemote || !tcpClient.Connected)
+                                break;
+
+                            byte command = (byte)ns.ReadByte();
+
+                            switch (command)
+                            {
+                                case BAD_LOGIN_BYTE:
+                                    {
+                                        throw new Exception("User not found");
+                                    }
+
+                                case LOGIN_BYTE:
+                                    {
+                                        ns.WriteByte(LOGIN_BYTE);
+
+                                        SetRemoteWebInterfaceButtonStyle(true);
+
+                                        break;
+                                    }
+
+                                case START_BYTE:
+                                    {
+                                        ns.WriteByte(START_BYTE);
+
+                                        WowAutomater.RemoteStart();
+
+                                        break;
+                                    }
+
+                                case STOP_BYTE:
+                                    {
+                                        ns.WriteByte(STOP_BYTE);
+
+                                        WowAutomater.RemoteStop();
+
+                                        break;
+                                    }
+
+                                case SCREEN_BYTE:
+                                    {
+                                        ns.WriteByte(SCREEN_BYTE);
+
+                                        ns.ReadByte();
+
+                                        byte[] jpegBytes = GetScreenJpegBytes();
+
+                                        int jpegSize = jpegBytes.Length;
+
+                                        byte[] sizeBytes = BitConverter.GetBytes(jpegSize);
+
+                                        ns.Write(sizeBytes, 0, sizeBytes.Length);
+
+                                        ns.ReadByte();
+
+                                        ns.Write(jpegBytes, 0, jpegBytes.Length);
+
+                                        break;
+                                    }
+
+                                case RELAY_BYTE:
+                                    {
+                                        ns.WriteByte(RELAY_BYTE);
+
+                                        int bread = ns.Read(dataBuffer, 0, dataBuffer.Length);
+                                        byte[] dataRead = new byte[bread];
+                                        Array.Copy(dataBuffer, dataRead, bread);
+
+                                        string relayString = ASCIIEncoding.ASCII.GetString(dataRead);
+
+                                        WowAutomater.SetRelayString(relayString);
+
+                                        break;
+                                    }
+                                default:
+                                    {
+                                        throw new Exception("BAD COMMAND");
+                                    }
+                            }
+                        }
+                    }
+                }
+            }
+            catch(Exception err)
+            {
+                SetRemoteWebInterfaceButtonStyle(false);
+                m_RemoteConnected = false;
+                MessageBox.Show(err.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            remotewait.Set();
+        }
+
+        private void SetRemoteWebInterfaceButtonStyle(bool connected)
+        {
+            if (InvokeRequired)
+            {
+                InvokeWithoutDisposedException(new MethodInvoker(() => { SetRemoteWebInterfaceButtonStyle(connected); }));
+                return;
+            }
+
+            RemoteWebInterfaceButton.Enabled = true;
+
+            if(connected)
+            {
+                RemoteWebInterfaceButton.Text = "Disconnect from remote web interface";
+                RemoteWebInterfaceButton.BackColor = System.Drawing.Color.FromArgb(255, 255, 128, 128);
+            }
+            else
+            {
+                RemoteWebInterfaceButton.Text = "Connect to remote web interface";
+                RemoteWebInterfaceButton.BackColor = System.Drawing.Color.FromArgb(255, 128, 255, 128);
+            }
+
+            
+        }
+
+        private byte[] GetScreenJpegBytes()
+        {
+            Rectangle bounds = new Rectangle(0, 0, 1920, 1080);
+            byte[] jpegImage;
+
+            using (Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height))
+            {
+                using (Graphics g = Graphics.FromImage(bitmap))
+                {
+                    g.CopyFromScreen(new Point(0, 0), Point.Empty, bounds.Size);
+                }
+
+                using (var memoryStream = new MemoryStream())
+                {
+                    bitmap.Save(memoryStream, ImageFormat.Jpeg);
+
+                    jpegImage = memoryStream.ToArray();
+                }
+            }
+
+            return jpegImage;
+        }
+
+        private bool m_RemoteConnected = false;
+        private EventWaitHandle remotewait = new EventWaitHandle(false, EventResetMode.AutoReset);
+        private volatile bool m_StopRemote = false;
+
+        private void RemoteWebInterfaceButton_Click(object sender, EventArgs e)
+        {
+            if (RemoteServerTextBox.Text == string.Empty || RemoteUserTextBox.Text == string.Empty)
+                return;
+
+            RemoteWebInterfaceButton.Enabled = false;
+
+            if(!m_RemoteConnected)
+            {
+                m_StopRemote = false;
+                m_RemoteConnected = true;
+
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        ConnectToRemote(RemoteServerTextBox.Text, RemoteUserTextBox.Text);
+                    }
+                    catch (Exception err)
+                    {
+                        MessageBox.Show(err.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                });
+            }
+            else
+            {
+                m_StopRemote = true;
+                remotewait.WaitOne();
+                SetRemoteWebInterfaceButtonStyle(false);
+                m_RemoteConnected = false;
+            }
+
         }
     }
 }

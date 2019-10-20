@@ -14,6 +14,8 @@ Whisper e-mail to: test@test.com
 SMTP account name: test@test.com
 SMTP account password: test
 SMTP server: test.com
+Remote user: test
+Remote server: test
 --Jitterizer
 Find target rate: 0.01
 Find target wait time: 0.08

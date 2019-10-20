@@ -225,8 +225,7 @@ namespace ClassicWowNeuralParasite
         [DllImport("user32.dll")]
         private static extern Int32 GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
 
-        private static PlayerData m_PlayerDataContainer = new PlayerData();
-        private static object m_PlayerDataLock = new object();
+        public static volatile PlayerData PlayerData = new PlayerData();
 
         static WowApi()
         {
@@ -234,12 +233,6 @@ namespace ClassicWowNeuralParasite
             {
                 Run();
             });
-        }
-
-        public static PlayerData PlayerData
-        {
-            get { lock (m_PlayerDataLock) { return m_PlayerDataContainer; } }
-            set { lock (m_PlayerDataLock) { m_PlayerDataContainer = value; } }
         }
 
         public static EventWaitHandle Sync = new EventWaitHandle(false, EventResetMode.AutoReset);

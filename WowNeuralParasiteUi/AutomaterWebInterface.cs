@@ -36,10 +36,10 @@ namespace ClassicWowNeuralParasite
             m_Server = new TcpListener(IPAddress.Any, Port);
         }
 
-        private byte[] GetScreenPngBytes()
+        private byte[] GetScreenJpegBytes()
         {
             Rectangle bounds = new Rectangle(0, 0, 1920, 1080);
-            byte[] pngimage;
+            byte[] jpegImage;
 
             using (Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height))
             {
@@ -50,13 +50,13 @@ namespace ClassicWowNeuralParasite
 
                 using (var memoryStream = new MemoryStream())
                 {
-                    bitmap.Save(memoryStream, ImageFormat.Png);
+                    bitmap.Save(memoryStream, ImageFormat.Jpeg);
 
-                    pngimage = memoryStream.ToArray();
+                    jpegImage = memoryStream.ToArray();
                 }
             }
 
-            return pngimage;
+            return jpegImage;
         }
 
         private void Relay(NetworkStream ns, string rawRelayString)
@@ -79,16 +79,16 @@ namespace ClassicWowNeuralParasite
 
         private void SendScreenShot(NetworkStream ns)
         {
-            byte[] pngimage = GetScreenPngBytes();
+            byte[] jpegImage = GetScreenJpegBytes();
 
             string responseString = "HTTP/1.1 200 OK\r\n";
-            responseString += "Content-Length: " + pngimage.Length.ToString() + "\r\n";
-            responseString += "Content-Type: image/png\r\n";
+            responseString += "Content-Length: " + jpegImage.Length.ToString() + "\r\n";
+            responseString += "Content-Type: image/jpeg\r\n";
             responseString += "Connection: Closed\r\n\r\n";
 
             List<byte> contentBytes = new List<byte>();
             contentBytes.AddRange(ASCIIEncoding.ASCII.GetBytes(responseString));
-            contentBytes.AddRange(pngimage);
+            contentBytes.AddRange(jpegImage);
 
             ns.Write(contentBytes.ToArray(), 0, contentBytes.Count);
         }
@@ -215,7 +215,7 @@ namespace ClassicWowNeuralParasite
             {
                 if(!m_Server.Pending())
                 {
-                    System.Threading.Thread.Sleep(50);
+                    System.Threading.Thread.Sleep(10);
                     continue;
                 }
                 else
