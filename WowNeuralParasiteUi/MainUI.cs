@@ -689,18 +689,18 @@ namespace ClassicWowNeuralParasite
 
         private void SliceNDiceCPNumericInput_ValueChanged(object sender, EventArgs e)
         {
-            WowAutomater.Rogue.SliceAndDice.MaximumComboPointsCost = (ushort)SliceNDiceCPNumericInput.Value ;
-            WowAutomater.Rogue.SliceAndDice.MinimumComboPointsCost = (ushort)SliceNDiceCPNumericInput.Value;
+            WowAutomater.Rogue.SliceAndDice.MaximumComboPointsCost = (uint)SliceNDiceCPNumericInput.Value ;
+            WowAutomater.Rogue.SliceAndDice.MinimumComboPointsCost = (uint)SliceNDiceCPNumericInput.Value;
         }
 
         private void RuptureCPNumericInput_ValueChanged(object sender, EventArgs e)
         {
-            WowAutomater.Rogue.Rupture.MinimumComboPointsCost = (ushort)RuptureCPNumericInput.Value;
+            WowAutomater.Rogue.Rupture.MinimumComboPointsCost = (uint)RuptureCPNumericInput.Value;
         }
 
         private void EvisceratePercentageNumericInput_ValueChanged(object sender, EventArgs e)
         {
-            WowAutomater.Rogue.Eviscerate.TargetHealthPercentage = (ushort)EvisceratePercentageNumericInput.Value;
+            WowAutomater.Rogue.Eviscerate.TargetHealthPercentage = (uint)EvisceratePercentageNumericInput.Value;
         }
 
         private void ClosestPointDistanceNumericInput_ValueChanged(object sender, EventArgs e)

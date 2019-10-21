@@ -85,7 +85,8 @@ namespace ClassicWowNeuralParasite
 
         public static void InputSleep()
         {
-            Helper.WaitSeconds(0.001 + (Helper.RandomNumberGenerator.NextDouble() * 0.001));
+            //Helper.WaitSeconds(0.001 + (Helper.RandomNumberGenerator.NextDouble() * 0.001));
+            Helper.WaitSeconds(Helper.RandomNumberGenerator.NextDouble() * 0.001);
         }
 
     }

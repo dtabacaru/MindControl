@@ -9,16 +9,16 @@ namespace ClassicWowNeuralParasite
 {
     public class ComboPointSpell : Spell
     {
-        public ushort MinimumComboPointsCost;
-        public ushort MaximumComboPointsCost;
+        public uint MinimumComboPointsCost;
+        public uint MaximumComboPointsCost;
 
         public ComboPointSpell(VirtualKeyCode hotKey,
-                                ushort minimumComboPointsCost,
-                                ushort maximumComboPointsCost,
-                                ushort manaCost = 0,
+                                uint minimumComboPointsCost,
+                                uint maximumComboPointsCost,
+                                uint manaCost = 0,
                                 double cooldownTime = 0,
                                 double healthPercentage = 100,
-                                ushort level = 1,
+                                uint level = 1,
                                 bool useOnce = false) : base(hotKey, manaCost, cooldownTime, healthPercentage, level, useOnce)
         {
             MinimumComboPointsCost = minimumComboPointsCost;

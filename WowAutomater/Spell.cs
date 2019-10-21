@@ -7,10 +7,10 @@ namespace ClassicWowNeuralParasite
     {
         public Timer CooldownTimer = new Timer();
         public VirtualKeyCode HotKey;
-        public ushort ManaCost;
+        public uint ManaCost;
         public double CooldownTime;
         public double PlayerHealthPercentage;
-        public ushort Level;
+        public uint Level;
         public volatile bool CooledDown = true;
         public bool UseOnce = false;
         public bool Used = false;
@@ -33,10 +33,10 @@ namespace ClassicWowNeuralParasite
         }
 
         public Spell(VirtualKeyCode hotKey, 
-                     ushort manaCost = 0, 
+                     uint manaCost = 0, 
                      double cooldownTime = 0, 
                      double healthPercentage = 100,
-                     ushort level = 1,
+                     uint level = 1,
                      bool useOnce = false)
         {
             HotKey = hotKey;

@@ -13,12 +13,12 @@ namespace ClassicWowNeuralParasite
 
         public FinishingSpell(  VirtualKeyCode hotKey,
                                 double targetHealthPercentage,
-                                ushort minimumComboPointsCost,
-                                ushort maximumComboPointsCost,
-                                ushort manaCost = 0,
+                                uint minimumComboPointsCost,
+                                uint maximumComboPointsCost,
+                                uint manaCost = 0,
                                 double cooldownTime = 0,
                                 double healthPercentage = 100,
-                                ushort level = 1,
+                                uint level = 1,
                                 bool useOnce = false) : base(hotKey, minimumComboPointsCost, maximumComboPointsCost, manaCost, cooldownTime, healthPercentage, level, useOnce)
         {
             TargetHealthPercentage = targetHealthPercentage;

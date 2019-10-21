@@ -9,20 +9,20 @@ namespace ClassicWowNeuralParasite
         private const int ROAR_COOLDOWN_TIME = 30;
         private const int FURY_COOLDOWN_TIME = 6;
 
-        private const ushort MOTW_MANA_COST = 100;
-        private const ushort THORNS_MANA_COST = 105;
-        private const ushort ROAR_MANA_COST = 10;
-        private const ushort MAUL_MANA_COST = 12;
-        private const ushort FURY_MANA_COST = 30;
-        private const ushort RAKE_MANA_COST = 37;
-        private const ushort RIP_MANA_COST = 30;
-        private const ushort CLAW_MANA_COST = 42;
-        private const ushort HEALING_TOUCH_MANA_COST = 185;
-        private const ushort WRATH_MANA_COST = 70;
+        private const uint MOTW_MANA_COST = 100;
+        private const uint THORNS_MANA_COST = 105;
+        private const uint ROAR_MANA_COST = 10;
+        private const uint MAUL_MANA_COST = 12;
+        private const uint FURY_MANA_COST = 30;
+        private const uint RAKE_MANA_COST = 37;
+        private const uint RIP_MANA_COST = 30;
+        private const uint CLAW_MANA_COST = 42;
+        private const uint HEALING_TOUCH_MANA_COST = 185;
+        private const uint WRATH_MANA_COST = 70;
 
-        private const ushort RIP_COMBO_POINTS = 3;
+        private const uint RIP_COMBO_POINTS = 3;
 
-        private const ushort HEALING_TOUCH_HEALTH_PERCENTAGE = 60;
+        private const uint HEALING_TOUCH_HEALTH_PERCENTAGE = 60;
 
         public bool Passive = true;
 

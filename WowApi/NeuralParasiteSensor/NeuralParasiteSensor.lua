@@ -89,22 +89,26 @@ local function Round(floatValue)
 	
 end
 
-local function Set2BytePixelValue(pixelValue,Pixel)
+local function SetThreeByteIntPixelValue(pixelValue,Pixel)
 	local pixelIntValue = Round(pixelValue);
-	local part1 = BitwiseAND(RightBitShift(pixelIntValue,8),255);
-	local part2 = BitwiseAND(pixelIntValue,255);
-	Pixel:SetColorTexture(part2/255,part1/255,1, 1);
+	
+	local byte2 = BitwiseAND(RightBitShift(pixelIntValue,16),255);
+	local byte1 = BitwiseAND(RightBitShift(pixelIntValue,8),255);
+	local byte0 = BitwiseAND(pixelIntValue,255);
+	
+	Pixel:SetColorTexture(byte0/255, byte1/255, byte2/255, 1);
 end
 
-local function Set3Byte3PixelValue(pixelValue,PixelR,PixelG,PixelB)
+local function SetThreeByteFloatThreePixelValue(pixelValue,Pixel1,Pixel2,Pixel3)
 	local pixelIntValue = Round(pixelValue * FLOAT_TO_3_BYTE_INT);
-	local part1 = BitwiseAND(RightBitShift(pixelIntValue,16),255);
-	local part2 = BitwiseAND(RightBitShift(pixelIntValue,8),255);
-	local part3 = BitwiseAND(pixelIntValue,255);
+	
+	local byte2 = BitwiseAND(RightBitShift(pixelIntValue,16),255);
+	local byte1 = BitwiseAND(RightBitShift(pixelIntValue,8),255);
+	local byte0 = BitwiseAND(pixelIntValue,255);
 
-	PixelR:SetColorTexture(part3/255,0,0,1);
-	PixelG:SetColorTexture(0,part2/255,0,1);
-	PixelB:SetColorTexture(0,0,part1/255,1);
+	Pixel1:SetColorTexture(byte0/255,0,0,1);
+	Pixel2:SetColorTexture(0,byte1/255,0,1);
+	Pixel3:SetColorTexture(0,0,byte2/255,1);
 end
 
 local function SetDebugText(debugText, text)
@@ -163,9 +167,9 @@ function DataFrame_OnUpdate()
 	local map = C_Map.GetBestMapForUnit("player")
 	
 	if map == nil then 
-		Set3Byte3PixelValue(0,XPositionR,XPositionG,XPositionB)
-		Set3Byte3PixelValue(0,YPositionR,YPositionG,YPositionB)
-		Set2BytePixelValue(0,MapIdPixel);
+		SetThreeByteFloatThreePixelValue(0,XPositionR,XPositionG,XPositionB)
+		SetThreeByteFloatThreePixelValue(0,YPositionR,YPositionG,YPositionB)
+		SetThreeByteIntPixelValue(0,MapIdPixel);
 		
 		debugString = debugString .. "Map: 0\n";
 		debugString = debugString .. "X: 0\n";
@@ -173,9 +177,9 @@ function DataFrame_OnUpdate()
 	else
 		local position = C_Map.GetPlayerMapPosition(map, "player")
 	
-		Set3Byte3PixelValue(position.x,XPositionR,XPositionG,XPositionB)
-		Set3Byte3PixelValue(position.y,YPositionR,YPositionG,YPositionB)
-		Set2BytePixelValue(map,MapIdPixel);
+		SetThreeByteFloatThreePixelValue(position.x,XPositionR,XPositionG,XPositionB)
+		SetThreeByteFloatThreePixelValue(position.y,YPositionR,YPositionG,YPositionB)
+		SetThreeByteIntPixelValue(map,MapIdPixel);
 		
 		debugString = debugString .. "Map: " .. map .. "\n";
 		debugString = debugString .. "X: " .. position.x*100 .. "\n";
@@ -189,11 +193,11 @@ function DataFrame_OnUpdate()
 		HeadingPixelG:SetColorTexture(0,0,0,1);
 		HeadingPixelB:SetColorTexture(0,0,0,1);
 		
-		Set3Byte3PixelValue(0,HeadingPixelR,HeadingPixelG,HeadingPixelB);
+		SetThreeByteFloatThreePixelValue(0,HeadingPixelR,HeadingPixelG,HeadingPixelB);
 	
 		debugString = debugString .. "Heading: 0\n";
 	else
-		Set3Byte3PixelValue(heading/(2*PI),HeadingPixelR,HeadingPixelG,HeadingPixelB);
+		SetThreeByteFloatThreePixelValue(heading/(2*PI),HeadingPixelR,HeadingPixelG,HeadingPixelB);
 	
 		debugString = debugString .. "Heading: " .. heading*(180/PI) .. "\n";
 	end
@@ -224,22 +228,22 @@ function DataFrame_OnUpdate()
 	end
 	
 	local playerMaxHealth = UnitHealthMax("player");
-	Set2BytePixelValue(playerMaxHealth,PlayerMaxHealthPixel);
+	SetThreeByteIntPixelValue(playerMaxHealth,PlayerMaxHealthPixel);
 	
 	debugString = debugString .. "Max HP: " .. playerMaxHealth .. "\n";
 	
 	local playerHealth = UnitHealth("player");
-	Set2BytePixelValue(playerHealth,PlayerHealthPixel);
+	SetThreeByteIntPixelValue(playerHealth,PlayerHealthPixel);
 	
 	debugString = debugString .. "HP: " .. playerHealth .. "\n";
 	
 	local playerMaxMana = UnitPowerMax("player");
-	Set2BytePixelValue(playerMaxMana,PlayerMaxManaPixel);
+	SetThreeByteIntPixelValue(playerMaxMana,PlayerMaxManaPixel);
 	
 	debugString = debugString .. "Max MP: " .. playerMaxMana .. "\n";
 	
 	local playerMana = UnitPower("player");
-	Set2BytePixelValue(playerMana,PlayerManaPixel);
+	SetThreeByteIntPixelValue(playerMana,PlayerManaPixel);
 	
 	debugString = debugString .. "MP: " .. playerMana .. "\n";
 	
@@ -252,12 +256,12 @@ function DataFrame_OnUpdate()
 	end
 	
 	local targetHealth = UnitHealth("target");
-	Set2BytePixelValue(targetHealth,TargetHealthPixel);
+	SetThreeByteIntPixelValue(targetHealth,TargetHealthPixel);
 	
 	debugString = debugString .. "Target HP: " .. targetHealth .. "\n";
 	
 	local targetMana = UnitPower("target");
-	Set2BytePixelValue(targetMana,TargetManaPixel);
+	SetThreeByteIntPixelValue(targetMana,TargetManaPixel);
 	
 	debugString = debugString .. "Target MP: " .. targetMana .. "\n";
 	
@@ -303,20 +307,20 @@ function DataFrame_OnUpdate()
 	
 	reaction = UnitReaction("player", "target")
 	if reaction == nil then
-		Set2BytePixelValue(0,TargetReactionPixel);
+		SetThreeByteIntPixelValue(0,TargetReactionPixel);
 		debugString = debugString .. "Reaction: 0" .. "\n";
 	else
-		Set2BytePixelValue(reaction,TargetReactionPixel);
+		SetThreeByteIntPixelValue(reaction,TargetReactionPixel);
 		debugString = debugString .. "Reaction: " .. reaction .. "\n";
 	end
 	
 	targetLevel = UnitLevel("target");
-	Set2BytePixelValue(targetLevel,TargetLevelPixel);
+	SetThreeByteIntPixelValue(targetLevel,TargetLevelPixel);
 	
 	debugString = debugString .. "Target Level: " .. targetLevel .. "\n";
 	
 	playerLevel = UnitLevel("player");
-	Set2BytePixelValue(playerLevel,PlayerLevelPixel);
+	SetThreeByteIntPixelValue(playerLevel,PlayerLevelPixel);
 	
 	debugString = debugString .. "Player Level: " .. playerLevel .. "\n";
 	
@@ -330,23 +334,23 @@ function DataFrame_OnUpdate()
 	
 	local targetFaction = UnitFactionGroup("target");
 	if targetFaction == nil then
-		Set2BytePixelValue(0,TargetFactionPixel);
+		SetThreeByteIntPixelValue(0,TargetFactionPixel);
 		debugString = debugString .. "Target Faction: 0" .. "\n";
 	elseif targetFaction == "Alliance" then
-		Set2BytePixelValue(1,TargetFactionPixel);
+		SetThreeByteIntPixelValue(1,TargetFactionPixel);
 		debugString = debugString .. "Target Faction: 1" .. "\n";
 	elseif targetFaction == "Horde" then
-		Set2BytePixelValue(2,TargetFactionPixel);
+		SetThreeByteIntPixelValue(2,TargetFactionPixel);
 		debugString = debugString .. "Target Faction: 2" .. "\n";
 	end
 	
 	local comboPoints = GetComboPoints("player", "target");
-	Set2BytePixelValue(comboPoints,TargetComboPointsPixel);	
+	SetThreeByteIntPixelValue(comboPoints,TargetComboPointsPixel);	
 	
 	debugString = debugString .. "Combo Points: " .. comboPoints .. "\n";
 	
 	local ammoCount = GetInventoryItemCount("player", INVSLOT_RANGED );
-	Set2BytePixelValue(ammoCount,AmmoCountPixel);	
+	SetThreeByteIntPixelValue(ammoCount,AmmoCountPixel);	
 	
 	debugString = debugString .. "Ammo: " .. ammoCount .. "\n";
 	
@@ -479,7 +483,7 @@ function DataFrame_OnUpdate()
 	
 	local shapeShiftForm = GetShapeshiftForm(true);
 
-	Set2BytePixelValue(shapeShiftForm, ShapeShiftPixel);
+	SetThreeByteIntPixelValue(shapeShiftForm, ShapeShiftPixel);
 
 	debugString = debugString .. "Shape: " .. shapeShiftForm .. "\n";
 
@@ -525,7 +529,7 @@ function DataFrame_OnUpdate()
 	end
 	
 	debugString = debugString .. "Class: " .. classIndex .. "\n";
-	Set2BytePixelValue(classIndex,ClassPixel);
+	SetThreeByteIntPixelValue(classIndex,ClassPixel);
 
 	if isCasting == true then
 		CastingPixel:SetColorTexture(1, 1, 1, 1);
@@ -565,7 +569,7 @@ function DataFrame_OnUpdate()
 	  
 	end
 	
-	Set2BytePixelValue(buffPixelValue,BuffsPixel);
+	SetThreeByteIntPixelValue(buffPixelValue,BuffsPixel);
 	
 	debugString = debugString .. "Buffs: " .. buffPixelValue .."\n";
 
@@ -576,6 +580,15 @@ function DataFrame_OnUpdate()
 		TargetTargetingPlayerPixel:SetColorTexture(0, 0, 0, 1);
 		debugString = debugString .. "Target targeting you: false\n";
 	end
+
+	local numberOfFreeSlots = 0;
+
+	for i = 0, 4 do
+		numberOfFreeSlots = numberOfFreeSlots + GetContainerNumFreeSlots(i);
+	end
+	
+	debugString = debugString .. "Free bag slots: " .. numberOfFreeSlots .. "\n";
+	SetThreeByteIntPixelValue(numberOfFreeSlots,BagSlotsFreePixel);
 
 	SetDebugText(DebugText,debugString);
 end
@@ -611,12 +624,12 @@ errorFrame:RegisterEvent("UI_ERROR_MESSAGE")
 errorFrame:SetScript('OnEvent', function(self, event, arg1, arg2)
 
 	if arg2 == "Target needs to be in front of you" then
-		Set2BytePixelValue(1,ErrorPixel);
+		SetThreeByteIntPixelValue(1,ErrorPixel);
 		errorStart = true;
 	end
 	
 	if arg2 == "You are facing the wrong way!" then
-		Set2BytePixelValue(2,ErrorPixel);
+		SetThreeByteIntPixelValue(2,ErrorPixel);
 		errorStart = true;
 	end
 	

@@ -10,10 +10,10 @@ namespace ClassicWowNeuralParasite
     public class SealSpell : Spell
     {
         public SealSpell(VirtualKeyCode hotKey,
-                     ushort manaCost = 0,
+                     uint manaCost = 0,
                      double cooldownTime = 0,
                      double healthPercentage = 100,
-                     ushort level = 1,
+                     uint level = 1,
                      bool useOnce = false) : base( hotKey, manaCost, cooldownTime, healthPercentage, level, useOnce)
         {
 

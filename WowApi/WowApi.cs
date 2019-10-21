@@ -63,51 +63,80 @@ namespace ClassicWowNeuralParasite
 
     public class PlayerData
     {
-        public double PlayerXPosition = 0;
-        public double PlayerYPosition = 0;
-        public double PlayerHeading = 0;
-        public bool IsInFarRange = false;
-        public bool IsInMediumRange = false;
-        public bool IsInCloseRange = false;
-        public ushort PlayerHealth = 0;
-        public ushort MaxPlayerHealth = 0;
-        public double PlayerHealthPercentage = 0;
-        public ushort PlayerMana = 0;
-        public ushort MaxPlayerMana = 0;
-        public bool PlayerHasTarget = false;
-        public ushort TargetHealth = 0;
-        public ushort TargetMana = 0;
-        public bool SpellCanAttackTarget = false;
-        public bool CanAttackTarget = false;
-        public bool PlayerInCombat = false;
-        public bool TargetInCombat = false;
-        public bool IsTargetDead = false;
-        public bool IsTargetElite = false;
-        public TargetReactionType Reaction = TargetReactionType.NoTarget;
-        public ushort PlayerLevel = 0;
-        public ushort TargetLevel = 0;
-        public bool IsTargetEnemy = false;
-        public string TargetName = string.Empty;
-        public ushort TargetComboPoints = 0;
-        public ActionErrorType PlayerActionError = ActionErrorType.None;
-        public bool PlayerIsAttacking = false;
-        public ushort AmmoCount = 0;
-        public bool IsTargetPlayer = false;
-        public bool IsPlayerDead = false;
-        public bool Start = false;
-        public bool Found = false;
-        public bool CanUseSkill = false;
-        public bool IsWowForeground = false;
-        public PlayerClassType Class = PlayerClassType.None;
-        public bool Casting = false;
-        public ushort Shape = 0;
-        public double dt = 0;
-        public double Time = 0;
-        public ushort Buffs = 0;
-        public bool MouseOverTarget = false;
-        public TargetFactionType TargetFaction = TargetFactionType.None;
-        public bool TargetTargetingPlayer = false;
-        public bool Whisper = false;
+        private double PlayerXPositionContainer = 0;
+        private object PlayerXPositionContainerLock = new object();
+        private double PlayerYPositionContainer = 0;
+        private object PlayerYPositionContainerLock = new object();
+        private double PlayerHeadingContainer = 0;
+        private object PlayerHeadingContainerLock = new object();
+        private double PlayerHealthPercentageContainer = 0;
+        private object PlayerHealthPercentageContainerLock = new object();
+
+        public double PlayerXPosition
+        {
+            get { lock (PlayerXPositionContainerLock) { return PlayerXPositionContainer; } }
+            set { lock (PlayerXPositionContainerLock) { PlayerXPositionContainer = value; } }
+        }
+
+        public double PlayerYPosition
+        {
+            get { lock (PlayerYPositionContainerLock) { return PlayerYPositionContainer; } }
+            set { lock (PlayerYPositionContainerLock) { PlayerYPositionContainer = value; } }
+        }
+
+        public double PlayerHeading
+        {
+            get { lock (PlayerHeadingContainerLock) { return PlayerHeadingContainer; } }
+            set { lock (PlayerHeadingContainerLock) { PlayerHeadingContainer = value; } }
+        }
+
+        public volatile bool IsInFarRange = false;
+        public volatile bool IsInMediumRange = false;
+        public volatile bool IsInCloseRange = false;
+        public volatile uint PlayerHealth = 0;
+        public volatile uint MaxPlayerHealth = 0;
+
+        public double PlayerHealthPercentage
+        {
+            get { lock (PlayerHealthPercentageContainerLock) { return PlayerHealthPercentageContainer; } }
+            set { lock (PlayerHealthPercentageContainerLock) { PlayerHealthPercentageContainer = value; } }
+        }
+
+        public volatile uint PlayerMana = 0;
+        public volatile uint MaxPlayerMana = 0;
+        public volatile bool PlayerHasTarget = false;
+        public volatile uint TargetHealth = 0;
+        public volatile uint TargetMana = 0;
+        public volatile bool SpellCanAttackTarget = false;
+        public volatile bool CanAttackTarget = false;
+        public volatile bool PlayerInCombat = false;
+        public volatile bool TargetInCombat = false;
+        public volatile bool IsTargetDead = false;
+        public volatile bool IsTargetElite = false;
+        public volatile TargetReactionType Reaction = TargetReactionType.NoTarget;
+        public volatile uint PlayerLevel = 0;
+        public volatile uint TargetLevel = 0;
+        public volatile bool IsTargetEnemy = false;
+        public volatile string TargetName = string.Empty;
+        public volatile uint TargetComboPoints = 0;
+        public volatile ActionErrorType PlayerActionError = ActionErrorType.None;
+        public volatile bool PlayerIsAttacking = false;
+        public volatile uint AmmoCount = 0;
+        public volatile bool IsTargetPlayer = false;
+        public volatile bool IsPlayerDead = false;
+        public volatile bool Start = false;
+        public volatile bool Found = false;
+        public volatile bool CanUseSkill = false;
+        public volatile bool IsWowForeground = false;
+        public volatile PlayerClassType Class = PlayerClassType.None;
+        public volatile bool Casting = false;
+        public volatile uint Shape = 0;
+        public volatile uint Buffs = 0;
+        public volatile bool MouseOverTarget = false;
+        public volatile TargetFactionType TargetFaction = TargetFactionType.None;
+        public volatile bool TargetTargetingPlayer = false;
+        public volatile bool Whisper = false;
+        public volatile uint FreeBagSlots = 0;
 
         public override string ToString()
         {
@@ -121,7 +150,7 @@ namespace ClassicWowNeuralParasite
             output += "IsInCloseRange: " + IsInCloseRange.ToString() + "\r\n";
             output += "PlayerHealth: " + PlayerHealth.ToString() + "\r\n";
             output += "MaxPlayerHealth: " + MaxPlayerHealth.ToString() + "\r\n";
-            output += "PlayerHealthPercentage: " + PlayerHealthPercentage.ToString() + "\r\n";
+            output += "PlayerHealthPercentage: " + PlayerHealthPercentage.ToString("N3") + "\r\n";
             output += "PlayerMana: " + PlayerMana.ToString() + "\r\n";
             output += "MaxPlayerMana: " + MaxPlayerMana.ToString() + "\r\n";
             output += "PlayerHasTarget: " + PlayerHasTarget.ToString() + "\r\n";
@@ -155,8 +184,7 @@ namespace ClassicWowNeuralParasite
             output += "Buffs: " + Buffs.ToString() + "\r\n";
             output += "MouseOverTarget: " + MouseOverTarget.ToString() + "\r\n";
             output += "Whisper: " + Whisper.ToString() + "\r\n";
-            output += "dt: " + dt.ToString() + "\r\n";
-            output += "Time: " + Time.ToString() + "\r\n";
+            output += "FreeBagSlots: " + FreeBagSlots.ToString() + "\r\n";
 
             return output;
         }
@@ -242,9 +270,6 @@ namespace ClassicWowNeuralParasite
             Rectangle bounds;
             PlayerData currentPlayerData = new PlayerData();
 
-            long lastTicks = DateTime.Now.Ticks;
-            DateTime startTime = DateTime.Now;
-
             while (true)
             {
                 PlayerData = currentPlayerData;
@@ -265,8 +290,6 @@ namespace ClassicWowNeuralParasite
                         g.CopyFromScreen(new Point(m_ApiStartXLocation, m_ApiStartYLocation), Point.Empty, bounds.Size);
                     }
 
-                    currentPlayerData.Time = (DateTime.Now - startTime).TotalSeconds;
-
                     //bitmap.Save("wowapi.png");
 
                     Color find1Pixel = bitmap.GetPixel((int)Math.Round((FIND1_PIXEL_X * m_ApiXScale)), (int)Math.Round((FIND1_PIXEL_Y * m_ApiYScale)));
@@ -285,15 +308,10 @@ namespace ClassicWowNeuralParasite
                         continue;
                     }
 
-                    long currentTicks = DateTime.Now.Ticks;
-                    currentPlayerData.dt = (double)(currentTicks - lastTicks) / TimeSpan.TicksPerSecond;
-
-                    lastTicks = currentTicks;
-
                     Color playerHeadingPixelR = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((3 * m_ApiYScale)));
                     Color playerHeadingPixelG = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((6 * m_ApiYScale)));
                     Color playerHeadingPixelB = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((9 * m_ApiYScale)));
-                    currentPlayerData.PlayerHeading = GetThreeByte3PixelValue(playerHeadingPixelR, playerHeadingPixelG, playerHeadingPixelB) * 2 * Math.PI;
+                    currentPlayerData.PlayerHeading = GetThreeByteFloatThreePixelValue(playerHeadingPixelR, playerHeadingPixelG, playerHeadingPixelB) * 2 * Math.PI;
 
                     Color isInFarRangePixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((12 * m_ApiYScale)));
                     currentPlayerData.IsInFarRange = isInFarRangePixel.R == PIXEL_SET ? true : false;
@@ -305,33 +323,33 @@ namespace ClassicWowNeuralParasite
                     currentPlayerData.IsInCloseRange = isInCloseRangePixel.R == PIXEL_SET ? true : false;
 
                     Color maxPlayerHealthPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((21 * m_ApiYScale)));
-                    currentPlayerData.MaxPlayerHealth = GetTwoBytePixelValue(maxPlayerHealthPixel);
+                    currentPlayerData.MaxPlayerHealth = GetThreeByteIntPixelValue(maxPlayerHealthPixel);
 
                     Color playerHealthPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((24 * m_ApiYScale)));
-                    currentPlayerData.PlayerHealth = GetTwoBytePixelValue(playerHealthPixel);
+                    currentPlayerData.PlayerHealth = GetThreeByteIntPixelValue(playerHealthPixel);
 
                     currentPlayerData.PlayerHealthPercentage = ((double)currentPlayerData.PlayerHealth / currentPlayerData.MaxPlayerHealth)*100;
 
                     Color maxPlayerManaPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((27 * m_ApiYScale)));
-                    currentPlayerData.MaxPlayerMana = GetTwoBytePixelValue(maxPlayerManaPixel);
+                    currentPlayerData.MaxPlayerMana = GetThreeByteIntPixelValue(maxPlayerManaPixel);
 
                     Color playerManaPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((30 * m_ApiYScale)));
-                    currentPlayerData.PlayerMana = GetTwoBytePixelValue(playerManaPixel);
+                    currentPlayerData.PlayerMana = GetThreeByteIntPixelValue(playerManaPixel);
 
                     Color hasTargetPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((33 * m_ApiYScale)));
                     currentPlayerData.PlayerHasTarget = hasTargetPixel.R == PIXEL_SET ? true : false;
 
                     Color targetHealthPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((36 * m_ApiYScale)));
-                    currentPlayerData.TargetHealth = GetTwoBytePixelValue(targetHealthPixel);
+                    currentPlayerData.TargetHealth = GetThreeByteIntPixelValue(targetHealthPixel);
 
                     Color targetManaPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((39 * m_ApiYScale)));
-                    currentPlayerData.TargetMana = GetTwoBytePixelValue(targetManaPixel);
+                    currentPlayerData.TargetMana = GetThreeByteIntPixelValue(targetManaPixel);
 
                     Color inCombatPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((42 * m_ApiYScale)));
                     currentPlayerData.PlayerInCombat = inCombatPixel.R == PIXEL_SET ? true : false;
 
                     Color classPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((45 * m_ApiYScale)));
-                    currentPlayerData.Class = (PlayerClassType)GetTwoBytePixelValue(classPixel);
+                    currentPlayerData.Class = (PlayerClassType)GetThreeByteIntPixelValue(classPixel);
 
                     Color castingPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((54 * m_ApiYScale)));
                     currentPlayerData.Casting = castingPixel.R == PIXEL_SET ? true : false;
@@ -352,13 +370,13 @@ namespace ClassicWowNeuralParasite
                     currentPlayerData.IsTargetElite = isElitePixel.R == PIXEL_SET ? true : false;
 
                     Color reactionPixel = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((12 * m_ApiYScale)));
-                    currentPlayerData.Reaction = (TargetReactionType)GetTwoBytePixelValue(reactionPixel);
+                    currentPlayerData.Reaction = (TargetReactionType)GetThreeByteIntPixelValue(reactionPixel);
 
                     Color targetLevelPixel = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((15 * m_ApiYScale)));
-                    currentPlayerData.TargetLevel = GetTwoBytePixelValue(targetLevelPixel);
+                    currentPlayerData.TargetLevel = GetThreeByteIntPixelValue(targetLevelPixel);
 
                     Color playerLevelPixel = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((18 * m_ApiYScale)));
-                    currentPlayerData.PlayerLevel = GetTwoBytePixelValue(playerLevelPixel);
+                    currentPlayerData.PlayerLevel = GetThreeByteIntPixelValue(playerLevelPixel);
 
                     Color isEnemyPixel = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((21 * m_ApiYScale)));
                     currentPlayerData.IsTargetEnemy = isEnemyPixel.R == PIXEL_SET ? true : false;
@@ -400,22 +418,25 @@ namespace ClassicWowNeuralParasite
                     }
 
                     Color buffsPixel = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((45 * m_ApiYScale)));
-                    currentPlayerData.Buffs = GetTwoBytePixelValue(buffsPixel);
+                    currentPlayerData.Buffs = GetThreeByteIntPixelValue(buffsPixel);
 
                     Color mouseOverPixel = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((54 * m_ApiYScale)));
                     currentPlayerData.MouseOverTarget = mouseOverPixel.R == PIXEL_SET ? true : false;
 
+                    Color freeBagSlotsPixel = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((57 * m_ApiYScale)));
+                    currentPlayerData.FreeBagSlots = GetThreeByteIntPixelValue(freeBagSlotsPixel);
+
                     Color comboPointsPixel = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((15 * m_ApiYScale)));
-                    currentPlayerData.TargetComboPoints = GetTwoBytePixelValue(comboPointsPixel);
+                    currentPlayerData.TargetComboPoints = GetThreeByteIntPixelValue(comboPointsPixel);
 
                     Color errorPixel = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((18 * m_ApiYScale)));
-                    currentPlayerData.PlayerActionError = (ActionErrorType)GetTwoBytePixelValue(errorPixel);
+                    currentPlayerData.PlayerActionError = (ActionErrorType)GetThreeByteIntPixelValue(errorPixel);
 
                     Color attackingPixel = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((21 * m_ApiYScale)));
                     currentPlayerData.PlayerIsAttacking = attackingPixel.R == PIXEL_SET ? true : false;
 
                     Color ammoPixel = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((24 * m_ApiYScale)));
-                    currentPlayerData.AmmoCount = GetTwoBytePixelValue(ammoPixel);
+                    currentPlayerData.AmmoCount = GetThreeByteIntPixelValue(ammoPixel);
 
                     Color targetIsPlayerPixel = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((27 * m_ApiYScale)));
                     currentPlayerData.IsTargetPlayer = targetIsPlayerPixel.R == PIXEL_SET ? true : false;
@@ -424,7 +445,7 @@ namespace ClassicWowNeuralParasite
                     currentPlayerData.TargetInCombat = targetCombatPixel.R == PIXEL_SET ? true : false;
 
                     Color targetFactionPixel = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((33 * m_ApiYScale)));
-                    currentPlayerData.TargetFaction = (TargetFactionType)GetTwoBytePixelValue(targetFactionPixel);
+                    currentPlayerData.TargetFaction = (TargetFactionType)GetThreeByteIntPixelValue(targetFactionPixel);
 
                     Color deadPixel = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((36 * m_ApiYScale)));
                     currentPlayerData.IsPlayerDead = deadPixel.R == PIXEL_SET ? true : false;
@@ -440,16 +461,16 @@ namespace ClassicWowNeuralParasite
                     Color xPositionG = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((48 * m_ApiYScale)));
                     Color xPositionB = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((48 * m_ApiYScale)));
 
-                    currentPlayerData.PlayerXPosition = GetThreeByte3PixelValue(xPositionR, xPositionG, xPositionB) * 100;
+                    currentPlayerData.PlayerXPosition = GetThreeByteFloatThreePixelValue(xPositionR, xPositionG, xPositionB) * 100;
 
                     Color yPositionR = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((51 * m_ApiYScale)));
                     Color yPositionG = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((51 * m_ApiYScale)));
                     Color yPositionB = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((51 * m_ApiYScale)));
 
-                    currentPlayerData.PlayerYPosition = GetThreeByte3PixelValue(yPositionR, yPositionG, yPositionB) * 100;
+                    currentPlayerData.PlayerYPosition = GetThreeByteFloatThreePixelValue(yPositionR, yPositionG, yPositionB) * 100;
 
                     Color shapePixel = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((54 * m_ApiYScale)));
-                    currentPlayerData.Shape = GetTwoBytePixelValue(shapePixel);
+                    currentPlayerData.Shape = GetThreeByteIntPixelValue(shapePixel);
                 }
 
             }
@@ -549,17 +570,19 @@ namespace ClassicWowNeuralParasite
             return "Unknown";
         }
 
-        private static ushort GetTwoBytePixelValue(Color pixel)
+        private static uint GetThreeByteIntPixelValue(Color pixel)
         {
-            byte[] pixelBytes = new byte[2];
+            byte[] pixelBytes = new byte[4];
 
             pixelBytes[0] = pixel.R;
             pixelBytes[1] = pixel.G;
+            pixelBytes[2] = pixel.B;
+            pixelBytes[3] = 0;
 
-            return BitConverter.ToUInt16(pixelBytes, 0);
+            return BitConverter.ToUInt32(pixelBytes, 0);
         }
 
-        private static double GetThreeByte3PixelValue(Color pixelR, Color pixelG, Color pixelB)
+        private static double GetThreeByteFloatThreePixelValue(Color pixelR, Color pixelG, Color pixelB)
         {
             byte[] pixelBytes = new byte[4];
 
