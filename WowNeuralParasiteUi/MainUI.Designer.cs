@@ -47,6 +47,8 @@
             this.XTextBox = new System.Windows.Forms.TextBox();
             this.XLabel = new System.Windows.Forms.Label();
             this.AutomaterTab = new System.Windows.Forms.TabPage();
+            this.RemoteServerLabel = new System.Windows.Forms.Label();
+            this.RemoteServerTextBox = new System.Windows.Forms.TextBox();
             this.RemoteUserLabel = new System.Windows.Forms.Label();
             this.RemoteUserTextBox = new System.Windows.Forms.TextBox();
             this.RemoteWebInterfaceButton = new System.Windows.Forms.Button();
@@ -152,8 +154,6 @@
             this.FindTargetRateLabel = new System.Windows.Forms.Label();
             this.ShowInfoButton = new System.Windows.Forms.Button();
             this.StatusLabel = new System.Windows.Forms.Label();
-            this.RemoteServerLabel = new System.Windows.Forms.Label();
-            this.RemoteServerTextBox = new System.Windows.Forms.TextBox();
             this.OptionTabs.SuspendLayout();
             this.InfoTab.SuspendLayout();
             this.PathsTab.SuspendLayout();
@@ -440,6 +440,22 @@
             this.AutomaterTab.TabIndex = 2;
             this.AutomaterTab.Text = "Automater";
             this.AutomaterTab.UseVisualStyleBackColor = true;
+            // 
+            // RemoteServerLabel
+            // 
+            this.RemoteServerLabel.AutoSize = true;
+            this.RemoteServerLabel.Location = new System.Drawing.Point(3, 515);
+            this.RemoteServerLabel.Name = "RemoteServerLabel";
+            this.RemoteServerLabel.Size = new System.Drawing.Size(76, 13);
+            this.RemoteServerLabel.TabIndex = 37;
+            this.RemoteServerLabel.Text = "Remote server";
+            // 
+            // RemoteServerTextBox
+            // 
+            this.RemoteServerTextBox.Location = new System.Drawing.Point(8, 531);
+            this.RemoteServerTextBox.Name = "RemoteServerTextBox";
+            this.RemoteServerTextBox.Size = new System.Drawing.Size(196, 20);
+            this.RemoteServerTextBox.TabIndex = 36;
             // 
             // RemoteUserLabel
             // 
@@ -1746,27 +1762,11 @@
             this.StatusLabel.Size = new System.Drawing.Size(0, 24);
             this.StatusLabel.TabIndex = 38;
             // 
-            // RemoteServerLabel
-            // 
-            this.RemoteServerLabel.AutoSize = true;
-            this.RemoteServerLabel.Location = new System.Drawing.Point(3, 515);
-            this.RemoteServerLabel.Name = "RemoteServerLabel";
-            this.RemoteServerLabel.Size = new System.Drawing.Size(76, 13);
-            this.RemoteServerLabel.TabIndex = 37;
-            this.RemoteServerLabel.Text = "Remote server";
-            // 
-            // RemoteServerTextBox
-            // 
-            this.RemoteServerTextBox.Location = new System.Drawing.Point(8, 531);
-            this.RemoteServerTextBox.Name = "RemoteServerTextBox";
-            this.RemoteServerTextBox.Size = new System.Drawing.Size(196, 20);
-            this.RemoteServerTextBox.TabIndex = 36;
-            // 
             // MainUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(220, 961);
+            this.ClientSize = new System.Drawing.Size(220, 61);
             this.Controls.Add(this.StatusLabel);
             this.Controls.Add(this.OptionTabs);
             this.Controls.Add(this.ShowInfoButton);
