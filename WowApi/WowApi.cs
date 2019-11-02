@@ -46,7 +46,7 @@ namespace ClassicWowNeuralParasite
         None = 0,
         BehindTarget = 1,
         FacingWrongWay = 2,
-        Moving = 3
+        LineOfSight = 3
     }
 
     public enum BuffType

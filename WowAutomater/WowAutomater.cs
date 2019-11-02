@@ -84,7 +84,7 @@ namespace ClassicWowNeuralParasite
         public static double RegenerateVitalsHealthPercentage = 60;
 
         private static bool m_WaddleDirection = true;
-        private static bool m_Waddling = false;
+        private static volatile bool m_Waddling = false;
 
         private static bool m_Ghosted = false;
         private static bool m_Potion = false;
@@ -96,7 +96,7 @@ namespace ClassicWowNeuralParasite
 
         private static volatile string m_RelayString = string.Empty;
 
-        public static bool AutoLoot = false;
+        public static volatile bool AutoLoot = false;
 
         private static Stopwatch m_ReviveSw = new Stopwatch();
 
@@ -352,6 +352,8 @@ namespace ClassicWowNeuralParasite
 
             if (m_ReviveXCoordinates.Count == 0)
                 m_NoDead = true;
+            else
+                m_NoDead = false;
         }
 
         public static void SetShopCoordinates(List<double> xCoordinates, List<double> yCoordinates)
@@ -369,6 +371,8 @@ namespace ClassicWowNeuralParasite
 
             if (m_ShopXCoordinates.Count == 0)
                 m_NoShop = true;
+            else
+                m_NoShop = false;
         }
 
         public static void SetWalkCoordinates(List<double> xCoordinates, List<double> yCoordinates)
@@ -386,6 +390,8 @@ namespace ClassicWowNeuralParasite
 
             if (m_WalkXCoordinates.Count == 0)
                 m_NoWalk = true;
+            else
+                m_NoWalk = false;
         }
 
         public static void Stop()
@@ -593,6 +599,7 @@ namespace ClassicWowNeuralParasite
                 {
                     Input.MoveMouseTo(x, y);
                     Input.RightClick();
+                    Helper.WaitSeconds(0.001);
                 }
             }
 
@@ -612,6 +619,7 @@ namespace ClassicWowNeuralParasite
                     {
                         Input.MoveMouseTo(x, y);
                         Input.RightClick();
+                        Helper.WaitSeconds(0.001);
                     }
                 }
 

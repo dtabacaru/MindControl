@@ -21,7 +21,7 @@ namespace ClassicWowNeuralParasite
 
         public Action Attack;
         public Action Target;
-        public Action Throw;
+        public Spell Throw;
 
         public BuffSpell Stealth;
 
@@ -40,14 +40,14 @@ namespace ClassicWowNeuralParasite
         {
             Attack = new Action(VirtualKeyCode.VK_1);
             Target = new Action(VirtualKeyCode.TAB);
-            Throw = new Action(VirtualKeyCode.VK_4);
+            Throw = new Spell(VirtualKeyCode.VK_4, cooldownTime: 5);
 
             Stealth = new BuffSpell(VirtualKeyCode.VK_T, BuffType.Stealth, cooldownTime: 10);
-            SinisterStrike = new Spell(VirtualKeyCode.VK_2,45);
+            SinisterStrike = new Spell(VirtualKeyCode.VK_2, 45);
             Eviscerate = new FinishingSpell(VirtualKeyCode.VK_3, 25, 5, 5, 35);
             SliceAndDice = new ComboPointSpell(VirtualKeyCode.VK_5, 1, 1, 25, level: 10, useOnce: true);
-            Rupture = new ComboPointSpell(VirtualKeyCode.VK_6,3,5, 25, 6 + 3 * 2, level: 20);
-            KidneyShot = new ComboPointSpell(VirtualKeyCode.VK_7,3,5, 25, 20, level: 30);
+            Rupture = new ComboPointSpell(VirtualKeyCode.VK_6, 3, 5, 25, 6 + 3 * 2, level: 20);
+            KidneyShot = new ComboPointSpell(VirtualKeyCode.VK_7, 3, 5, 25, 20, level: 30);
             Evasion = new Spell(VirtualKeyCode.VK_L, cooldownTime: 5 * 60, healthPercentage: 40, level: 8);
             EquipAmmo = new Spell(VirtualKeyCode.VK_Z, cooldownTime: 10);
 
@@ -59,10 +59,6 @@ namespace ClassicWowNeuralParasite
 
         private void WowApi_UpdateEvent(object sender, EventArgs ea)
         {
-            if (WowApi.PlayerData.PlayerActionError == ActionErrorType.FacingWrongWay &&
-                WowAutomater.CurrentActionMode == ActionMode.FindTarget)
-                Target.Act();
-
             if (WowAutomater.CurrentActionMode == ActionMode.KillTarget)
                 StaleStealthTimer.Stop();
         }
@@ -94,11 +90,7 @@ namespace ClassicWowNeuralParasite
             if (WowApi.PlayerData.AmmoCount == 1 && EquipAmmo.CanCastSpell && ThrowFlag)
                 EquipAmmo.CastSpell();
 
-            if (WowApi.PlayerData.PlayerLevel < 5)
-            {
-                FindTargetMode = RogueFindTargetMode.Throw;
-            }
-            else if ( (StealthFlag && WowApi.PlayerData.PlayerLevel > StealthLevel) && 
+            if ( (StealthFlag && WowApi.PlayerData.PlayerLevel > StealthLevel) && 
                       ThrowFlag)
             {
                 FindTargetMode = RogueFindTargetMode.StealthAndThrow;
@@ -139,14 +131,15 @@ namespace ClassicWowNeuralParasite
                             !WowApi.PlayerData.TargetInCombat &&
                             WowApi.PlayerData.TargetFaction == 0 &&
                             WowApi.PlayerData.IsInFarRange &&
-                            !WowApi.PlayerData.IsInCloseRange;
+                            !WowApi.PlayerData.IsInCloseRange &&
+                            Throw.CanCastSpell;
 
                 if (validTarget)
                 {
                     WaypointFollower.StopFollowingWaypoints();
 
                     Helper.WaitSeconds(1);
-                    Throw.Act();
+                    Throw.CastSpell();
                     Helper.WaitSeconds(2);
                 }
             }
@@ -157,14 +150,15 @@ namespace ClassicWowNeuralParasite
                             !WowApi.PlayerData.TargetInCombat &&
                             WowApi.PlayerData.TargetFaction == 0 &&
                             WowApi.PlayerData.IsInFarRange &&
-                            !WowApi.PlayerData.IsInCloseRange;
+                            !WowApi.PlayerData.IsInCloseRange &&
+                            Throw.CanCastSpell;
 
                 if (validTarget)
                 {
                     WaypointFollower.StopFollowingWaypoints();
 
                     Helper.WaitSeconds(1);
-                    Throw.Act();
+                    Throw.CastSpell();
                     Helper.WaitSeconds(2);
                 }
             }
