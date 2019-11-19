@@ -15,7 +15,7 @@ namespace ClassicWowNeuralParasite
         public static double ClosestPointDistance = 1.00;
 
         private static int m_WaypointIndex = 0;
-        private static bool m_FollowingWaypoints = false;
+        private static volatile bool m_FollowingWaypoints = false;
         private static EventWaitHandle m_StopWaypointEventWaitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
         private static TurningDirection m_TurningDirection = TurningDirection.None;
 

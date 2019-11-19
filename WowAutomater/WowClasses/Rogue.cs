@@ -32,6 +32,8 @@ namespace ClassicWowNeuralParasite
         public ComboPointSpell Rupture;
         public ComboPointSpell KidneyShot;
         public Spell Evasion;
+        public Spell AdrenalineRush;
+        public Spell BladeFlurry;
 
         public FinishingSpell Eviscerate;
 
@@ -48,7 +50,9 @@ namespace ClassicWowNeuralParasite
             SliceAndDice = new ComboPointSpell(VirtualKeyCode.VK_5, 1, 1, 25, level: 10, useOnce: true);
             Rupture = new ComboPointSpell(VirtualKeyCode.VK_6, 3, 5, 25, 6 + 3 * 2, level: 20);
             KidneyShot = new ComboPointSpell(VirtualKeyCode.VK_7, 3, 5, 25, 20, level: 30);
-            Evasion = new Spell(VirtualKeyCode.VK_L, cooldownTime: 5 * 60, healthPercentage: 40, level: 8);
+            Evasion = new Spell(VirtualKeyCode.VK_L, cooldownTime: 5 * 60, healthPercentage: 20, level: 8);
+            AdrenalineRush = new Spell(VirtualKeyCode.VK_P, cooldownTime: 5 * 60, healthPercentage: 30, level: 40);
+            BladeFlurry = new Spell(VirtualKeyCode.VK_N, cooldownTime: 2 * 60, healthPercentage: 35, level: 31);
             EquipAmmo = new Spell(VirtualKeyCode.VK_Z, cooldownTime: 10);
 
             StaleStealthTimer.Interval = StealthCooldown * 1000;
@@ -59,7 +63,7 @@ namespace ClassicWowNeuralParasite
 
         private void WowApi_UpdateEvent(object sender, EventArgs ea)
         {
-            if (WowAutomater.CurrentActionMode == ActionMode.KillTarget)
+            if (WowAutomater.AutomaterActionMode == ActionMode.KillTarget)
                 StaleStealthTimer.Stop();
         }
 
@@ -218,7 +222,7 @@ namespace ClassicWowNeuralParasite
                 SliceAndDice.CastSpell();
             else if (Eviscerate.CanCastSpell)
                 Eviscerate.CastSpell();
-            else if (Eviscerate.CanCastSpell || Rupture.CanCastSpell)
+            else if (KidneyShot.CanCastSpell || Rupture.CanCastSpell)
             {
                 if(RuptureFirst)
                 {
@@ -241,14 +245,33 @@ namespace ClassicWowNeuralParasite
 
         public override void KillTarget()
         {
-            if (Evasion.CanCastSpell)
+            if (AdrenalineRush.CanCastSpell)
+                AdrenalineRush.CastSpell();
+            if (BladeFlurry.CanCastSpell)
+                BladeFlurry.CastSpell();
+            else if (Evasion.CanCastSpell)
                 Evasion.CastSpell();
             else if (SliceAndDice.CanCastSpell)
                 SliceAndDice.CastSpell();
-            else if (Rupture.CanCastSpell)
-                Rupture.CastSpell();
             else if (Eviscerate.CanCastSpell)
                 Eviscerate.CastSpell();
+            else if (KidneyShot.CanCastSpell || Rupture.CanCastSpell)
+            {
+                if (RuptureFirst)
+                {
+                    if (Rupture.CanCastSpell)
+                        Rupture.CastSpell();
+                    else if (KidneyShot.CanCastSpell)
+                        KidneyShot.CastSpell();
+                }
+                else
+                {
+                    if (KidneyShot.CanCastSpell)
+                        KidneyShot.CastSpell();
+                    else if (Rupture.CanCastSpell)
+                        Rupture.CastSpell();
+                }
+            }
             else if (SinisterStrike.CanCastSpell)
                 SinisterStrike.CastSpell();
         }

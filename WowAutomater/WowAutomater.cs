@@ -37,11 +37,12 @@ namespace ClassicWowNeuralParasite
 
     public static class WowAutomater
     {
-        public static ActionMode CurrentActionMode
+        public static ActionMode AutomaterActionMode
         {
             set
             {
                 m_ResetCoordinates = true;
+                m_InitializeAction = true;
                 m_CurrentActionMode = value;
                 m_PreviousActionMode = value;
             }
@@ -51,6 +52,13 @@ namespace ClassicWowNeuralParasite
             }
         }
 
+        public static void TransitionState(ActionMode action)
+        {
+            m_CurrentActionMode = action;
+            m_InitializeAction = true;
+        }
+
+        private static volatile bool m_InitializeAction = true;
         private static volatile ActionMode m_PreviousActionMode = ActionMode.FindTarget;
         private static volatile ActionMode m_CurrentActionMode = ActionMode.FindTarget;
 
@@ -86,11 +94,10 @@ namespace ClassicWowNeuralParasite
         private static bool m_WaddleDirection = true;
         private static volatile bool m_Waddling = false;
 
-        private static bool m_Ghosted = false;
         private static bool m_Potion = false;
-        private static bool m_Idle = false;
-        private static bool m_StartedEating = false;
 
+        private static bool m_Idle = false;
+        
         private static volatile bool m_RelayFlag = false;
         private static volatile bool m_RemoteStopFlag = false;
 
@@ -111,6 +118,9 @@ namespace ClassicWowNeuralParasite
         public static HunterAutomater  Hunter =  new HunterAutomater();
         public static ShamanAutomater  Shaman =  new ShamanAutomater();
         public static DruidAutomater   Druid =   new DruidAutomater();
+
+        private static bool SpriteRun = true;
+        static System.Timers.Timer SpriteTimer = new System.Timers.Timer();
 
         public static Jitterizer Jitterizer = new Jitterizer();
 
@@ -273,14 +283,44 @@ namespace ClassicWowNeuralParasite
 
         private static void WoWAPIUpdateEvent(object sender, EventArgs wea)
         {
-            if ((WowApi.PlayerData.PlayerActionError == ActionErrorType.BehindTarget || 
-                WowApi.PlayerData.PlayerActionError == ActionErrorType.FacingWrongWay) && 
+            CheckClass();
+            CheckCombat();
+            CheckDead();
+            CheckActionError();
+        }
+
+        private static void CheckCombat()
+        {
+            if (WowApi.PlayerData.PlayerInCombat &&
+                m_CurrentActionMode != ActionMode.KillTarget &&
+                m_CurrentActionMode != ActionMode.AutoAttack &&
+                m_CurrentActionMode != ActionMode.AutoWalk &&
+                !m_Idle)
+            {
+                TransitionState(ActionMode.KillTarget);
+            }
+        }
+
+        private static void CheckDead()
+        {
+            if (WowApi.PlayerData.IsPlayerDead &&
+                m_CurrentActionMode != ActionMode.Revive &&
+                m_CurrentActionMode != ActionMode.AutoAttack &&
+                m_CurrentActionMode != ActionMode.AutoWalk &&
+                !m_Idle)
+            {
+                TransitionState(ActionMode.Revive);
+            }
+        }
+
+        private static void CheckActionError()
+        {
+            if (WowApi.PlayerData.PlayerActionError > ActionErrorType.None &&
+                WowApi.PlayerData.PlayerActionError < ActionErrorType.OutOfRange &&
                 m_CurrentActionMode == ActionMode.KillTarget)
             {
                 Waddle();
             }
-                
-            CheckClass();
         }
 
         private static void CheckClass()
@@ -464,6 +504,8 @@ namespace ClassicWowNeuralParasite
         public static void Run()
         {
             WowApi.UpdateEvent += WoWAPIUpdateEvent;
+            SpriteTimer.Interval = 10000;
+            SpriteTimer.Elapsed += Testtime_Elapsed;
 
             while (m_Run)
             {
@@ -506,6 +548,12 @@ namespace ClassicWowNeuralParasite
             }
         }
 
+        private static void Testtime_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            SpriteRun = true;
+            SpriteTimer.Stop();
+        }
+
         private static void AutoWalk()
         {
             if (m_NoWalk)
@@ -526,7 +574,7 @@ namespace ClassicWowNeuralParasite
             if (m_NoDead)
                 return;
 
-            if (!m_Ghosted)
+            if (m_InitializeAction)
             {
                 List<double> ghostXCoordinates = new List<double>();
                 List<double> ghostYCoordinates = new List<double>();
@@ -539,14 +587,15 @@ namespace ClassicWowNeuralParasite
 
                 WaypointFollower.SetWaypoints(ghostXCoordinates, ghostYCoordinates);
 
-                Helper.WaitSeconds(2.5);
+                Helper.WaitSeconds(3.5);
                 Input.MoveMouseTo(XReviveButtonLocation, YReviveButtonLocation);
                 Helper.WaitSeconds(RegisterDelay);
                 Input.LeftClick();
-                m_Ghosted = true;
 
                 Helper.WaitSeconds(1.0);
                 m_ReviveSw.Start();
+
+                m_InitializeAction = false;
             }
 
             WaypointFollower.FollowWaypoints(true);
@@ -560,9 +609,7 @@ namespace ClassicWowNeuralParasite
             if (WowApi.PlayerData.PlayerHealth > 1)
             {
                 WaypointFollower.StopFollowingWaypoints();
-                m_Ghosted = false;
-                m_CurrentActionMode = ActionMode.RegenerateVitals;
-                m_StartedEating = false;
+                TransitionState(ActionMode.RegenerateVitals);
                 m_ReviveSw.Stop();
                 m_ResetCoordinates = true;
 
@@ -580,15 +627,7 @@ namespace ClassicWowNeuralParasite
 
         private static void LootTarget()
         {
-            Helper.WaitSeconds(0.5);
-
-            if (WowApi.PlayerData.IsPlayerDead)
-            {
-                m_Potion = false;
-                m_Ghosted = false;
-                m_CurrentActionMode = ActionMode.Revive;
-                return;
-            }
+            Helper.WaitSeconds(1.0);
 
             if (!AutoLoot)
                 Input.KeyDown(VirtualKeyCode.LSHIFT);
@@ -629,27 +668,18 @@ namespace ClassicWowNeuralParasite
                     Input.KeyUp(VirtualKeyCode.LSHIFT);
             }
 
-            m_StartedEating = false;
-
-            if (WowApi.PlayerData.PlayerInCombat)
-                m_CurrentActionMode = ActionMode.KillTarget;
-            else if (WowApi.PlayerData.PlayerHealthPercentage <= RegenerateVitalsHealthPercentage)
-                m_CurrentActionMode = ActionMode.RegenerateVitals;
+            if (WowApi.PlayerData.PlayerHealthPercentage <= RegenerateVitalsHealthPercentage)
+                TransitionState(ActionMode.RegenerateVitals);
             else
-                m_CurrentActionMode = ActionMode.FindTarget;
+                TransitionState(ActionMode.FindTarget);
+
         }
 
         private static void RegenerateVitals()
         {
-            if (WowApi.PlayerData.IsPlayerDead)
+            if (m_InitializeAction)
             {
-                m_Potion = false;
-                m_Ghosted = false;
-                m_CurrentActionMode = ActionMode.Revive;
-                return;
-            }
-            else if (!m_StartedEating)
-            {
+                WaypointFollower.StopFollowingWaypoints();
                 Helper.WaitSeconds(1);
                 Input.KeyPress(VirtualKeyCode.VK_8);
                 Helper.WaitSeconds(RegisterDelay);
@@ -658,17 +688,12 @@ namespace ClassicWowNeuralParasite
 
                 m_WowClassAutomater.RegenerateVitals();
 
-                m_StartedEating = true;
+                m_InitializeAction = false;
             }
-            else if (WowApi.PlayerData.PlayerInCombat)
-            {
-                m_StartedEating = false;
-                m_CurrentActionMode = ActionMode.KillTarget;
-            }
+
             else if (WowApi.PlayerData.PlayerHealth == WowApi.PlayerData.MaxPlayerHealth)
             {
-                m_CurrentActionMode = ActionMode.FindTarget;
-                m_StartedEating = false;
+                TransitionState(ActionMode.FindTarget);
             }
         }
 
@@ -679,15 +704,6 @@ namespace ClassicWowNeuralParasite
                 WaypointFollower.SetWaypoints(m_PathXCoordinates, m_PathYCoordinates);
 
                 m_ResetCoordinates = false;
-            }
-
-            if (WowApi.PlayerData.PlayerInCombat)
-            {
-                WaypointFollower.StopFollowingWaypoints();
-
-                Helper.WaitSeconds(0.5);
-                m_CurrentActionMode = ActionMode.KillTarget;
-                return;
             }
 
             m_WowClassAutomater.FindTarget();
@@ -714,7 +730,7 @@ namespace ClassicWowNeuralParasite
                 else
                     Input.KeyDown(VirtualKeyCode.VK_A);
 
-                Helper.WaitSeconds(0.2);
+                Helper.WaitSeconds(0.25);
 
                 Input.KeyUp(VirtualKeyCode.VK_S);
 
@@ -725,6 +741,8 @@ namespace ClassicWowNeuralParasite
 
                 m_WaddleDirection = !m_WaddleDirection;
 
+                Helper.WaitSeconds(0.1);
+
                 m_Waddling = false;
             });
                 
@@ -732,24 +750,33 @@ namespace ClassicWowNeuralParasite
 
         private static void KillTarget()
         {
-            if (!WowApi.PlayerData.PlayerInCombat)
+            if (m_InitializeAction)
+            {
+                WaypointFollower.StopFollowingWaypoints();
+                Helper.WaitSeconds(0.5);
+                m_InitializeAction = false;
+            }
+            else if (!WowApi.PlayerData.PlayerInCombat)
             {
                 Helper.WaitSeconds(RegisterDelay);
-                if (WowApi.PlayerData.IsPlayerDead)
-                {
-                    m_Potion = false;
-                    m_Ghosted = false;
-                    m_CurrentActionMode = ActionMode.Revive;
-                }
-                else
-                {
-                    m_Potion = false;
-                    m_CurrentActionMode = ActionMode.LootTarget;
-                }
+                m_Potion = false;
+                TransitionState(ActionMode.LootTarget);
             }
             else if (!WowApi.PlayerData.PlayerHasTarget)
             {
                 // Wait to be attacked
+            }
+            else if (WowApi.PlayerData.TargetName.Contains("Sprite") && SpriteRun)
+            {
+                Helper.WaitSeconds(RegisterDelay);
+                Input.KeyDown(VirtualKeyCode.VK_W);
+                Helper.WaitSeconds(2.5);
+                Input.KeyUp(VirtualKeyCode.VK_W);
+                Input.KeyDown(VirtualKeyCode.VK_S);
+                Helper.WaitSeconds(2.5);
+                Input.KeyUp(VirtualKeyCode.VK_S);
+                SpriteTimer.Start();
+                SpriteRun = false;
             }
             else if (!WowApi.PlayerData.TargetInCombat ||
                      WowApi.PlayerData.TargetFaction > 0)
@@ -758,12 +785,13 @@ namespace ClassicWowNeuralParasite
                 Input.KeyPress(VirtualKeyCode.TAB);
                 Helper.WaitSeconds(RegisterDelay);
             }
-            else if (!WowApi.PlayerData.IsInCloseRange)
+            else if (!WowApi.PlayerData.IsInCloseRange &&
+                     m_WowClassAutomater.IsMelee)
             {
                 Jitterizer.Jitter();
                 Helper.WaitSeconds(0.5);
             }
-            else if (!WowApi.PlayerData.PlayerIsAttacking && WowApi.PlayerData.TargetHealth > 0)
+            else if (!WowApi.PlayerData.PlayerIsAttacking)
             {
                 Input.KeyPress(VirtualKeyCode.VK_1);
                 Helper.WaitSeconds(RegisterDelay);

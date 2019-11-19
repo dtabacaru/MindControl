@@ -59,6 +59,11 @@ namespace ClassicWowNeuralParasite
             InputSleep();
         }
 
+        public static void Click(int button)
+        {
+            InputSimulator.Mouse.XButtonClick(button);
+        }
+
         public static void BottomClick()
         {
             InputSimulator.Mouse.XButtonClick(3);
