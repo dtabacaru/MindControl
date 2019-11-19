@@ -42,7 +42,7 @@ namespace ClassicWowNeuralParasite
         {
             Attack = new Action(VirtualKeyCode.VK_1);
             Target = new Action(VirtualKeyCode.TAB);
-            Throw = new Spell(VirtualKeyCode.VK_4, cooldownTime: 5);
+            Throw = new Spell(VirtualKeyCode.VK_4, cooldownTime: 7.5);
 
             Stealth = new BuffSpell(VirtualKeyCode.VK_T, BuffType.Stealth, cooldownTime: 10);
             SinisterStrike = new Spell(VirtualKeyCode.VK_2, 45);
