@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WindowsInput.Native;
+﻿using WindowsInput.Native;
+using WowApi;
 
-namespace ClassicWowNeuralParasite
+namespace WowAutomater
 {
     public enum FirstSealType
     {
@@ -53,11 +49,11 @@ namespace ClassicWowNeuralParasite
         {
             if (BlessingOfWisdom.CanCastSpell)
                 BlessingOfWisdom.CastSpell();
-            else if (!WowApi.PlayerData.PlayerInCombat)
+            else if (!Api.PlayerData.PlayerInCombat)
                 return;
-            else if (!WowApi.PlayerData.PlayerHasTarget)
+            else if (!Api.PlayerData.PlayerHasTarget)
                 Target.Act();
-            else if (!WowApi.PlayerData.PlayerIsAttacking)
+            else if (!Api.PlayerData.PlayerIsAttacking)
                 Attack.Act();
             else if (FirstSeal != FirstSealType.None)
             {
@@ -102,15 +98,15 @@ namespace ClassicWowNeuralParasite
 
             bool validTarget = false;
 
-            validTarget = WowApi.PlayerData.PlayerHasTarget &&
-                            WowApi.PlayerData.TargetHealth == 100 &&
-                            !WowApi.PlayerData.TargetInCombat &&
-                            WowApi.PlayerData.TargetFaction == 0 &&
-                            WowApi.PlayerData.IsInCloseRange;
+            validTarget = Api.PlayerData.PlayerHasTarget &&
+                            Api.PlayerData.TargetHealth == 100 &&
+                            !Api.PlayerData.TargetInCombat &&
+                            Api.PlayerData.TargetFaction == 0 &&
+                            Api.PlayerData.IsInCloseRange;
 
             if (validTarget)
             {
-                if (WowApi.PlayerData.IsInCloseRange)
+                if (Api.PlayerData.IsInCloseRange)
                 {
                     Input.KeyPress(VirtualKeyCode.VK_3);
                     Helper.WaitSeconds(0.5);

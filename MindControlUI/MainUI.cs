@@ -12,12 +12,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WindowsInput;
+using WowApi;
+using WowAutomater;
 
-namespace ClassicWowNeuralParasite
+namespace MindControlUI
 {
     public partial class MainUI : Form
     {
-        private string WowAutomaterStatusString = string.Empty;
+        private string AutomaterStatusString = string.Empty;
         private System.Windows.Forms.Timer m_ApiDataUpdateTimer = new System.Windows.Forms.Timer();
         private bool m_InfoSHown = false;
         private bool m_Recording = false;
@@ -71,15 +73,15 @@ namespace ClassicWowNeuralParasite
             m_ApiDataUpdateTimer.Tick += ApiDataUpdateTimer_Tick;
             m_ApiDataUpdateTimer.Enabled = true;
 
-            WowAutomater.AutomaterStatusEvent += AutomaterStatusEvent;
+            Automater.AutomaterStatusEvent += AutomaterStatusEvent;
 
-            WowApi.UpdateEvent += WowApi_UpdateEvent;
+            Api.UpdateEvent += Api_UpdateEvent;
 
             Task.Run(() =>
             {
                 try
                 {
-                    WowAutomater.Run();
+                    Automater.Run();
                 }
                 catch (Exception err)
                 {
@@ -118,7 +120,7 @@ namespace ClassicWowNeuralParasite
                         {
                             mm.To.Add(WhisperEmailToTextBox.Text);
                             mm.From = new MailAddress(SMTPNameTextBox.Text);
-                            mm.Subject = "WowAutomaterUi: Whisper Alert";
+                            mm.Subject = "AutomaterUi: Whisper Alert";
 
                             Rectangle bounds = new Rectangle(0, 500, 500, 500);
 
@@ -156,9 +158,9 @@ namespace ClassicWowNeuralParasite
             }
         }
 
-        private void WowApi_UpdateEvent(object sender, EventArgs ea)
+        private void Api_UpdateEvent(object sender, EventArgs ea)
         {
-            if (WowApi.PlayerData.Found && WowApi.PlayerData.Whisper)
+            if (Api.PlayerData.Found && Api.PlayerData.Whisper)
                 SendEmail();
         }
 
@@ -233,7 +235,7 @@ namespace ClassicWowNeuralParasite
                     PositionToleranceNumericInput.Value = Convert.ToDecimal(configValue);
                     break;
                 case "Register delay (sec)":
-                    WowAutomater.RegisterDelay = Convert.ToDouble(configValue);
+                    Automater.RegisterDelay = Convert.ToDouble(configValue);
                     RegisterDelayNumericInput.Value = Convert.ToDecimal(configValue);
                     break;
                 case "Recompute waypoint distance":
@@ -241,23 +243,23 @@ namespace ClassicWowNeuralParasite
                     ClosestPointDistanceNumericInput.Value = Convert.ToDecimal(configValue);
                     break;
                 case "Skin after loot":
-                    WowAutomater.SkinLoot = Convert.ToBoolean(configValue);
+                    Automater.SkinLoot = Convert.ToBoolean(configValue);
                     SkinLootCheckbox.Checked = Convert.ToBoolean(configValue);
                     break;
                 case "X revive button location":
-                    WowAutomater.XReviveButtonLocation = Convert.ToDouble(configValue) * 100;
+                    Automater.XReviveButtonLocation = Convert.ToDouble(configValue) * 100;
                     XReviveButtonLocationNumericInput.Value = Convert.ToDecimal(configValue);
                     break;
                 case "Y revive button location":
-                    WowAutomater.YReviveButtonLocation = Convert.ToDouble(configValue) * 100;
+                    Automater.YReviveButtonLocation = Convert.ToDouble(configValue) * 100;
                     YReviveButtonLocationNumericInput.Value = Convert.ToDecimal(configValue);
                     break;
                 case "Regenerate health %":
-                    WowAutomater.RegenerateVitalsHealthPercentage = Convert.ToDouble(configValue);
+                    Automater.RegenerateVitalsHealthPercentage = Convert.ToDouble(configValue);
                     RegenerateVitalsNumericInput.Value = Convert.ToDecimal(configValue);
                     break;
                 case "Auto loot":
-                    WowAutomater.AutoLoot = Convert.ToBoolean(configValue);
+                    Automater.AutoLoot = Convert.ToBoolean(configValue);
                     AutoLootLabelCheckbox.Checked = Convert.ToBoolean(configValue);
                     break;
                 case "Send whisper e-mail":
@@ -311,39 +313,39 @@ namespace ClassicWowNeuralParasite
                     FindTargetRightLeftCheckBox.Checked = Convert.ToBoolean(configValue);
                     break;
                 case "Kill target rate":
-                    WowAutomater.Jitterizer.Rate = Convert.ToDouble(configValue);
+                    Automater.Jitterizer.Rate = Convert.ToDouble(configValue);
                     KillTargetRateNumericInput.Value = Convert.ToDecimal(configValue);
                     break;
                 case "Kill target wait time":
-                    WowAutomater.Jitterizer.WaitTime = Convert.ToDouble(configValue);
+                    Automater.Jitterizer.WaitTime = Convert.ToDouble(configValue);
                     KillTargetWaitTimeNumericInput.Value = Convert.ToDecimal(configValue);
                     break;
                 case "Kill target jump":
-                    WowAutomater.Jitterizer.Jump = Convert.ToBoolean(configValue);
+                    Automater.Jitterizer.Jump = Convert.ToBoolean(configValue);
                     KillTargetJumpCheckBox.Checked = Convert.ToBoolean(configValue);
                     break;
                 case "Kill target updown":
-                    WowAutomater.Jitterizer.UpDown = Convert.ToBoolean(configValue);
+                    Automater.Jitterizer.UpDown = Convert.ToBoolean(configValue);
                     KillTargetUpDownCheckBox.Checked = Convert.ToBoolean(configValue);
                     break;
                 case "Kill target downup":
-                    WowAutomater.Jitterizer.DownUp = Convert.ToBoolean(configValue);
+                    Automater.Jitterizer.DownUp = Convert.ToBoolean(configValue);
                     KillTargetDownUpCheckBox.Checked = Convert.ToBoolean(configValue);
                     break;
                 case "Kill target leftright":
-                    WowAutomater.Jitterizer.LeftRight = Convert.ToBoolean(configValue);
+                    Automater.Jitterizer.LeftRight = Convert.ToBoolean(configValue);
                     KillTargetLeftRightCheckBox.Checked = Convert.ToBoolean(configValue);
                     break;
                 case "Kill target rightleft":
-                    WowAutomater.Jitterizer.RightLeft = Convert.ToBoolean(configValue);
+                    Automater.Jitterizer.RightLeft = Convert.ToBoolean(configValue);
                     KillTargetRightLeftCheckBox.Checked = Convert.ToBoolean(configValue);
                     break;
                 case "Kill target clockwise":
-                    WowAutomater.Jitterizer.Clockwise = Convert.ToBoolean(configValue);
+                    Automater.Jitterizer.Clockwise = Convert.ToBoolean(configValue);
                     KillTargetClockwiseCheckBox.Checked = Convert.ToBoolean(configValue);
                     break;
                 case "Kill target counter clockwise":
-                    WowAutomater.Jitterizer.CounterClockwise = Convert.ToBoolean(configValue);
+                    Automater.Jitterizer.CounterClockwise = Convert.ToBoolean(configValue);
                     KillTargetCounterClockwiseCheckBox.Checked = Convert.ToBoolean(configValue);
                     break;
                 case "First seal":
@@ -351,15 +353,15 @@ namespace ClassicWowNeuralParasite
                     switch (configValue)
                     {
                         case "None":
-                            WowAutomater.Paladin.FirstSeal = FirstSealType.None;
+                            Automater.Paladin.FirstSeal = FirstSealType.None;
                             FirstSealNoneButton.Checked = true;
                             break;
                         case "Crusader":
-                            WowAutomater.Paladin.FirstSeal = FirstSealType.Crusader;
+                            Automater.Paladin.FirstSeal = FirstSealType.Crusader;
                             FirstSealCrusaderButton.Checked = true;
                             break;
                         case "Justice":
-                            WowAutomater.Paladin.FirstSeal = FirstSealType.Justice;
+                            Automater.Paladin.FirstSeal = FirstSealType.Justice;
                             FirstSealJusticeButton.Checked = true;
                             break;
                         default:
@@ -368,48 +370,44 @@ namespace ClassicWowNeuralParasite
 
                     break;
                 case "Stealth":
-                    WowAutomater.Rogue.StealthFlag = Convert.ToBoolean(configValue);
+                    Automater.Rogue.StealthFlag = Convert.ToBoolean(configValue);
                     StealthCheckBox.Checked = Convert.ToBoolean(configValue);
                     break;
-                case "Stealth level":
-                    WowAutomater.Rogue.StealthLevel = Convert.ToInt32(configValue);
-                    StealthLevelNumericInput.Value = Convert.ToDecimal(configValue);
-                    break;
                 case "Stealth forever":
-                    WowAutomater.Rogue.AlwaysStealth = Convert.ToBoolean(configValue);
+                    Automater.Rogue.AlwaysStealth = Convert.ToBoolean(configValue);
                     StealthForeverCheckBox.Checked = Convert.ToBoolean(configValue);
                     break;
                 case "Remove stealth after (sec)":
-                    WowAutomater.Rogue.StaleStealthTimer.Interval = Convert.ToDouble(configValue) * 1000;
+                    Automater.Rogue.StaleStealthTimer.Interval = Convert.ToDouble(configValue) * 1000;
                     StaleStealthNumericInput.Value = Convert.ToDecimal(configValue);
                     break;
                 case "Always throw":
-                    WowAutomater.Rogue.ThrowFlag = Convert.ToBoolean(configValue);
+                    Automater.Rogue.ThrowFlag = Convert.ToBoolean(configValue);
                     AlwaysThrowCheckBox.Checked = Convert.ToBoolean(configValue);
                     break;
                 case "Slice and dice combo points":
-                    WowAutomater.Rogue.SliceAndDice.MinimumComboPointsCost = Convert.ToUInt16(configValue);
-                    WowAutomater.Rogue.SliceAndDice.MaximumComboPointsCost = Convert.ToUInt16(configValue);
+                    Automater.Rogue.SliceAndDice.MinimumComboPointsCost = Convert.ToUInt16(configValue);
+                    Automater.Rogue.SliceAndDice.MaximumComboPointsCost = Convert.ToUInt16(configValue);
                     SliceNDiceCPNumericInput.Value = Convert.ToDecimal(configValue);
                     break;
                 case "Rupture combo points":
-                    WowAutomater.Rogue.Rupture.MinimumComboPointsCost = Convert.ToUInt16(configValue);
+                    Automater.Rogue.Rupture.MinimumComboPointsCost = Convert.ToUInt16(configValue);
                     RuptureCPNumericInput.Value = Convert.ToDecimal(configValue);
                     break;
                 case "Eviscerate percentage":
-                    WowAutomater.Rogue.Eviscerate.TargetHealthPercentage = Convert.ToDouble(configValue);
+                    Automater.Rogue.Eviscerate.TargetHealthPercentage = Convert.ToDouble(configValue);
                     EvisceratePercentageNumericInput.Value = Convert.ToDecimal(configValue);
                     break;
                 case "Evasion percentage":
-                    WowAutomater.Rogue.Evasion.PlayerHealthPercentage = Convert.ToDouble(configValue);
+                    Automater.Rogue.Evasion.PlayerHealthPercentage = Convert.ToDouble(configValue);
                     EvasionPercentaceNumericInput.Value = Convert.ToDecimal(configValue);
                     break;
                 case "Rupture first":
-                    WowAutomater.Rogue.RuptureFirst = Convert.ToBoolean(configValue);
+                    Automater.Rogue.RuptureFirst = Convert.ToBoolean(configValue);
                     RuptureFirstCheckBox.Checked = Convert.ToBoolean(configValue);
                     break;
                 case "Passive humanoid":
-                    WowAutomater.Druid.Passive = Convert.ToBoolean(configValue);
+                    Automater.Druid.Passive = Convert.ToBoolean(configValue);
                     PassiveHumanoidCheckBox.Checked = Convert.ToBoolean(configValue);
                     break;
                 default:
@@ -422,27 +420,27 @@ namespace ClassicWowNeuralParasite
             string allpaths = File.ReadAllText("targetpath.txt");
             string[] paths = allpaths.Split(';');
 
-            WowAutomater.SetPathCoordinates(Program.ExtractCommaDelimitedDoubles(paths[0]),
+            Automater.SetPathCoordinates(Program.ExtractCommaDelimitedDoubles(paths[0]),
                                      Program.ExtractCommaDelimitedDoubles(paths[1]));
 
 
             allpaths = File.ReadAllText("revivepath.txt");
             paths = allpaths.Split(';');
 
-            WowAutomater.SetReviveCoordinates(Program.ExtractCommaDelimitedDoubles(paths[0]),
+            Automater.SetReviveCoordinates(Program.ExtractCommaDelimitedDoubles(paths[0]),
                                      Program.ExtractCommaDelimitedDoubles(paths[1]));
 
 
             allpaths = File.ReadAllText("shoppath.txt");
             paths = allpaths.Split(';');
 
-            WowAutomater.SetShopCoordinates(Program.ExtractCommaDelimitedDoubles(paths[0]),
+            Automater.SetShopCoordinates(Program.ExtractCommaDelimitedDoubles(paths[0]),
                                      Program.ExtractCommaDelimitedDoubles(paths[1]));
 
             allpaths = File.ReadAllText("walkpath.txt");
             paths = allpaths.Split(';');
 
-            WowAutomater.SetWalkCoordinates(Program.ExtractCommaDelimitedDoubles(paths[0]),
+            Automater.SetWalkCoordinates(Program.ExtractCommaDelimitedDoubles(paths[0]),
                                      Program.ExtractCommaDelimitedDoubles(paths[1]));
 
         }
@@ -457,21 +455,21 @@ namespace ClassicWowNeuralParasite
                 return;
             }
 
-            DataTextBox.Text = WowApi.PlayerData.ToString();
-            StatusLabel.Text = WowAutomaterStatusString;
+            DataTextBox.Text = Api.PlayerData.ToString();
+            StatusLabel.Text = AutomaterStatusString;
 
-            if (WowApi.PlayerData.Found && !m_LastFound)
+            if (Api.PlayerData.Found && !m_LastFound)
             {
                 RecordButton.Enabled = true;
                 InfoTab.BackColor = m_GreenColor;
             }
-            else if(!WowApi.PlayerData.Found && m_LastFound)
+            else if(!Api.PlayerData.Found && m_LastFound)
             {
                 RecordButton.Enabled = false;
                 InfoTab.BackColor = m_RedColor;
             }
 
-            m_LastFound = WowApi.PlayerData.Found;
+            m_LastFound = Api.PlayerData.Found;
         }
 
         private void AutomaterStatusEvent(object sender, AutomaterActionEventArgs e)
@@ -482,7 +480,7 @@ namespace ClassicWowNeuralParasite
                 return;
             }
 
-            WowAutomaterStatusString = e.CurrentAction.ToString();
+            AutomaterStatusString = e.CurrentAction.ToString();
         }
 
         private void InvokeWithoutDisposedException(Delegate method)
@@ -503,13 +501,13 @@ namespace ClassicWowNeuralParasite
             switch(ModeDropDown.SelectedIndex)
             {
                 case 0:
-                    WowAutomater.CurrentActionMode = ActionMode.FindTarget;
+                    Automater.AutomaterActionMode = ActionMode.FindTarget;
                     break;
                 case 1:
-                    WowAutomater.CurrentActionMode = ActionMode.AutoAttack;
+                    Automater.AutomaterActionMode = ActionMode.AutoAttack;
                     break;
                 case 2:
-                    WowAutomater.CurrentActionMode = ActionMode.AutoWalk;
+                    Automater.AutomaterActionMode = ActionMode.AutoWalk;
                     break;
             }
         }
@@ -633,7 +631,6 @@ namespace ClassicWowNeuralParasite
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Filter = "Text |*.txt";
             ofd.Title = "Open path";
-            ofd.FileName = m_FilePath;
             ofd.ShowDialog();
 
             if (ofd.FileName != "")
@@ -644,11 +641,6 @@ namespace ClassicWowNeuralParasite
                 XTextBox.Text = paths[0];
                 YTextBox.Text = paths[1];
             }
-        }
-
-        private void StealthLevelNumericInput_ValueChanged(object sender, EventArgs e)
-        {
-            WowAutomater.Rogue.StealthLevel = (int)Math.Round(StealthLevelNumericInput.Value);
         }
 
         private void TurnToleranceNumericInput_ValueChanged(object sender, EventArgs e)
@@ -665,21 +657,21 @@ namespace ClassicWowNeuralParasite
 
             // OptionTabs.SelectedIndex == 3 "Classes" tab
             if (OptionTabs.SelectedIndex == 3 && 
-                WowApi.PlayerData.Class > PlayerClassType.None && 
-                WowApi.PlayerData.Class <= PlayerClassType.LastPlayerClass)
+                Api.PlayerData.Class > PlayerClassType.None && 
+                Api.PlayerData.Class <= PlayerClassType.LastPlayerClass)
             {
-                ClassTabs.SelectedIndex = (int)WowApi.PlayerData.Class - 1;
+                ClassTabs.SelectedIndex = (int)Api.PlayerData.Class - 1;
             }
         }
 
         private void StaleStealthNumericInput_ValueChanged(object sender, EventArgs e)
         {
-            WowAutomater.Rogue.StaleStealthTimer.Interval = (double)(StaleStealthNumericInput.Value * 1000);
+            Automater.Rogue.StaleStealthTimer.Interval = (double)(StaleStealthNumericInput.Value * 1000);
         }
 
         private void RegisterDelayNumericInput_ValueChanged(object sender, EventArgs e)
         {
-            WowAutomater.RegisterDelay = (double)RegisterDelayNumericInput.Value;
+            Automater.RegisterDelay = (double)RegisterDelayNumericInput.Value;
         }
 
         private void SplitDistanceNumericInput_ValueChanged(object sender, EventArgs e)
@@ -689,18 +681,18 @@ namespace ClassicWowNeuralParasite
 
         private void SliceNDiceCPNumericInput_ValueChanged(object sender, EventArgs e)
         {
-            WowAutomater.Rogue.SliceAndDice.MaximumComboPointsCost = (uint)SliceNDiceCPNumericInput.Value ;
-            WowAutomater.Rogue.SliceAndDice.MinimumComboPointsCost = (uint)SliceNDiceCPNumericInput.Value;
+            Automater.Rogue.SliceAndDice.MaximumComboPointsCost = (uint)SliceNDiceCPNumericInput.Value ;
+            Automater.Rogue.SliceAndDice.MinimumComboPointsCost = (uint)SliceNDiceCPNumericInput.Value;
         }
 
         private void RuptureCPNumericInput_ValueChanged(object sender, EventArgs e)
         {
-            WowAutomater.Rogue.Rupture.MinimumComboPointsCost = (uint)RuptureCPNumericInput.Value;
+            Automater.Rogue.Rupture.MinimumComboPointsCost = (uint)RuptureCPNumericInput.Value;
         }
 
         private void EvisceratePercentageNumericInput_ValueChanged(object sender, EventArgs e)
         {
-            WowAutomater.Rogue.Eviscerate.TargetHealthPercentage = (uint)EvisceratePercentageNumericInput.Value;
+            Automater.Rogue.Eviscerate.TargetHealthPercentage = (uint)EvisceratePercentageNumericInput.Value;
         }
 
         private void ClosestPointDistanceNumericInput_ValueChanged(object sender, EventArgs e)
@@ -714,14 +706,14 @@ namespace ClassicWowNeuralParasite
             RecordWowPath.StopEvent -= Automater_StopEvent;
             m_ApiDataUpdateTimer.Enabled = false;
             m_ApiDataUpdateTimer.Tick -= ApiDataUpdateTimer_Tick;
-            WowAutomater.AutomaterStatusEvent -= AutomaterStatusEvent;
+            Automater.AutomaterStatusEvent -= AutomaterStatusEvent;
 
-            WowAutomater.Stop();
+            Automater.Stop();
         }
 
         private void SkinLootCheckbox_CheckedChanged(object sender, EventArgs e)
         {
-            WowAutomater.SkinLoot = SkinLootCheckbox.Checked;
+            Automater.SkinLoot = SkinLootCheckbox.Checked;
         }
 
         private void ReversePathButton_Click(object sender, EventArgs e)
@@ -751,27 +743,27 @@ namespace ClassicWowNeuralParasite
 
         private void AlwaysThrowCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            WowAutomater.Rogue.ThrowFlag = AlwaysThrowCheckBox.Checked;
+            Automater.Rogue.ThrowFlag = AlwaysThrowCheckBox.Checked;
         }
 
         private void StealthCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            WowAutomater.Rogue.StealthFlag = StealthCheckBox.Checked;
+            Automater.Rogue.StealthFlag = StealthCheckBox.Checked;
         }
 
         private void EvasionPercentaceNumericInput_ValueChanged(object sender, EventArgs e)
         {
-            WowAutomater.Rogue.Evasion.PlayerHealthPercentage = (int)EvasionPercentaceNumericInput.Value;
+            Automater.Rogue.Evasion.PlayerHealthPercentage = (int)EvasionPercentaceNumericInput.Value;
         }
 
         private void XReviveButtonLocationNumericInput_ValueChanged(object sender, EventArgs e)
         {
-            WowAutomater.XReviveButtonLocation = (double)XReviveButtonLocationNumericInput.Value * 100;
+            Automater.XReviveButtonLocation = (double)XReviveButtonLocationNumericInput.Value * 100;
         }
 
         private void YReviveButtonLocationNumericInput_ValueChanged(object sender, EventArgs e)
         {
-            WowAutomater.YReviveButtonLocation = (double)YReviveButtonLocationNumericInput.Value * 100;
+            Automater.YReviveButtonLocation = (double)YReviveButtonLocationNumericInput.Value * 100;
         }
 
         private void ReviveButtonLocationTestButton_Click(object sender, EventArgs e)
@@ -782,22 +774,22 @@ namespace ClassicWowNeuralParasite
 
         private void PassiveHumanoidCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            WowAutomater.Druid.Passive = PassiveHumanoidCheckBox.Checked;
+            Automater.Druid.Passive = PassiveHumanoidCheckBox.Checked;
         }
 
         private void RegenerateVitalsNumericInput_ValueChanged(object sender, EventArgs e)
         {
-            WowAutomater.RegenerateVitalsHealthPercentage = (double)RegenerateVitalsNumericInput.Value;
+            Automater.RegenerateVitalsHealthPercentage = (double)RegenerateVitalsNumericInput.Value;
         }
 
         private void AutoLootLabelCheckbox_CheckedChanged(object sender, EventArgs e)
         {
-            WowAutomater.AutoLoot = AutoLootLabelCheckbox.Checked;
+            Automater.AutoLoot = AutoLootLabelCheckbox.Checked;
         }
 
         private void RuptureFirstCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            WowAutomater.Rogue.RuptureFirst = RuptureFirstCheckBox.Checked;
+            Automater.Rogue.RuptureFirst = RuptureFirstCheckBox.Checked;
         }
 
         private void FindTargetRateNumericInput_ValueChanged(object sender, EventArgs e)
@@ -837,52 +829,52 @@ namespace ClassicWowNeuralParasite
 
         private void KillTargetRateNumericInput_ValueChanged(object sender, EventArgs e)
         {
-            WowAutomater.Jitterizer.Rate = (double)KillTargetRateNumericInput.Value;
+            Automater.Jitterizer.Rate = (double)KillTargetRateNumericInput.Value;
         }
 
         private void KillTargetWaitTimeNumericInput_ValueChanged(object sender, EventArgs e)
         {
-            WowAutomater.Jitterizer.WaitTime = (double)KillTargetWaitTimeNumericInput.Value;
+            Automater.Jitterizer.WaitTime = (double)KillTargetWaitTimeNumericInput.Value;
         }
 
         private void KillTargetJumpCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            WowAutomater.Jitterizer.Jump = KillTargetJumpCheckBox.Checked;
+            Automater.Jitterizer.Jump = KillTargetJumpCheckBox.Checked;
         }
 
         private void KillTargetUpDownCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            WowAutomater.Jitterizer.UpDown = KillTargetUpDownCheckBox.Checked;
+            Automater.Jitterizer.UpDown = KillTargetUpDownCheckBox.Checked;
         }
 
         private void KillTargetDownUpCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            WowAutomater.Jitterizer.DownUp = KillTargetDownUpCheckBox.Checked;
+            Automater.Jitterizer.DownUp = KillTargetDownUpCheckBox.Checked;
         }
 
         private void KillTargetLeftRightCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            WowAutomater.Jitterizer.LeftRight = KillTargetLeftRightCheckBox.Checked;
+            Automater.Jitterizer.LeftRight = KillTargetLeftRightCheckBox.Checked;
         }
 
         private void KillTargetRightLeftCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            WowAutomater.Jitterizer.RightLeft = KillTargetRightLeftCheckBox.Checked;
+            Automater.Jitterizer.RightLeft = KillTargetRightLeftCheckBox.Checked;
         }
 
         private void KillTargetClockwiseCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            WowAutomater.Jitterizer.Clockwise = KillTargetClockwiseCheckBox.Checked;
+            Automater.Jitterizer.Clockwise = KillTargetClockwiseCheckBox.Checked;
         }
 
         private void KillTargetCounterClockwiseCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            WowAutomater.Jitterizer.CounterClockwise = KillTargetCounterClockwiseCheckBox.Checked;
+            Automater.Jitterizer.CounterClockwise = KillTargetCounterClockwiseCheckBox.Checked;
         }
 
         private void StealthForeverCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            WowAutomater.Rogue.AlwaysStealth = StealthForeverCheckBox.Checked;
+            Automater.Rogue.AlwaysStealth = StealthForeverCheckBox.Checked;
         }
 
         private void WebInterfaceToggleButton_Click(object sender, EventArgs e)
@@ -910,17 +902,17 @@ namespace ClassicWowNeuralParasite
 
         private void FirstSealCrusaderButton_CheckedChanged(object sender, EventArgs e)
         {
-            WowAutomater.Paladin.FirstSeal = FirstSealType.Crusader;
+            Automater.Paladin.FirstSeal = FirstSealType.Crusader;
         }
 
         private void FirstSealNoneButton_CheckedChanged(object sender, EventArgs e)
         {
-            WowAutomater.Paladin.FirstSeal = FirstSealType.None;
+            Automater.Paladin.FirstSeal = FirstSealType.None;
         }
 
         private void FirstSealJusticeButton_CheckedChanged(object sender, EventArgs e)
         {
-            WowAutomater.Paladin.FirstSeal = FirstSealType.Justice;
+            Automater.Paladin.FirstSeal = FirstSealType.Justice;
         }
 
         private const byte RELAY_BYTE = 59;
@@ -999,7 +991,7 @@ namespace ClassicWowNeuralParasite
                                     {
                                         ns.WriteByte(START_BYTE);
 
-                                        WowAutomater.RemoteStart();
+                                        Automater.RemoteStart();
 
                                         break;
                                     }
@@ -1008,7 +1000,7 @@ namespace ClassicWowNeuralParasite
                                     {
                                         ns.WriteByte(STOP_BYTE);
 
-                                        WowAutomater.RemoteStop();
+                                        Automater.RemoteStop();
 
                                         break;
                                     }
@@ -1044,7 +1036,7 @@ namespace ClassicWowNeuralParasite
 
                                         string relayString = ASCIIEncoding.ASCII.GetString(dataRead);
 
-                                        WowAutomater.SetRelayString(relayString);
+                                        Automater.SetRelayString(relayString);
 
                                         break;
                                     }
@@ -1150,6 +1142,12 @@ namespace ClassicWowNeuralParasite
                 m_RemoteConnected = false;
             }
 
+        }
+
+        private void PathViewerButton_Click(object sender, EventArgs e)
+        {
+            PathViewer pv = new PathViewer();
+            pv.Show();
         }
     }
 }

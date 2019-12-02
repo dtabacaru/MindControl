@@ -1,14 +1,17 @@
 ﻿using System;
+using WowApi;
 
-namespace ClassicWowNeuralParasite
+namespace WowAutomater
 {
     public class RecordPathEventArgs : EventArgs
     {
+        public uint MapId;
         public double X;
         public double Y;
 
-        public RecordPathEventArgs(double x, double y)
+        public RecordPathEventArgs(uint mapId, double x, double y)
         {
+            MapId = mapId;
             X = x;
             Y = y;
         }
@@ -27,19 +30,20 @@ namespace ClassicWowNeuralParasite
             double lastSplitY = -1;
             while (m_RecordPath)
             {
-                WowApi.Sync.WaitOne();
+                Api.Sync.WaitOne();
 
-                if (WowApi.PlayerData.Found)
+                if (Api.PlayerData.Found)
                 {
-                    double currentX = WowApi.PlayerData.PlayerXPosition;
-                    double currentY = WowApi.PlayerData.PlayerYPosition;
+                    double currentX = Api.PlayerData.PlayerXPosition;
+                    double currentY = Api.PlayerData.PlayerYPosition;
+                    uint currentMapId = Api.PlayerData.MapId;
 
                     if (lastSplitX == -1)
                     {
                         lastSplitX = currentX;
                         lastSplitY = currentY;
 
-                        RecordPathEvent?.Invoke(null, new RecordPathEventArgs(currentX, currentY));
+                        RecordPathEvent?.Invoke(null, new RecordPathEventArgs(currentMapId, currentX, currentY));
 
                         continue;
                     }
@@ -52,7 +56,7 @@ namespace ClassicWowNeuralParasite
                     lastSplitX = currentX;
                     lastSplitY = currentY;
 
-                    RecordPathEvent?.Invoke(null, new RecordPathEventArgs(currentX, currentY));
+                    RecordPathEvent?.Invoke(null, new RecordPathEventArgs(currentMapId, currentX, currentY));
                 }
             }
 

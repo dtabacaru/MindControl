@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ClassicWowNeuralParasite
+namespace WowApi
 {
     public enum TargetReactionType
     {
@@ -46,7 +46,9 @@ namespace ClassicWowNeuralParasite
         None = 0,
         BehindTarget = 1,
         FacingWrongWay = 2,
-        LineOfSight = 3
+        OutOfRange = 3,
+        TooFarAway = 4,
+        LineOfSight = 5,
     }
 
     public enum BuffType
@@ -137,6 +139,7 @@ namespace ClassicWowNeuralParasite
         public volatile bool TargetTargetingPlayer = false;
         public volatile bool Whisper = false;
         public volatile uint FreeBagSlots = 0;
+        public volatile uint MapId = 0;
 
         public override string ToString()
         {
@@ -214,7 +217,7 @@ namespace ClassicWowNeuralParasite
         }
     }
 
-    public static class WowApi
+    public static class Api
     {
         private const int API_WIDTH_PIXELS = 7;
         private const int API_HEIGHT_PIXELS = 58;
@@ -255,7 +258,7 @@ namespace ClassicWowNeuralParasite
 
         public static volatile PlayerData PlayerData = new PlayerData();
 
-        static WowApi()
+        static Api()
         {
             Task.Run(() =>
             {
@@ -456,6 +459,9 @@ namespace ClassicWowNeuralParasite
 
                     Color canUseSkillPixel = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((42 * m_ApiYScale)));
                     currentPlayerData.CanUseSkill = canUseSkillPixel.R == PIXEL_SET ? true : false;
+
+                    Color mapIdPixel = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((45 * m_ApiYScale)));
+                    currentPlayerData.MapId = GetThreeByteIntPixelValue(mapIdPixel);
 
                     Color xPositionR = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((48 * m_ApiYScale)));
                     Color xPositionG = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((48 * m_ApiYScale)));

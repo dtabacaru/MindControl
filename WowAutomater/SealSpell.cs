@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WindowsInput.Native;
+﻿using WindowsInput.Native;
+using WowApi;
 
-namespace ClassicWowNeuralParasite
+namespace WowAutomater
 {
     public class SealSpell : Spell
     {
@@ -23,13 +19,13 @@ namespace ClassicWowNeuralParasite
         {
             get
             {
-                if (WowApi.PlayerData.PlayerMana >= ManaCost &&
-                    !WowApi.PlayerData.Casting &&
-                    WowApi.PlayerData.CanUseSkill &&
-                    WowApi.PlayerData.PlayerHealthPercentage <= PlayerHealthPercentage &&
-                    WowApi.PlayerData.PlayerLevel >= Level &&
-                    (((int)WowApi.PlayerData.Buffs & (int)BuffType.SealOfCommand) > 0 ||
-                      ((int)WowApi.PlayerData.Buffs & (int)BuffType.SealOfTheCrusader) > 0) &&
+                if (Api.PlayerData.PlayerMana >= ManaCost &&
+                    !Api.PlayerData.Casting &&
+                    Api.PlayerData.CanUseSkill &&
+                    Api.PlayerData.PlayerHealthPercentage <= PlayerHealthPercentage &&
+                    Api.PlayerData.PlayerLevel >= Level &&
+                    (((int)Api.PlayerData.Buffs & (int)BuffType.SealOfCommand) > 0 ||
+                      ((int)Api.PlayerData.Buffs & (int)BuffType.SealOfTheCrusader) > 0) &&
                     !Used &&
                     CooledDown)
                     return true;

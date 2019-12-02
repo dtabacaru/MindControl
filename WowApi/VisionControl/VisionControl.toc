@@ -1,0 +1,6 @@
+## Interface: 11302
+## Title: VisionControl
+## Author: The FYB Team
+## Version: 0.1
+
+VisionControl.xml

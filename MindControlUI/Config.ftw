@@ -37,7 +37,6 @@ Kill target counter clockwise: true
 First seal: None
 -- Rogue
 Stealth: true
-Stealth level: 10
 Stealth forever: true
 Remove stealth after (sec): 10
 Always throw: true

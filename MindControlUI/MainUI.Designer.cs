@@ -1,4 +1,4 @@
-﻿namespace ClassicWowNeuralParasite
+﻿namespace MindControlUI
 {
     partial class MainUI
     {
@@ -109,8 +109,6 @@
             this.SliceNDiceCPNumericInput = new System.Windows.Forms.NumericUpDown();
             this.StaleStealthNumericInput = new System.Windows.Forms.NumericUpDown();
             this.StaleStealthLabel = new System.Windows.Forms.Label();
-            this.StealthLevelLabel = new System.Windows.Forms.Label();
-            this.StealthLevelNumericInput = new System.Windows.Forms.NumericUpDown();
             this.PriestTab = new System.Windows.Forms.TabPage();
             this.MageTab = new System.Windows.Forms.TabPage();
             this.WarlockTab = new System.Windows.Forms.TabPage();
@@ -152,8 +150,9 @@
             this.FindTargetWaitTimeLabel = new System.Windows.Forms.Label();
             this.FindTargetRateNumericInput = new System.Windows.Forms.NumericUpDown();
             this.FindTargetRateLabel = new System.Windows.Forms.Label();
-            this.ShowInfoButton = new System.Windows.Forms.Button();
             this.StatusLabel = new System.Windows.Forms.Label();
+            this.PathViewerButton = new System.Windows.Forms.Button();
+            this.ShowInfoButton = new System.Windows.Forms.Button();
             this.OptionTabs.SuspendLayout();
             this.InfoTab.SuspendLayout();
             this.PathsTab.SuspendLayout();
@@ -175,7 +174,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.RuptureCPNumericInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SliceNDiceCPNumericInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.StaleStealthNumericInput)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.StealthLevelNumericInput)).BeginInit();
             this.DruidTab.SuspendLayout();
             this.JitterizerTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.KillTargetRateNumericInput)).BeginInit();
@@ -236,6 +234,7 @@
             // 
             // PathsTab
             // 
+            this.PathsTab.Controls.Add(this.PathViewerButton);
             this.PathsTab.Controls.Add(this.ReversePathButton);
             this.PathsTab.Controls.Add(this.SplitDistanceLabel);
             this.PathsTab.Controls.Add(this.SplitDistanceNumericInput);
@@ -343,7 +342,7 @@
             // OKButton
             // 
             this.OKButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.OKButton.Location = new System.Drawing.Point(6, 515);
+            this.OKButton.Location = new System.Drawing.Point(6, 549);
             this.OKButton.Name = "OKButton";
             this.OKButton.Size = new System.Drawing.Size(200, 37);
             this.OKButton.TabIndex = 37;
@@ -832,7 +831,7 @@
             196608});
             this.TurnToleranceNumericInput.Location = new System.Drawing.Point(154, 7);
             this.TurnToleranceNumericInput.Maximum = new decimal(new int[] {
-            1,
+            3,
             0,
             0,
             65536});
@@ -975,8 +974,6 @@
             this.RogueTab.Controls.Add(this.SliceNDiceCPNumericInput);
             this.RogueTab.Controls.Add(this.StaleStealthNumericInput);
             this.RogueTab.Controls.Add(this.StaleStealthLabel);
-            this.RogueTab.Controls.Add(this.StealthLevelLabel);
-            this.RogueTab.Controls.Add(this.StealthLevelNumericInput);
             this.RogueTab.Location = new System.Drawing.Point(4, 22);
             this.RogueTab.Name = "RogueTab";
             this.RogueTab.Size = new System.Drawing.Size(206, 601);
@@ -989,7 +986,7 @@
             this.StealthForeverCheckBox.AutoSize = true;
             this.StealthForeverCheckBox.Checked = true;
             this.StealthForeverCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.StealthForeverCheckBox.Location = new System.Drawing.Point(146, 57);
+            this.StealthForeverCheckBox.Location = new System.Drawing.Point(146, 32);
             this.StealthForeverCheckBox.Name = "StealthForeverCheckBox";
             this.StealthForeverCheckBox.Size = new System.Drawing.Size(15, 14);
             this.StealthForeverCheckBox.TabIndex = 22;
@@ -999,7 +996,7 @@
             // StealthForeverLabel
             // 
             this.StealthForeverLabel.AutoSize = true;
-            this.StealthForeverLabel.Location = new System.Drawing.Point(4, 57);
+            this.StealthForeverLabel.Location = new System.Drawing.Point(4, 32);
             this.StealthForeverLabel.Name = "StealthForeverLabel";
             this.StealthForeverLabel.Size = new System.Drawing.Size(76, 13);
             this.StealthForeverLabel.TabIndex = 21;
@@ -1010,7 +1007,7 @@
             this.RuptureFirstCheckBox.AutoSize = true;
             this.RuptureFirstCheckBox.Checked = true;
             this.RuptureFirstCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.RuptureFirstCheckBox.Location = new System.Drawing.Point(146, 227);
+            this.RuptureFirstCheckBox.Location = new System.Drawing.Point(146, 202);
             this.RuptureFirstCheckBox.Name = "RuptureFirstCheckBox";
             this.RuptureFirstCheckBox.Size = new System.Drawing.Size(15, 14);
             this.RuptureFirstCheckBox.TabIndex = 20;
@@ -1020,7 +1017,7 @@
             // RuptureFirstLabel
             // 
             this.RuptureFirstLabel.AutoSize = true;
-            this.RuptureFirstLabel.Location = new System.Drawing.Point(4, 227);
+            this.RuptureFirstLabel.Location = new System.Drawing.Point(4, 202);
             this.RuptureFirstLabel.Name = "RuptureFirstLabel";
             this.RuptureFirstLabel.Size = new System.Drawing.Size(64, 13);
             this.RuptureFirstLabel.TabIndex = 19;
@@ -1029,7 +1026,7 @@
             // EvasionPercentageLabel
             // 
             this.EvasionPercentageLabel.AutoSize = true;
-            this.EvasionPercentageLabel.Location = new System.Drawing.Point(4, 203);
+            this.EvasionPercentageLabel.Location = new System.Drawing.Point(4, 178);
             this.EvasionPercentageLabel.Name = "EvasionPercentageLabel";
             this.EvasionPercentageLabel.Size = new System.Drawing.Size(102, 13);
             this.EvasionPercentageLabel.TabIndex = 18;
@@ -1037,7 +1034,7 @@
             // 
             // EvasionPercentaceNumericInput
             // 
-            this.EvasionPercentaceNumericInput.Location = new System.Drawing.Point(146, 201);
+            this.EvasionPercentaceNumericInput.Location = new System.Drawing.Point(146, 176);
             this.EvasionPercentaceNumericInput.Name = "EvasionPercentaceNumericInput";
             this.EvasionPercentaceNumericInput.Size = new System.Drawing.Size(54, 20);
             this.EvasionPercentaceNumericInput.TabIndex = 17;
@@ -1053,7 +1050,7 @@
             this.AlwaysThrowCheckBox.AutoSize = true;
             this.AlwaysThrowCheckBox.Checked = true;
             this.AlwaysThrowCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.AlwaysThrowCheckBox.Location = new System.Drawing.Point(146, 103);
+            this.AlwaysThrowCheckBox.Location = new System.Drawing.Point(146, 78);
             this.AlwaysThrowCheckBox.Name = "AlwaysThrowCheckBox";
             this.AlwaysThrowCheckBox.Size = new System.Drawing.Size(15, 14);
             this.AlwaysThrowCheckBox.TabIndex = 16;
@@ -1063,7 +1060,7 @@
             // AlwaysThrowLabel
             // 
             this.AlwaysThrowLabel.AutoSize = true;
-            this.AlwaysThrowLabel.Location = new System.Drawing.Point(4, 103);
+            this.AlwaysThrowLabel.Location = new System.Drawing.Point(4, 78);
             this.AlwaysThrowLabel.Name = "AlwaysThrowLabel";
             this.AlwaysThrowLabel.Size = new System.Drawing.Size(69, 13);
             this.AlwaysThrowLabel.TabIndex = 15;
@@ -1084,7 +1081,7 @@
             // RuptureCPLabel
             // 
             this.RuptureCPLabel.AutoSize = true;
-            this.RuptureCPLabel.Location = new System.Drawing.Point(4, 151);
+            this.RuptureCPLabel.Location = new System.Drawing.Point(4, 126);
             this.RuptureCPLabel.Name = "RuptureCPLabel";
             this.RuptureCPLabel.Size = new System.Drawing.Size(111, 13);
             this.RuptureCPLabel.TabIndex = 9;
@@ -1102,7 +1099,7 @@
             // SliceNDiceCPLabel
             // 
             this.SliceNDiceCPLabel.AutoSize = true;
-            this.SliceNDiceCPLabel.Location = new System.Drawing.Point(4, 125);
+            this.SliceNDiceCPLabel.Location = new System.Drawing.Point(4, 100);
             this.SliceNDiceCPLabel.Name = "SliceNDiceCPLabel";
             this.SliceNDiceCPLabel.Size = new System.Drawing.Size(140, 13);
             this.SliceNDiceCPLabel.TabIndex = 8;
@@ -1111,7 +1108,7 @@
             // EvisceratePercentageLabel
             // 
             this.EvisceratePercentageLabel.AutoSize = true;
-            this.EvisceratePercentageLabel.Location = new System.Drawing.Point(4, 177);
+            this.EvisceratePercentageLabel.Location = new System.Drawing.Point(4, 152);
             this.EvisceratePercentageLabel.Name = "EvisceratePercentageLabel";
             this.EvisceratePercentageLabel.Size = new System.Drawing.Size(114, 13);
             this.EvisceratePercentageLabel.TabIndex = 7;
@@ -1119,7 +1116,7 @@
             // 
             // EvisceratePercentageNumericInput
             // 
-            this.EvisceratePercentageNumericInput.Location = new System.Drawing.Point(146, 175);
+            this.EvisceratePercentageNumericInput.Location = new System.Drawing.Point(146, 150);
             this.EvisceratePercentageNumericInput.Name = "EvisceratePercentageNumericInput";
             this.EvisceratePercentageNumericInput.Size = new System.Drawing.Size(54, 20);
             this.EvisceratePercentageNumericInput.TabIndex = 6;
@@ -1132,7 +1129,7 @@
             // 
             // RuptureCPNumericInput
             // 
-            this.RuptureCPNumericInput.Location = new System.Drawing.Point(146, 149);
+            this.RuptureCPNumericInput.Location = new System.Drawing.Point(146, 124);
             this.RuptureCPNumericInput.Maximum = new decimal(new int[] {
             5,
             0,
@@ -1155,7 +1152,7 @@
             // 
             // SliceNDiceCPNumericInput
             // 
-            this.SliceNDiceCPNumericInput.Location = new System.Drawing.Point(146, 123);
+            this.SliceNDiceCPNumericInput.Location = new System.Drawing.Point(146, 98);
             this.SliceNDiceCPNumericInput.Maximum = new decimal(new int[] {
             5,
             0,
@@ -1178,7 +1175,7 @@
             // 
             // StaleStealthNumericInput
             // 
-            this.StaleStealthNumericInput.Location = new System.Drawing.Point(146, 77);
+            this.StaleStealthNumericInput.Location = new System.Drawing.Point(146, 52);
             this.StaleStealthNumericInput.Minimum = new decimal(new int[] {
             1,
             0,
@@ -1197,43 +1194,11 @@
             // StaleStealthLabel
             // 
             this.StaleStealthLabel.AutoSize = true;
-            this.StaleStealthLabel.Location = new System.Drawing.Point(4, 79);
+            this.StaleStealthLabel.Location = new System.Drawing.Point(4, 54);
             this.StaleStealthLabel.Name = "StaleStealthLabel";
             this.StaleStealthLabel.Size = new System.Drawing.Size(131, 13);
             this.StaleStealthLabel.TabIndex = 2;
             this.StaleStealthLabel.Text = "Remove stealth after (sec)";
-            // 
-            // StealthLevelLabel
-            // 
-            this.StealthLevelLabel.AutoSize = true;
-            this.StealthLevelLabel.Location = new System.Drawing.Point(4, 33);
-            this.StealthLevelLabel.Name = "StealthLevelLabel";
-            this.StealthLevelLabel.Size = new System.Drawing.Size(65, 13);
-            this.StealthLevelLabel.TabIndex = 1;
-            this.StealthLevelLabel.Text = "Stealth level";
-            // 
-            // StealthLevelNumericInput
-            // 
-            this.StealthLevelNumericInput.Location = new System.Drawing.Point(146, 31);
-            this.StealthLevelNumericInput.Maximum = new decimal(new int[] {
-            60,
-            0,
-            0,
-            0});
-            this.StealthLevelNumericInput.Minimum = new decimal(new int[] {
-            6,
-            0,
-            0,
-            0});
-            this.StealthLevelNumericInput.Name = "StealthLevelNumericInput";
-            this.StealthLevelNumericInput.Size = new System.Drawing.Size(54, 20);
-            this.StealthLevelNumericInput.TabIndex = 0;
-            this.StealthLevelNumericInput.Value = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.StealthLevelNumericInput.ValueChanged += new System.EventHandler(this.StealthLevelNumericInput_ValueChanged);
             // 
             // PriestTab
             // 
@@ -1737,10 +1702,29 @@
             this.FindTargetRateLabel.TabIndex = 4;
             this.FindTargetRateLabel.Text = "Find target rate:";
             // 
+            // StatusLabel
+            // 
+            this.StatusLabel.AutoSize = true;
+            this.StatusLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.StatusLabel.Location = new System.Drawing.Point(3, 30);
+            this.StatusLabel.Name = "StatusLabel";
+            this.StatusLabel.Size = new System.Drawing.Size(0, 24);
+            this.StatusLabel.TabIndex = 38;
+            // 
+            // PathViewerButton
+            // 
+            this.PathViewerButton.Location = new System.Drawing.Point(6, 498);
+            this.PathViewerButton.Name = "PathViewerButton";
+            this.PathViewerButton.Size = new System.Drawing.Size(200, 25);
+            this.PathViewerButton.TabIndex = 44;
+            this.PathViewerButton.Text = "Path viewer";
+            this.PathViewerButton.UseVisualStyleBackColor = true;
+            this.PathViewerButton.Click += new System.EventHandler(this.PathViewerButton_Click);
+            // 
             // ShowInfoButton
             // 
             this.ShowInfoButton.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.ShowInfoButton.BackgroundImage = global::ClassicWowNeuralParasite.Properties.Resources.show;
+            this.ShowInfoButton.BackgroundImage = global::MindControlUI.Properties.Resources.show;
             this.ShowInfoButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.ShowInfoButton.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ButtonFace;
             this.ShowInfoButton.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.ButtonFace;
@@ -1753,15 +1737,6 @@
             this.ShowInfoButton.UseVisualStyleBackColor = false;
             this.ShowInfoButton.Click += new System.EventHandler(this.ShowInfoButton_Click);
             // 
-            // StatusLabel
-            // 
-            this.StatusLabel.AutoSize = true;
-            this.StatusLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.StatusLabel.Location = new System.Drawing.Point(3, 30);
-            this.StatusLabel.Name = "StatusLabel";
-            this.StatusLabel.Size = new System.Drawing.Size(0, 24);
-            this.StatusLabel.TabIndex = 38;
-            // 
             // MainUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1773,9 +1748,10 @@
             this.Controls.Add(this.ModeDropDown);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "MainUI";
-            this.Text = "ClassicWowNeuralParasite";
+            this.Text = "MindControl";
             this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainUI_FormClosing);
             this.OptionTabs.ResumeLayout(false);
@@ -1803,7 +1779,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.RuptureCPNumericInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.SliceNDiceCPNumericInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.StaleStealthNumericInput)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.StealthLevelNumericInput)).EndInit();
             this.DruidTab.ResumeLayout(false);
             this.DruidTab.PerformLayout();
             this.JitterizerTab.ResumeLayout(false);
@@ -1867,8 +1842,6 @@
         private System.Windows.Forms.NumericUpDown SliceNDiceCPNumericInput;
         private System.Windows.Forms.NumericUpDown StaleStealthNumericInput;
         private System.Windows.Forms.Label StaleStealthLabel;
-        private System.Windows.Forms.Label StealthLevelLabel;
-        private System.Windows.Forms.NumericUpDown StealthLevelNumericInput;
         private System.Windows.Forms.TabPage PriestTab;
         private System.Windows.Forms.TabPage MageTab;
         private System.Windows.Forms.TabPage WarlockTab;
@@ -1943,6 +1916,7 @@
         private System.Windows.Forms.Button RemoteWebInterfaceButton;
         private System.Windows.Forms.Label RemoteServerLabel;
         private System.Windows.Forms.TextBox RemoteServerTextBox;
+        private System.Windows.Forms.Button PathViewerButton;
     }
 }
 

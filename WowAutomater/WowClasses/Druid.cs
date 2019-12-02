@@ -1,6 +1,7 @@
 ﻿using WindowsInput.Native;
+using WowApi;
 
-namespace ClassicWowNeuralParasite
+namespace WowAutomater
 {
     public class DruidAutomater : WowClassAutomater
     {
@@ -63,7 +64,7 @@ namespace ClassicWowNeuralParasite
         {
             get
             {
-                switch (WowApi.PlayerData.Shape)
+                switch (Api.PlayerData.Shape)
                 {
                     case 0:
                         return false;
@@ -81,7 +82,7 @@ namespace ClassicWowNeuralParasite
 
         public override void AutoAttackTarget()
         {
-            switch (WowApi.PlayerData.Shape)
+            switch (Api.PlayerData.Shape)
             {
                 case 0:
                     AutoAttackTargetDruidHumanoid();
@@ -123,11 +124,11 @@ namespace ClassicWowNeuralParasite
 
         private void AutoAttackTargetDruidHumanoidActive()
         {
-            if (!WowApi.PlayerData.PlayerInCombat)
+            if (!Api.PlayerData.PlayerInCombat)
                 return;
-            else if (!WowApi.PlayerData.PlayerHasTarget)
+            else if (!Api.PlayerData.PlayerHasTarget)
                 Target.Act();
-            else if (!WowApi.PlayerData.PlayerIsAttacking)
+            else if (!Api.PlayerData.PlayerIsAttacking)
                 Attack.Act();
             else if (HealingTouch.CanCastSpell)
                 HealingTouch.CastSpell();
@@ -137,11 +138,11 @@ namespace ClassicWowNeuralParasite
 
         private void AutoAttackTargetDruidBear()
         {
-            if (!WowApi.PlayerData.PlayerInCombat)
+            if (!Api.PlayerData.PlayerInCombat)
                 return;
-            else if (!WowApi.PlayerData.PlayerHasTarget)
+            else if (!Api.PlayerData.PlayerHasTarget)
                 Target.Act();
-            else if (!WowApi.PlayerData.PlayerIsAttacking)
+            else if (!Api.PlayerData.PlayerIsAttacking)
                 Attack.Act();
             else if (Roar.CanCastSpell)
                 Roar.CastSpell();
@@ -151,11 +152,11 @@ namespace ClassicWowNeuralParasite
 
         private void AutoAttackTargetDruidCat()
         {
-            if (!WowApi.PlayerData.PlayerInCombat)
+            if (!Api.PlayerData.PlayerInCombat)
                 return;
-            else if (!WowApi.PlayerData.PlayerHasTarget)
+            else if (!Api.PlayerData.PlayerHasTarget)
                 Target.Act();
-            else if (!WowApi.PlayerData.PlayerIsAttacking)
+            else if (!Api.PlayerData.PlayerIsAttacking)
                 Attack.Act();
             else if (Rake.CanCastSpell)
                 Rake.CastSpell();
@@ -176,15 +177,15 @@ namespace ClassicWowNeuralParasite
             Helper.WaitSeconds(0.1);
 
             // Found a target
-            if (WowApi.PlayerData.PlayerHasTarget)
+            if (Api.PlayerData.PlayerHasTarget)
             {
-                bool validEnemy = WowApi.PlayerData.TargetHealth == 100 &&
-                                    !WowApi.PlayerData.TargetInCombat &&
-                                    !WowApi.PlayerData.IsTargetPlayer &&
-                                    WowApi.PlayerData.IsInFarRange &&
-                                    !WowApi.PlayerData.IsInCloseRange;
+                bool validEnemy = Api.PlayerData.TargetHealth == 100 &&
+                                    !Api.PlayerData.TargetInCombat &&
+                                    !Api.PlayerData.IsTargetPlayer &&
+                                    Api.PlayerData.IsInFarRange &&
+                                    !Api.PlayerData.IsInCloseRange;
 
-                if (validEnemy && WowApi.PlayerData.PlayerMana >= 20)
+                if (validEnemy && Api.PlayerData.PlayerMana >= 20)
                 {
                     WaypointFollower.StopFollowingWaypoints();
 
@@ -200,7 +201,7 @@ namespace ClassicWowNeuralParasite
 
         public override void KillTarget()
         {
-            if (WowApi.PlayerData.PlayerMana >= 20)
+            if (Api.PlayerData.PlayerMana >= 20)
             {
                 Input.KeyPress(VirtualKeyCode.VK_2);
             }

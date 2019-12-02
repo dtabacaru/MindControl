@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using WowAutomater;
 
-namespace ClassicWowNeuralParasite
+namespace MindControlUI
 {
     public enum WebInterfaceCommandType
     {
@@ -64,7 +64,7 @@ namespace ClassicWowNeuralParasite
             string relayString = rawRelayString.Substring(6, rawRelayString.Length - 6);
             relayString = relayString.Replace("%20", " ");
 
-            WowAutomater.SetRelayString(relayString);
+            Automater.SetRelayString(relayString);
 
             string contentString = "Sent: " + relayString;
 
@@ -97,7 +97,7 @@ namespace ClassicWowNeuralParasite
         {
             string contentString = "Started";
 
-            WowAutomater.RemoteStart();
+            Automater.RemoteStart();
 
             string responseString = "HTTP/1.1 200 OK\r\n";
             responseString += "Content-Length: " + contentString.Length.ToString() + "\r\n";
@@ -112,7 +112,7 @@ namespace ClassicWowNeuralParasite
         {
             string contentString = "Stopped";
 
-            WowAutomater.RemoteStop();
+            Automater.RemoteStop();
 
             string responseString = "HTTP/1.1 200 OK\r\n";
             responseString += "Content-Length: " + contentString.Length.ToString() + "\r\n";

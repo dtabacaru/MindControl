@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using WindowsInput.Native;
+using WowApi;
 
-namespace ClassicWowNeuralParasite
+namespace WowAutomater
 {
     public static class WaypointFollower
     {
@@ -55,8 +54,8 @@ namespace ClassicWowNeuralParasite
 
             for (int i = 0; i < m_XCoordinates.Count; i++)
             {
-                double distance = Math.Sqrt(Math.Pow((m_XCoordinates[i] - WowApi.PlayerData.PlayerXPosition), 2) +
-                                            Math.Pow((m_YCoordinates[i] - WowApi.PlayerData.PlayerYPosition), 2));
+                double distance = Math.Sqrt(Math.Pow((m_XCoordinates[i] - Api.PlayerData.PlayerXPosition), 2) +
+                                            Math.Pow((m_YCoordinates[i] - Api.PlayerData.PlayerYPosition), 2));
 
                 if (distance < closestDistance)
                 {
@@ -102,22 +101,22 @@ namespace ClassicWowNeuralParasite
                 {
                     while (m_FollowingWaypoints)
                     {
-                        WowApi.Sync.WaitOne();
+                        Api.Sync.WaitOne();
 
-                        double distanceToWaypoint = Math.Sqrt(Math.Pow(m_XCoordinates[m_WaypointIndex] - WowApi.PlayerData.PlayerXPosition, 2) +
-                                                           Math.Pow(m_YCoordinates[m_WaypointIndex] - WowApi.PlayerData.PlayerYPosition, 2));
+                        double distanceToWaypoint = Math.Sqrt(Math.Pow(m_XCoordinates[m_WaypointIndex] - Api.PlayerData.PlayerXPosition, 2) +
+                                                           Math.Pow(m_YCoordinates[m_WaypointIndex] - Api.PlayerData.PlayerYPosition, 2));
 
                         if (distanceToWaypoint > ClosestPointDistance)
                             FindClosestWaypoint();
 
-                        double actualHeading_x = (WowApi.PlayerData.PlayerXPosition - Math.Sin(WowApi.PlayerData.PlayerHeading)) -
-                                                 WowApi.PlayerData.PlayerXPosition;
+                        double actualHeading_x = (Api.PlayerData.PlayerXPosition - Math.Sin(Api.PlayerData.PlayerHeading)) -
+                                                 Api.PlayerData.PlayerXPosition;
 
-                        double actualHeading_y = (WowApi.PlayerData.PlayerYPosition - Math.Cos(WowApi.PlayerData.PlayerHeading)) -
-                                                 WowApi.PlayerData.PlayerYPosition;
+                        double actualHeading_y = (Api.PlayerData.PlayerYPosition - Math.Cos(Api.PlayerData.PlayerHeading)) -
+                                                 Api.PlayerData.PlayerYPosition;
 
-                        double desiredHeading_x = m_XCoordinates[m_WaypointIndex] - WowApi.PlayerData.PlayerXPosition;
-                        double desiredHeading_y = m_YCoordinates[m_WaypointIndex] - WowApi.PlayerData.PlayerYPosition;
+                        double desiredHeading_x = m_XCoordinates[m_WaypointIndex] - Api.PlayerData.PlayerXPosition;
+                        double desiredHeading_y = m_YCoordinates[m_WaypointIndex] - Api.PlayerData.PlayerYPosition;
 
                         double requriedTurn = Math.Atan2(actualHeading_x * desiredHeading_y - actualHeading_y * desiredHeading_x,
                                                          actualHeading_x * desiredHeading_x + actualHeading_y * desiredHeading_y);
@@ -155,8 +154,8 @@ namespace ClassicWowNeuralParasite
 
                         Jitterizer.RandomJitter();
 
-                        bool xReached = Math.Abs(WowApi.PlayerData.PlayerXPosition - m_XCoordinates[m_WaypointIndex]) < PositionTolerance;
-                        bool yReached = Math.Abs(WowApi.PlayerData.PlayerYPosition - m_YCoordinates[m_WaypointIndex]) < PositionTolerance;
+                        bool xReached = Math.Abs(Api.PlayerData.PlayerXPosition - m_XCoordinates[m_WaypointIndex]) < PositionTolerance;
+                        bool yReached = Math.Abs(Api.PlayerData.PlayerYPosition - m_YCoordinates[m_WaypointIndex]) < PositionTolerance;
 
                         if (xReached && yReached)
                         {

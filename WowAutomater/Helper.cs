@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using WindowsInput;
 using WindowsInput.Native;
 
-namespace ClassicWowNeuralParasite
+namespace WowAutomater
 {
     public static class Helper
     {

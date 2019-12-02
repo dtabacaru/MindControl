@@ -1,7 +1,8 @@
 ﻿using System.Timers;
 using WindowsInput.Native;
+using WowApi;
 
-namespace ClassicWowNeuralParasite
+namespace WowAutomater
 {
     public class Spell
     {
@@ -19,11 +20,11 @@ namespace ClassicWowNeuralParasite
         {
             get
             {
-                if (WowApi.PlayerData.PlayerMana >= ManaCost &&
-                    !WowApi.PlayerData.Casting &&
-                    WowApi.PlayerData.CanUseSkill &&
-                    WowApi.PlayerData.PlayerHealthPercentage <= PlayerHealthPercentage &&
-                    WowApi.PlayerData.PlayerLevel >= Level &&
+                if (Api.PlayerData.PlayerMana >= ManaCost &&
+                    !Api.PlayerData.Casting &&
+                    Api.PlayerData.CanUseSkill &&
+                    Api.PlayerData.PlayerHealthPercentage <= PlayerHealthPercentage &&
+                    Api.PlayerData.PlayerLevel >= Level &&
                     !Used &&
                     CooledDown)
                     return true;
@@ -48,7 +49,7 @@ namespace ClassicWowNeuralParasite
 
             if(UseOnce)
             {
-                WowApi.UpdateEvent += WowApi_UpdateEvent;
+                Api.UpdateEvent += Api_UpdateEvent;
             }
 
             if(CooldownTime > 0)
@@ -59,10 +60,10 @@ namespace ClassicWowNeuralParasite
 
         }
 
-        public void CastSpell()
+        public virtual void CastSpell()
         {
             Input.KeyPress(HotKey);
-            Helper.WaitSeconds(WowAutomater.RegisterDelay);
+            Helper.WaitSeconds(Automater.RegisterDelay);
 
             if (CooldownTime > 0)
             {
@@ -82,9 +83,9 @@ namespace ClassicWowNeuralParasite
             CooldownTimer.Stop();
         }
 
-        private void WowApi_UpdateEvent(object sender, System.EventArgs ea)
+        private void Api_UpdateEvent(object sender, System.EventArgs ea)
         {
-            if (!WowApi.PlayerData.PlayerInCombat || !WowApi.PlayerData.PlayerHasTarget)
+            if (!Api.PlayerData.PlayerInCombat || !Api.PlayerData.PlayerHasTarget)
                 Used = false;
         }
     }

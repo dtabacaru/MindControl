@@ -1,366 +1,44 @@
 <Ui>
-  <Script file="NeuralParasiteSensor.lua"/>
-
-  <Frame name="MainFrame" toplevel="true" parent="UIParent" hidden="false">
-
-    <Size>
-      <AbsDimension x="50" y="200"/>
-    </Size>
+  
+  <Script file="VisionControl.lua"/>
+  
+  <Frame toplevel="true" name="VisionControlMain" hidden="false" parent="UIParent">
 
     <Anchors>
+	
       <Anchor point="TOPLEFT" >
         <Offset>
-          <AbsDimension x="-24" y="98"/>
+          <AbsDimension y="98" x="-24"/>
         </Offset>
       </Anchor>
+	  
     </Anchors>
 
     <Frames>
-      <Frame name="DataFrame" setAllPoints="true">
+	
+      <Frame name="VisionControlData" setAllPoints="true">
 
-        <Scripts>
-          <OnLoad>
-            DataFrame_OnLoad();
+	    <Scripts>
+		
+		  <OnLoad>
+            VisionControlData_OnLoad();
           </OnLoad>
-          <OnUpdate>
-            DataFrame_OnUpdate();
+		
+		  <OnUpdate>
+            VisionControlData_OnUpdate();
           </OnUpdate>
+		  
         </Scripts>
-
-        <Frames>
-          <Button name="StartStopButton" inherits="OptionsButtonTemplate" text="Start">
-            <Size>
-              <AbsDimension x="40" y="15"/>
-            </Size>
-            <Anchors>
-              <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
-                <Offset>
-                  <AbsDimension x="28" y="-5"/>
-                </Offset>
-              </Anchor>
-            </Anchors>
-            <NormalFont style="GameFontNormalSmall"/>
-            <HighlightFont style="GameFontNormalSmall"/>
-            <Scripts>
-              <OnClick>
-                StartStopButton_OnClick();
-              </OnClick>
-            </Scripts>
-          </Button>
-
-          <Button name="ShowHideButton" inherits="OptionsButtonTemplate" text="Show">
-            <Size>
-              <AbsDimension x="40" y="15"/>
-            </Size>
-            <Anchors>
-              <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
-                <Offset>
-                  <AbsDimension x="68" y="-5"/>
-                </Offset>
-              </Anchor>
-            </Anchors>
-            <NormalFont style="GameFontNormalSmall"/>
-            <HighlightFont style="GameFontNormalSmall"/>
-            <Scripts>
-              <OnClick>
-                ShowHideButton_OnClick();
-              </OnClick>
-            </Scripts>
-          </Button>
-        </Frames>
 
         <Layers>
           <Layer level="OVERLAY">
-            <FontString name="DebugText" inherits="GameFontNormal">
-              <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
-                  <Offset>
-                    <AbsDimension x="1400" y="-400"/>
-                  </Offset>
-                </Anchor>
-              </Anchors>
-            </FontString>
-
-            <Texture name="StartStopIndicator">
-              <Size>
-                <AbsDimension x="50" y="5"/>
-              </Size>
-              <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
-                  <Offset>
-                    <AbsDimension x="805" y="-745"/>
-                  </Offset>
-                </Anchor>
-              </Anchors>
-              <Color r="1" g="0" b="0" a="0.2"/>
-            </Texture>
-
-            <Texture name="FindPixel1">
-              <Size>
-                <AbsDimension x="3" y="3"/>
-              </Size>
-              <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
-                  <Offset>
-                    <AbsDimension x="0" y="0"/>
-                  </Offset>
-                </Anchor>
-              </Anchors>
-              <Color r="0" g="1" b="0"/>
-            </Texture>
-            <Texture name="HeadingPixelR">
-              <Size>
-                <AbsDimension x="3" y="3"/>
-              </Size>
-              <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
-                  <Offset>
-                    <AbsDimension x="0" y="-3"/>
-                  </Offset>
-                </Anchor>
-              </Anchors>
-              <Color r="0" g="1" b="0"/>
-            </Texture>
-            <Texture name="HeadingPixelG">
-              <Size>
-                <AbsDimension x="3" y="3"/>
-              </Size>
-              <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
-                  <Offset>
-                    <AbsDimension x="0" y="-6"/>
-                  </Offset>
-                </Anchor>
-              </Anchors>
-              <Color r="1" g="0" b="0"/>
-            </Texture>
-            <Texture name="HeadingPixelB">
-              <Size>
-                <AbsDimension x="3" y="3"/>
-              </Size>
-              <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
-                  <Offset>
-                    <AbsDimension x="0" y="-9"/>
-                  </Offset>
-                </Anchor>
-              </Anchors>
-              <Color r="0" g="0" b="0"/>
-            </Texture>
-            <Texture name="FarRangePixel">
-              <Size>
-                <AbsDimension x="3" y="3"/>
-              </Size>
-              <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
-                  <Offset>
-                    <AbsDimension x="0" y="-12"/>
-                  </Offset>
-                </Anchor>
-              </Anchors>
-              <Color r="0" g="0" b="0"/>
-            </Texture>
-            <Texture name="MediumRangePixel">
-              <Size>
-                <AbsDimension x="3" y="3"/>
-              </Size>
-              <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
-                  <Offset>
-                    <AbsDimension x="0" y="-15"/>
-                  </Offset>
-                </Anchor>
-              </Anchors>
-              <Color r="0" g="0" b="0"/>
-            </Texture>
-            <Texture name="CloseRangePixel">
-              <Size>
-                <AbsDimension x="3" y="3"/>
-              </Size>
-              <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
-                  <Offset>
-                    <AbsDimension x="0" y="-18"/>
-                  </Offset>
-                </Anchor>
-              </Anchors>
-              <Color r="0" g="0" b="0"/>
-            </Texture>
-            <Texture name="PlayerMaxHealthPixel">
-              <Size>
-                <AbsDimension x="3" y="3"/>
-              </Size>
-              <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
-                  <Offset>
-                    <AbsDimension x="0" y="-21"/>
-                  </Offset>
-                </Anchor>
-              </Anchors>
-              <Color r="0" g="0" b="0"/>
-            </Texture>
-            <Texture name="PlayerHealthPixel">
-              <Size>
-                <AbsDimension x="3" y="3"/>
-              </Size>
-              <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
-                  <Offset>
-                    <AbsDimension x="0" y="-24"/>
-                  </Offset>
-                </Anchor>
-              </Anchors>
-              <Color r="0" g="0" b="0"/>
-            </Texture>
-            <Texture name="PlayerMaxManaPixel">
-              <Size>
-                <AbsDimension x="3" y="3"/>
-              </Size>
-              <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
-                  <Offset>
-                    <AbsDimension x="0" y="-27"/>
-                  </Offset>
-                </Anchor>
-              </Anchors>
-              <Color r="0" g="0" b="0"/>
-            </Texture>
-            <Texture name="PlayerManaPixel">
-              <Size>
-                <AbsDimension x="3" y="3"/>
-              </Size>
-              <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
-                  <Offset>
-                    <AbsDimension x="0" y="-30"/>
-                  </Offset>
-                </Anchor>
-              </Anchors>
-              <Color r="0" g="0" b="0"/>
-            </Texture>
-            <Texture name="HasTargetPixel">
-              <Size>
-                <AbsDimension x="3" y="3"/>
-              </Size>
-              <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
-                  <Offset>
-                    <AbsDimension x="0" y="-33"/>
-                  </Offset>
-                </Anchor>
-              </Anchors>
-              <Color r="0" g="0" b="0"/>
-            </Texture>
-            <Texture name="TargetHealthPixel">
-              <Size>
-                <AbsDimension x="3" y="3"/>
-              </Size>
-              <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
-                  <Offset>
-                    <AbsDimension x="0" y="-36"/>
-                  </Offset>
-                </Anchor>
-              </Anchors>
-              <Color r="0" g="0" b="0"/>
-            </Texture>
-            <Texture name="TargetManaPixel">
-              <Size>
-                <AbsDimension x="3" y="3"/>
-              </Size>
-              <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
-                  <Offset>
-                    <AbsDimension x="0" y="-39"/>
-                  </Offset>
-                </Anchor>
-              </Anchors>
-              <Color r="0" g="0" b="0"/>
-            </Texture>
-            <Texture name="CombatPixel">
-              <Size>
-                <AbsDimension x="3" y="3"/>
-              </Size>
-              <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
-                  <Offset>
-                    <AbsDimension x="0" y="-42"/>
-                  </Offset>
-                </Anchor>
-              </Anchors>
-              <Color r="0" g="0" b="0"/>
-            </Texture>
-            <Texture name="ClassPixel">
-              <Size>
-                <AbsDimension x="3" y="3"/>
-              </Size>
-              <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
-                  <Offset>
-                    <AbsDimension x="0" y="-45"/>
-                  </Offset>
-                </Anchor>
-              </Anchors>
-              <Color r="0" g="0" b="0"/>
-            </Texture>
-            <Texture name="XPositionR">
-              <Size>
-                <AbsDimension x="3" y="3"/>
-              </Size>
-              <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
-                  <Offset>
-                    <AbsDimension x="0" y="-48"/>
-                  </Offset>
-                </Anchor>
-              </Anchors>
-              <Color r="0" g="0" b="0"/>
-            </Texture>
-            <Texture name="YPositionR">
-              <Size>
-                <AbsDimension x="3" y="3"/>
-              </Size>
-              <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
-                  <Offset>
-                    <AbsDimension x="0" y="-51"/>
-                  </Offset>
-                </Anchor>
-              </Anchors>
-              <Color r="0" g="0" b="0"/>
-            </Texture>
-            <Texture name="CastingPixel">
-              <Size>
-                <AbsDimension x="3" y="3"/>
-              </Size>
-              <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
-                  <Offset>
-                    <AbsDimension x="0" y="-54"/>
-                  </Offset>
-                </Anchor>
-              </Anchors>
-              <Color r="0" g="0" b="0"/>
-            </Texture>
-            <Texture name="WhisperPixel">
-              <Size>
-                <AbsDimension x="3" y="3"/>
-              </Size>
-              <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
-                  <Offset>
-                    <AbsDimension x="0" y="-57"/>
-                  </Offset>
-                </Anchor>
-              </Anchors>
-              <Color r="0" g="0" b="0"/>
-            </Texture>
+            
             <Texture name="SpellCanAttackTargetPixel">
               <Size>
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="3" y="0"/>
                   </Offset>
@@ -373,7 +51,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="3" y="-3"/>
                   </Offset>
@@ -386,7 +64,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="3" y="-6"/>
                   </Offset>
@@ -399,7 +77,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="3" y="-9"/>
                   </Offset>
@@ -412,7 +90,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="3" y="-12"/>
                   </Offset>
@@ -425,7 +103,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="3" y="-15"/>
                   </Offset>
@@ -438,7 +116,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="3" y="-18"/>
                   </Offset>
@@ -451,7 +129,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="3" y="-21"/>
                   </Offset>
@@ -464,7 +142,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="3" y="-24"/>
                   </Offset>
@@ -477,7 +155,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="3" y="-27"/>
                   </Offset>
@@ -490,7 +168,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="3" y="-30"/>
                   </Offset>
@@ -503,7 +181,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="3" y="-33"/>
                   </Offset>
@@ -516,7 +194,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="3" y="-36"/>
                   </Offset>
@@ -529,7 +207,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="3" y="-39"/>
                   </Offset>
@@ -542,7 +220,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="3" y="-42"/>
                   </Offset>
@@ -555,7 +233,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="3" y="-45"/>
                   </Offset>
@@ -568,7 +246,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="3" y="-48"/>
                   </Offset>
@@ -581,7 +259,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="3" y="-51"/>
                   </Offset>
@@ -594,7 +272,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="3" y="-54"/>
                   </Offset>
@@ -607,7 +285,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="3" y="-57"/>
                   </Offset>
@@ -620,7 +298,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="6" y="0"/>
                   </Offset>
@@ -633,7 +311,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="6" y="-3"/>
                   </Offset>
@@ -646,7 +324,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="6" y="-6"/>
                   </Offset>
@@ -659,7 +337,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="6" y="-9"/>
                   </Offset>
@@ -672,7 +350,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="6" y="-12"/>
                   </Offset>
@@ -685,7 +363,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="6" y="-15"/>
                   </Offset>
@@ -698,7 +376,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="6" y="-18"/>
                   </Offset>
@@ -711,7 +389,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="6" y="-21"/>
                   </Offset>
@@ -724,7 +402,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="6" y="-24"/>
                   </Offset>
@@ -737,7 +415,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="6" y="-27"/>
                   </Offset>
@@ -750,7 +428,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="6" y="-30"/>
                   </Offset>
@@ -763,7 +441,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="6" y="-33"/>
                   </Offset>
@@ -776,7 +454,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="6" y="-36"/>
                   </Offset>
@@ -789,7 +467,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="6" y="-39"/>
                   </Offset>
@@ -802,7 +480,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="6" y="-42"/>
                   </Offset>
@@ -815,7 +493,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="6" y="-45"/>
                   </Offset>
@@ -828,7 +506,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="6" y="-48"/>
                   </Offset>
@@ -841,7 +519,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="6" y="-51"/>
                   </Offset>
@@ -854,7 +532,7 @@
                 <AbsDimension x="3" y="3"/>
               </Size>
               <Anchors>
-                <Anchor point="CENTER" relativeTo="MainFrame" relativePoint="Center">
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
                   <Offset>
                     <AbsDimension x="6" y="-54"/>
                   </Offset>
@@ -862,9 +540,359 @@
               </Anchors>
               <Color r="0" g="0" b="0"/>
             </Texture>
+			<Texture name="FindPixel1">
+              <Size>
+                <AbsDimension x="3" y="3"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="0" y="0"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="0" g="1" b="0"/>
+            </Texture>
+            <Texture name="HeadingPixelR">
+              <Size>
+                <AbsDimension x="3" y="3"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="0" y="-3"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="0" g="1" b="0"/>
+            </Texture>
+            <Texture name="HeadingPixelG">
+              <Size>
+                <AbsDimension x="3" y="3"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="0" y="-6"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="1" g="0" b="0"/>
+            </Texture>
+            <Texture name="HeadingPixelB">
+              <Size>
+                <AbsDimension x="3" y="3"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="0" y="-9"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="0" g="0" b="0"/>
+            </Texture>
+            <Texture name="FarRangePixel">
+              <Size>
+                <AbsDimension x="3" y="3"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="0" y="-12"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="0" g="0" b="0"/>
+            </Texture>
+            <Texture name="MediumRangePixel">
+              <Size>
+                <AbsDimension x="3" y="3"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="0" y="-15"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="0" g="0" b="0"/>
+            </Texture>
+            <Texture name="CloseRangePixel">
+              <Size>
+                <AbsDimension x="3" y="3"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="0" y="-18"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="0" g="0" b="0"/>
+            </Texture>
+            <Texture name="PlayerMaxHealthPixel">
+              <Size>
+                <AbsDimension x="3" y="3"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="0" y="-21"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="0" g="0" b="0"/>
+            </Texture>
+            <Texture name="PlayerHealthPixel">
+              <Size>
+                <AbsDimension x="3" y="3"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="0" y="-24"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="0" g="0" b="0"/>
+            </Texture>
+            <Texture name="PlayerMaxManaPixel">
+              <Size>
+                <AbsDimension x="3" y="3"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="0" y="-27"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="0" g="0" b="0"/>
+            </Texture>
+            <Texture name="PlayerManaPixel">
+              <Size>
+                <AbsDimension x="3" y="3"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="0" y="-30"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="0" g="0" b="0"/>
+            </Texture>
+            <Texture name="HasTargetPixel">
+              <Size>
+                <AbsDimension x="3" y="3"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="0" y="-33"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="0" g="0" b="0"/>
+            </Texture>
+            <Texture name="TargetHealthPixel">
+              <Size>
+                <AbsDimension x="3" y="3"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="0" y="-36"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="0" g="0" b="0"/>
+            </Texture>
+            <Texture name="TargetManaPixel">
+              <Size>
+                <AbsDimension x="3" y="3"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="0" y="-39"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="0" g="0" b="0"/>
+            </Texture>
+            <Texture name="CombatPixel">
+              <Size>
+                <AbsDimension x="3" y="3"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="0" y="-42"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="0" g="0" b="0"/>
+            </Texture>
+            <Texture name="ClassPixel">
+              <Size>
+                <AbsDimension x="3" y="3"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="0" y="-45"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="0" g="0" b="0"/>
+            </Texture>
+            <Texture name="XPositionR">
+              <Size>
+                <AbsDimension x="3" y="3"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="0" y="-48"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="0" g="0" b="0"/>
+            </Texture>
+            <Texture name="YPositionR">
+              <Size>
+                <AbsDimension x="3" y="3"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="0" y="-51"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="0" g="0" b="0"/>
+            </Texture>
+            <Texture name="CastingPixel">
+              <Size>
+                <AbsDimension x="3" y="3"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="0" y="-54"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="0" g="0" b="0"/>
+            </Texture>
+            <Texture name="WhisperPixel">
+              <Size>
+                <AbsDimension x="3" y="3"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="0" y="-57"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="0" g="0" b="0"/>
+            </Texture>
+
+            <Texture name="StartStopIndicator">
+              <Size>
+                <AbsDimension x="50" y="5"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="805" y="-745"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="1" g="0" b="0" a="0.2"/>
+            </Texture>
+			
+			<FontString name="DebugText" inherits="GameFontNormal">
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="1400" y="-400"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+            </FontString>
+			
           </Layer>
+		  
         </Layers>
-      </Frame>
-    </Frames>
+     
+        <Frames>
+		
+          <Button name="VisionControlStartButton" text="Start" inherits="OptionsButtonTemplate" >
+            
+			<Size>
+              <AbsDimension y="15" x="40"/>
+            </Size>
+			
+            <Anchors>
+              <Anchor relativeTo="VisionControlMain" relativePoint="Center" point="CENTER" >
+                <Offset>
+                  <AbsDimension y="-5" x="28"/>
+                </Offset>
+              </Anchor>
+            </Anchors>
+            
+			<Scripts>
+              <OnClick>
+                VisionControlStartButton_OnClick();
+              </OnClick>
+            </Scripts>
+			
+			<HighlightFont style="GameFontNormalSmall"/>
+			
+			<NormalFont style="GameFontNormalSmall"/>
+			
+          </Button>
+
+          <Button name="VisionControlDebugButton" text="Show" inherits="OptionsButtonTemplate" >
+            
+			<Size>
+              <AbsDimension y="15" x="40"/>
+            </Size>
+            
+			<Anchors>
+              <Anchor relativeTo="VisionControlMain" relativePoint="Center" point="CENTER"  >
+                <Offset>
+                  <AbsDimension x="68" y="-5"/>
+                </Offset>
+              </Anchor>
+            </Anchors>
+            
+			<Scripts>
+              <OnClick>
+                VisionControlDebugButton_OnClick();
+              </OnClick>
+            </Scripts>
+			
+			<HighlightFont style="GameFontNormalSmall"/>
+			
+			<NormalFont style="GameFontNormalSmall"/>
+			
+          </Button>
+		  
+        </Frames>
+	  
+	  </Frame>
+    
+	</Frames>
+  
+    <Size>
+      <AbsDimension y="200" x="50"/>
+    </Size>
+  
   </Frame>
+  
 </Ui>

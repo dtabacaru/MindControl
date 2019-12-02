@@ -1,26 +1,21 @@
--- Constants
+local THREE_BYTE_MAX_VAL = 16777215;
+local PI_MATH = 3.141592654;
 
-local FLOAT_TO_3_BYTE_INT = 16777215;
-local PI = 3.141592654;
+local errorUpdateCount = 0;
+local errorFlag = false;
+local playerCasting = false;
+local setKeyFlag = false;
+local whispUpdateCount = 0;
+local whisperFlag = false;
+local startFlag = false;
+local debugFlag = false;
+local debugText = "";
 
--- Globals
-
-local whisperLastUpdate = 0;
-local whisperStart = false;
-local errorLastUpdate = 0;
-local errorStart = false;
-local startedAutomater = false;
-local showDebug = false;
-local isCasting = false;
-local keyBindSet = false;
-
--- Helper functions
-
-local function RightBitShift(a, b)
-	return math.floor(a/(2^b));
+function VisionControlData_OnLoad()
+	
 end
 
-local function BitwiseOR(a,b)
+local function OR(a,b)
     local p = 1;
 	local c = 0;
 	
@@ -40,25 +35,7 @@ local function BitwiseOR(a,b)
     return c
 end
 
-local function BitwiseNOT(n)
-    local p = 1;
-	local c = 0;
-    
-	while n > 0 do
-        local r = mod(n,2);
-		
-        if r < 1 then
-			c = c + p;
-		end
-        
-		n = (n-r)/2;
-		p = p * 2;
-    end
-	
-    return c
-end
-
-local function BitwiseAND(a,b)
+local function AND(a,b)
     local p = 1;
 	local c = 0;
     
@@ -78,7 +55,11 @@ local function BitwiseAND(a,b)
 	return c;
 end
 
-local function Round(floatValue)
+local function RBS(a, b)
+	return math.floor(a/(2^b));
+end
+
+local function IntegerRound(floatValue)
 	local temp = math.floor(floatValue);
 	
 	if floatValue - temp >= 0.5 then
@@ -89,37 +70,45 @@ local function Round(floatValue)
 	
 end
 
-local function SetThreeByteIntPixelValue(pixelValue,Pixel)
-	local pixelIntValue = Round(pixelValue);
+local function NOT(n)
+    local p = 1;
+	local c = 0;
+    
+	while n > 0 do
+        local r = mod(n,2);
+		
+        if r < 1 then
+			c = c + p;
+		end
+        
+		n = (n-r)/2;
+		p = p * 2;
+    end
 	
-	local byte2 = BitwiseAND(RightBitShift(pixelIntValue,16),255);
-	local byte1 = BitwiseAND(RightBitShift(pixelIntValue,8),255);
-	local byte0 = BitwiseAND(pixelIntValue,255);
-	
-	Pixel:SetColorTexture(byte0/255, byte1/255, byte2/255, 1);
+    return c
 end
 
-local function SetThreeByteFloatThreePixelValue(pixelValue,Pixel1,Pixel2,Pixel3)
-	local pixelIntValue = Round(pixelValue * FLOAT_TO_3_BYTE_INT);
+local function SetTextDebug(text)
+	if debugFlag == true then
+		DebugText:SetText(text);
+	else
+		DebugText:SetText("");
+	end
+end
+
+local function ThreeByteThreePixel(pixelValue,Pixel1,Pixel2,Pixel3)
+	local pixelIntValue = IntegerRound(pixelValue * THREE_BYTE_MAX_VAL);
 	
-	local byte2 = BitwiseAND(RightBitShift(pixelIntValue,16),255);
-	local byte1 = BitwiseAND(RightBitShift(pixelIntValue,8),255);
-	local byte0 = BitwiseAND(pixelIntValue,255);
+	local byte2 = AND(RBS(pixelIntValue,16),255);
+	local byte1 = AND(RBS(pixelIntValue,8),255);
+	local byte0 = AND(pixelIntValue,255);
 
 	Pixel1:SetColorTexture(byte0/255,0,0,1);
 	Pixel2:SetColorTexture(0,byte1/255,0,1);
 	Pixel3:SetColorTexture(0,0,byte2/255,1);
 end
 
-local function SetDebugText(debugText, text)
-	if showDebug == true then
-		debugText:SetText(text);
-	else
-		debugText:SetText("");
-	end
-end
-
-local function CheckCanUseSkill(checkName)
+local function CheckGCD(checkName)
 
 	local i = 1;
 	while true do
@@ -150,13 +139,21 @@ local function CheckCanUseSkill(checkName)
 	return "GCD: False" .. "\n";
 end
 
--- UI Events
+local function ThreeByteOnePixel(pixelValue,Pixel)
+	local pixelIntValue = IntegerRound(pixelValue);
+	
+	local byte2 = AND(RBS(pixelIntValue,16),255);
+	local byte1 = AND(RBS(pixelIntValue,8),255);
+	local byte0 = AND(pixelIntValue,255);
+	
+	Pixel:SetColorTexture(byte0/255, byte1/255, byte2/255, 1);
+end
 
-function DataFrame_OnUpdate()
+function VisionControlData_OnUpdate()
 
-	if keyBindSet == false then
-		SetBindingClick("SHIFT-T", StartStopButton:GetName());
-		keyBindSet = true;
+	if setKeyFlag == false then
+		SetBindingClick("CTRL-Q", VisionControlStartButton:GetName());
+		setKeyFlag = true;
 	end
 
 	local debugString = ""
@@ -167,9 +164,9 @@ function DataFrame_OnUpdate()
 	local map = C_Map.GetBestMapForUnit("player")
 	
 	if map == nil then 
-		SetThreeByteFloatThreePixelValue(0,XPositionR,XPositionG,XPositionB)
-		SetThreeByteFloatThreePixelValue(0,YPositionR,YPositionG,YPositionB)
-		SetThreeByteIntPixelValue(0,MapIdPixel);
+		ThreeByteThreePixel(0,XPositionR,XPositionG,XPositionB)
+		ThreeByteThreePixel(0,YPositionR,YPositionG,YPositionB)
+		ThreeByteOnePixel(0,MapIdPixel);
 		
 		debugString = debugString .. "Map: 0\n";
 		debugString = debugString .. "X: 0\n";
@@ -177,9 +174,9 @@ function DataFrame_OnUpdate()
 	else
 		local position = C_Map.GetPlayerMapPosition(map, "player")
 	
-		SetThreeByteFloatThreePixelValue(position.x,XPositionR,XPositionG,XPositionB)
-		SetThreeByteFloatThreePixelValue(position.y,YPositionR,YPositionG,YPositionB)
-		SetThreeByteIntPixelValue(map,MapIdPixel);
+		ThreeByteThreePixel(position.x,XPositionR,XPositionG,XPositionB)
+		ThreeByteThreePixel(position.y,YPositionR,YPositionG,YPositionB)
+		ThreeByteOnePixel(map,MapIdPixel);
 		
 		debugString = debugString .. "Map: " .. map .. "\n";
 		debugString = debugString .. "X: " .. position.x*100 .. "\n";
@@ -193,13 +190,13 @@ function DataFrame_OnUpdate()
 		HeadingPixelG:SetColorTexture(0,0,0,1);
 		HeadingPixelB:SetColorTexture(0,0,0,1);
 		
-		SetThreeByteFloatThreePixelValue(0,HeadingPixelR,HeadingPixelG,HeadingPixelB);
+		ThreeByteThreePixel(0,HeadingPixelR,HeadingPixelG,HeadingPixelB);
 	
 		debugString = debugString .. "Heading: 0\n";
 	else
-		SetThreeByteFloatThreePixelValue(heading/(2*PI),HeadingPixelR,HeadingPixelG,HeadingPixelB);
+		ThreeByteThreePixel(heading/(2*PI_MATH),HeadingPixelR,HeadingPixelG,HeadingPixelB);
 	
-		debugString = debugString .. "Heading: " .. heading*(180/PI) .. "\n";
+		debugString = debugString .. "Heading: " .. heading*(180/PI_MATH) .. "\n";
 	end
 
 	
@@ -228,22 +225,22 @@ function DataFrame_OnUpdate()
 	end
 	
 	local playerMaxHealth = UnitHealthMax("player");
-	SetThreeByteIntPixelValue(playerMaxHealth,PlayerMaxHealthPixel);
+	ThreeByteOnePixel(playerMaxHealth,PlayerMaxHealthPixel);
 	
 	debugString = debugString .. "Max HP: " .. playerMaxHealth .. "\n";
 	
 	local playerHealth = UnitHealth("player");
-	SetThreeByteIntPixelValue(playerHealth,PlayerHealthPixel);
+	ThreeByteOnePixel(playerHealth,PlayerHealthPixel);
 	
 	debugString = debugString .. "HP: " .. playerHealth .. "\n";
 	
 	local playerMaxMana = UnitPowerMax("player");
-	SetThreeByteIntPixelValue(playerMaxMana,PlayerMaxManaPixel);
+	ThreeByteOnePixel(playerMaxMana,PlayerMaxManaPixel);
 	
 	debugString = debugString .. "Max MP: " .. playerMaxMana .. "\n";
 	
 	local playerMana = UnitPower("player");
-	SetThreeByteIntPixelValue(playerMana,PlayerManaPixel);
+	ThreeByteOnePixel(playerMana,PlayerManaPixel);
 	
 	debugString = debugString .. "MP: " .. playerMana .. "\n";
 	
@@ -256,12 +253,12 @@ function DataFrame_OnUpdate()
 	end
 	
 	local targetHealth = UnitHealth("target");
-	SetThreeByteIntPixelValue(targetHealth,TargetHealthPixel);
+	ThreeByteOnePixel(targetHealth,TargetHealthPixel);
 	
 	debugString = debugString .. "Target HP: " .. targetHealth .. "\n";
 	
 	local targetMana = UnitPower("target");
-	SetThreeByteIntPixelValue(targetMana,TargetManaPixel);
+	ThreeByteOnePixel(targetMana,TargetManaPixel);
 	
 	debugString = debugString .. "Target MP: " .. targetMana .. "\n";
 	
@@ -307,20 +304,20 @@ function DataFrame_OnUpdate()
 	
 	reaction = UnitReaction("player", "target")
 	if reaction == nil then
-		SetThreeByteIntPixelValue(0,TargetReactionPixel);
+		ThreeByteOnePixel(0,TargetReactionPixel);
 		debugString = debugString .. "Reaction: 0" .. "\n";
 	else
-		SetThreeByteIntPixelValue(reaction,TargetReactionPixel);
+		ThreeByteOnePixel(reaction,TargetReactionPixel);
 		debugString = debugString .. "Reaction: " .. reaction .. "\n";
 	end
 	
 	targetLevel = UnitLevel("target");
-	SetThreeByteIntPixelValue(targetLevel,TargetLevelPixel);
+	ThreeByteOnePixel(targetLevel,TargetLevelPixel);
 	
 	debugString = debugString .. "Target Level: " .. targetLevel .. "\n";
 	
 	playerLevel = UnitLevel("player");
-	SetThreeByteIntPixelValue(playerLevel,PlayerLevelPixel);
+	ThreeByteOnePixel(playerLevel,PlayerLevelPixel);
 	
 	debugString = debugString .. "Player Level: " .. playerLevel .. "\n";
 	
@@ -334,23 +331,23 @@ function DataFrame_OnUpdate()
 	
 	local targetFaction = UnitFactionGroup("target");
 	if targetFaction == nil then
-		SetThreeByteIntPixelValue(0,TargetFactionPixel);
+		ThreeByteOnePixel(0,TargetFactionPixel);
 		debugString = debugString .. "Target Faction: 0" .. "\n";
 	elseif targetFaction == "Alliance" then
-		SetThreeByteIntPixelValue(1,TargetFactionPixel);
+		ThreeByteOnePixel(1,TargetFactionPixel);
 		debugString = debugString .. "Target Faction: 1" .. "\n";
 	elseif targetFaction == "Horde" then
-		SetThreeByteIntPixelValue(2,TargetFactionPixel);
+		ThreeByteOnePixel(2,TargetFactionPixel);
 		debugString = debugString .. "Target Faction: 2" .. "\n";
 	end
 	
 	local comboPoints = GetComboPoints("player", "target");
-	SetThreeByteIntPixelValue(comboPoints,TargetComboPointsPixel);	
+	ThreeByteOnePixel(comboPoints,TargetComboPointsPixel);	
 	
 	debugString = debugString .. "Combo Points: " .. comboPoints .. "\n";
 	
 	local ammoCount = GetInventoryItemCount("player", INVSLOT_RANGED );
-	SetThreeByteIntPixelValue(ammoCount,AmmoCountPixel);	
+	ThreeByteOnePixel(ammoCount,AmmoCountPixel);	
 	
 	debugString = debugString .. "Ammo: " .. ammoCount .. "\n";
 	
@@ -378,7 +375,7 @@ function DataFrame_OnUpdate()
 		debugString = debugString .."Dead: False" .. "\n";
 	end
 	
-	if startedAutomater == true then
+	if startFlag == true then
 		StartPixel:SetColorTexture(1/255, 255/255, 2/255, 1);
 		StartStopIndicator:SetColorTexture(0, 1, 0, 0.2);
 	else
@@ -459,31 +456,31 @@ function DataFrame_OnUpdate()
 		
 	end
 	
-	if errorStart == true then
+	if errorFlag == true then
 	
-		if errorLastUpdate == 4 then
-			errorLastUpdate = 0;
+		if errorUpdateCount == 4 then
+			errorUpdateCount = 0;
 			ErrorPixel:SetColorTexture(0, 0, 0, 1);
-			errorStart = false;
+			errorFlag = false;
 		end
 	
-		errorLastUpdate = errorLastUpdate + 1;
+		errorUpdateCount = errorUpdateCount + 1;
 	end
 	
-	if whisperStart == true then
+	if whisperFlag == true then
 	
-		if whisperLastUpdate == 4 then
-			whisperLastUpdate = 0;
+		if whispUpdateCount == 4 then
+			whispUpdateCount = 0;
 			WhisperPixel:SetColorTexture(0, 0, 0, 1);
-			whisperStart = false;
+			whisperFlag = false;
 		end
 	
-		whisperLastUpdate = whisperLastUpdate + 1;
+		whispUpdateCount = whispUpdateCount + 1;
 	end
 	
 	local shapeShiftForm = GetShapeshiftForm(true);
 
-	SetThreeByteIntPixelValue(shapeShiftForm, ShapeShiftPixel);
+	ThreeByteOnePixel(shapeShiftForm, ShapeShiftPixel);
 
 	debugString = debugString .. "Shape: " .. shapeShiftForm .. "\n";
 
@@ -492,16 +489,16 @@ function DataFrame_OnUpdate()
 	local classIndex = 0;
 	
 	if (localizedClass == "Warrior") then
-		debugString = debugString .. CheckCanUseSkill("Heroic Strike", debugString);
+		debugString = debugString .. CheckGCD("Heroic Strike", debugString);
 		classIndex = 1;
 	elseif (localizedClass == "Paladin") then
-		debugString = debugString .. CheckCanUseSkill("Seal of the Crusader", debugString);
+		debugString = debugString .. CheckGCD("Seal of the Crusader", debugString);
 		classIndex = 2;
 	elseif (localizedClass == "Rogue") then
-		debugString = debugString .. CheckCanUseSkill("Sinister Strike", debugString);
+		debugString = debugString .. CheckGCD("Sinister Strike", debugString);
 		classIndex = 3;
 	elseif (localizedClass == "Priest") then
-		debugString = debugString .. CheckCanUseSkill("Smite", debugString);
+		debugString = debugString .. CheckGCD("Smite", debugString);
 		classIndex = 4;
 	elseif (localizedClass == "Mage") then
 		classIndex = 5;
@@ -514,13 +511,13 @@ function DataFrame_OnUpdate()
 	elseif (localizedClass == "Druid") then
 		
 		if shapeShiftForm == 0 then
-			debugString = debugString .. CheckCanUseSkill("Wrath", debugString);
+			debugString = debugString .. CheckGCD("Wrath", debugString);
 		elseif shapeShiftForm == 1 then
-			debugString = debugString .. CheckCanUseSkill("Growl", debugString);
+			debugString = debugString .. CheckGCD("Growl", debugString);
 		elseif shapeShiftForm == 2 then
-			debugString = debugString .. CheckCanUseSkill("Claw", debugString);
+			debugString = debugString .. CheckGCD("Claw", debugString);
 		elseif shapeShiftForm == 3 then
-			debugString = debugString .. CheckCanUseSkill("Claw", debugString);
+			debugString = debugString .. CheckGCD("Claw", debugString);
 		end
 		
 		classIndex = 9;
@@ -529,9 +526,9 @@ function DataFrame_OnUpdate()
 	end
 	
 	debugString = debugString .. "Class: " .. classIndex .. "\n";
-	SetThreeByteIntPixelValue(classIndex,ClassPixel);
+	ThreeByteOnePixel(classIndex,ClassPixel);
 
-	if isCasting == true then
+	if playerCasting == true then
 		CastingPixel:SetColorTexture(1, 1, 1, 1);
 		debugString = debugString .. " Casting: true\n";
 	else
@@ -552,24 +549,24 @@ function DataFrame_OnUpdate()
 	  local name = UnitBuff("player",i)
 	  
 	  if name == "Seal of the Crusader" then
-		buffPixelValue = BitwiseOR(buffPixelValue, 1)
+		buffPixelValue = OR(buffPixelValue, 1)
 	  elseif name == "Mark of the Wild" then
-		buffPixelValue = BitwiseOR(buffPixelValue, 2)
+		buffPixelValue = OR(buffPixelValue, 2)
 	  elseif name == "Thorns" then
-		buffPixelValue = BitwiseOR(buffPixelValue, 4)
+		buffPixelValue = OR(buffPixelValue, 4)
 	  elseif name == "Seal of Command" then
-		buffPixelValue = BitwiseOR(buffPixelValue, 8)
+		buffPixelValue = OR(buffPixelValue, 8)
 	  elseif name == "Blessing of Wisdom" then
-		buffPixelValue = BitwiseOR(buffPixelValue, 16)
+		buffPixelValue = OR(buffPixelValue, 16)
 	  elseif name == "Stealth" then
-		buffPixelValue = BitwiseOR(buffPixelValue, 32)
+		buffPixelValue = OR(buffPixelValue, 32)
 	  elseif name == "Seal of Justice" then
-		buffPixelValue = BitwiseOR(buffPixelValue, 64)
+		buffPixelValue = OR(buffPixelValue, 64)
 	  end
 	  
 	end
 	
-	SetThreeByteIntPixelValue(buffPixelValue,BuffsPixel);
+	ThreeByteOnePixel(buffPixelValue,BuffsPixel);
 	
 	debugString = debugString .. "Buffs: " .. buffPixelValue .."\n";
 
@@ -588,78 +585,81 @@ function DataFrame_OnUpdate()
 	end
 	
 	debugString = debugString .. "Free bag slots: " .. numberOfFreeSlots .. "\n";
-	SetThreeByteIntPixelValue(numberOfFreeSlots,BagSlotsFreePixel);
+	ThreeByteOnePixel(numberOfFreeSlots,BagSlotsFreePixel);
 
-	SetDebugText(DebugText,debugString);
+	SetTextDebug(debugString);
 end
 
-function StartStopButton_OnClick()
-	if not startedAutomater then
-		StartStopButton:SetText("Stop")
+function VisionControlDebugButton_OnClick()
+	if not debugFlag then
+		VisionControlDebugButton:SetText("Hide")
 	else
-		StartStopButton:SetText("Start")
+		VisionControlDebugButton:SetText("Show")
 	end
 
-	startedAutomater = not startedAutomater;
+	debugFlag = not debugFlag;
 end
 
-function ShowHideButton_OnClick()
-	if not showDebug then
-		ShowHideButton:SetText("Hide")
+function VisionControlStartButton_OnClick()
+	if not startFlag then
+		VisionControlStartButton:SetText("Stop")
 	else
-		ShowHideButton:SetText("Show")
+		VisionControlStartButton:SetText("Start")
 	end
 
-	showDebug = not showDebug;
+	startFlag = not startFlag;
 end
 
-function DataFrame_OnLoad()
-	
-end
-
--- Error frame event
+local castStopFrame = CreateFrame('Frame');
+castStopFrame:RegisterEvent("UNIT_SPELLCAST_STOP")
+castStopFrame:SetScript('OnEvent', function(self, event, arg1)
+	if arg1 == "player" then
+		playerCasting = false;
+	end
+end)
 
 local errorFrame = CreateFrame('Frame');
 errorFrame:RegisterEvent("UI_ERROR_MESSAGE")
 errorFrame:SetScript('OnEvent', function(self, event, arg1, arg2)
 
 	if arg2 == "Target needs to be in front of you" then
-		SetThreeByteIntPixelValue(1,ErrorPixel);
-		errorStart = true;
+		ThreeByteOnePixel(1,ErrorPixel);
+		errorFlag = true;
 	end
 	
 	if arg2 == "You are facing the wrong way!" then
-		SetThreeByteIntPixelValue(2,ErrorPixel);
-		errorStart = true;
+		ThreeByteOnePixel(2,ErrorPixel);
+		errorFlag = true;
+	end
+	
+	if arg2 == "Out of range." then
+		ThreeByteOnePixel(3,ErrorPixel);
+		errorFlag = true;
+	end
+	
+	if arg2 == "You are too far away!" then
+		ThreeByteOnePixel(4,ErrorPixel);
+		errorFlag = true;
+	end
+	
+	if arg2 == "Target not in line of sight" then
+		ThreeByteOnePixel(5,ErrorPixel);
+		errorFlag = true;
 	end
 	
 end)
-
--- Spell cast event
 
 local castStartFrame = CreateFrame('Frame');
 castStartFrame:RegisterEvent("UNIT_SPELLCAST_START")
 castStartFrame:SetScript('OnEvent', function(self, event, arg1)
 	if arg1 == "player" then
-		isCasting = true;
+		playerCasting = true;
 	end
 end)
-
--- Spell stop cast event
-
-local castStopFrame = CreateFrame('Frame');
-castStopFrame:RegisterEvent("UNIT_SPELLCAST_STOP")
-castStopFrame:SetScript('OnEvent', function(self, event, arg1)
-	if arg1 == "player" then
-		isCasting = false;
-	end
-end)
-
--- Whisper event
 
 local whisperFrame = CreateFrame('Frame');
 whisperFrame:RegisterEvent("CHAT_MSG_WHISPER")
 whisperFrame:SetScript('OnEvent', function(self, event)
 	WhisperPixel:SetColorTexture(1, 1, 1, 1);
-	whisperStart = true;
+	whisperFlag = true;
 end)

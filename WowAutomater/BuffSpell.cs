@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WindowsInput.Native;
+﻿using WindowsInput.Native;
+using WowApi;
 
-namespace ClassicWowNeuralParasite
+namespace WowAutomater
 {
     public class BuffSpell : Spell
     {
@@ -26,14 +22,14 @@ namespace ClassicWowNeuralParasite
         {
             get
             {
-                if (WowApi.PlayerData.PlayerMana >= ManaCost &&
-                    !WowApi.PlayerData.Casting &&
-                    WowApi.PlayerData.CanUseSkill &&
-                    WowApi.PlayerData.PlayerHealthPercentage <= PlayerHealthPercentage &&
-                    WowApi.PlayerData.PlayerLevel >= Level &&
+                if (Api.PlayerData.PlayerMana >= ManaCost &&
+                    !Api.PlayerData.Casting &&
+                    Api.PlayerData.CanUseSkill &&
+                    Api.PlayerData.PlayerHealthPercentage <= PlayerHealthPercentage &&
+                    Api.PlayerData.PlayerLevel >= Level &&
                     !Used &&
                     CooledDown &&
-                    ((int)WowApi.PlayerData.Buffs & (int)Buff) == 0)
+                    ((int)Api.PlayerData.Buffs & (int)Buff) == 0)
                     return true;
                 else
                     return false;

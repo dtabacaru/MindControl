@@ -1,6 +1,6 @@
 ﻿using WindowsInput.Native;
 
-namespace ClassicWowNeuralParasite
+namespace WowAutomater
 {
     public class Action
     {
@@ -14,7 +14,7 @@ namespace ClassicWowNeuralParasite
         public void Act()
         {
             Input.KeyPress(m_ActionKey);
-            Helper.WaitSeconds(WowAutomater.RegisterDelay);
+            Helper.WaitSeconds(Automater.RegisterDelay);
         }
 
     }

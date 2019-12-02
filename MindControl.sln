@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29215.179
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WowAutomaterUi", "WoWNeuralParasiteUI\WowAutomaterUi.csproj", "{31EBE28B-9392-46FE-95A0-3960A24956E9}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsInput", "WindowsInput\WindowsInput.csproj", "{3549CD6F-80F8-450F-B99E-CF0A736B1F2A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WowAutomater", "WowAutomater\WowAutomater.csproj", "{B249AF88-91D7-4560-8215-385B41E76F0A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WowApi", "WowApi\WowApi.csproj", "{222EAFC4-B29B-49F4-88AC-47FA9BBDCD14}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RenameAddon", "RenameAddon\RenameAddon.csproj", "{82841234-A1C7-4F71-B88B-B06AB95B502F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MindControlUI", "MindControlUI\MindControlUI.csproj", "{31EBE28B-9392-46FE-95A0-3960A24956E9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +19,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{31EBE28B-9392-46FE-95A0-3960A24956E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{31EBE28B-9392-46FE-95A0-3960A24956E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{31EBE28B-9392-46FE-95A0-3960A24956E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{31EBE28B-9392-46FE-95A0-3960A24956E9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3549CD6F-80F8-450F-B99E-CF0A736B1F2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3549CD6F-80F8-450F-B99E-CF0A736B1F2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3549CD6F-80F8-450F-B99E-CF0A736B1F2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,6 +31,14 @@ Global
 		{222EAFC4-B29B-49F4-88AC-47FA9BBDCD14}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{222EAFC4-B29B-49F4-88AC-47FA9BBDCD14}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{222EAFC4-B29B-49F4-88AC-47FA9BBDCD14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82841234-A1C7-4F71-B88B-B06AB95B502F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82841234-A1C7-4F71-B88B-B06AB95B502F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82841234-A1C7-4F71-B88B-B06AB95B502F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82841234-A1C7-4F71-B88B-B06AB95B502F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31EBE28B-9392-46FE-95A0-3960A24956E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31EBE28B-9392-46FE-95A0-3960A24956E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31EBE28B-9392-46FE-95A0-3960A24956E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31EBE28B-9392-46FE-95A0-3960A24956E9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

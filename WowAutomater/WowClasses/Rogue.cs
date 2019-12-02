@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
 using WindowsInput.Native;
+using WowApi;
 
-namespace ClassicWowNeuralParasite
+namespace WowAutomater
 {
     public class RogueAutomater : WowClassAutomater
     {
-        public int StealthLevel = 10;
         public bool StealthFlag = true;
         public bool ThrowFlag = true;
         public int StealthCooldown = 10;
@@ -18,6 +14,8 @@ namespace ClassicWowNeuralParasite
         public bool AlwaysStealth = true;
 
         public Timer StaleStealthTimer = new Timer();
+        public Timer FriendlyTimer = new Timer();
+        public volatile bool FriendlyFlag = false;
 
         public Action Attack;
         public Action Target;
@@ -34,6 +32,9 @@ namespace ClassicWowNeuralParasite
         public Spell Evasion;
         public Spell AdrenalineRush;
         public Spell BladeFlurry;
+
+        public CompoundSpell PoisonMain;
+        public CompoundSpell PoisonOff;
 
         public FinishingSpell Eviscerate;
 
@@ -55,21 +56,35 @@ namespace ClassicWowNeuralParasite
             BladeFlurry = new Spell(VirtualKeyCode.VK_N, cooldownTime: 2 * 60, healthPercentage: 35, level: 31);
             EquipAmmo = new Spell(VirtualKeyCode.VK_Z, cooldownTime: 10);
 
+            PoisonMain = new CompoundSpell(VirtualKeyCode.VK_G, VirtualKeyCode.VK_Y, cooldownTime: 31 * 60);
+            PoisonOff = new CompoundSpell(VirtualKeyCode.VK_G, VirtualKeyCode.VK_H, cooldownTime: 31 * 60);
+
             StaleStealthTimer.Interval = StealthCooldown * 1000;
             StaleStealthTimer.Elapsed += StaleStealthTimer_Elapsed;
 
-            WowApi.UpdateEvent += WowApi_UpdateEvent;
+            FriendlyTimer.Interval = 10000;
+            FriendlyTimer.Elapsed += FriendlyTimer_Elapsed;
+
+            Api.UpdateEvent += Api_UpdateEvent;
         }
 
-        private void WowApi_UpdateEvent(object sender, EventArgs ea)
+        private void FriendlyTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (WowAutomater.AutomaterActionMode == ActionMode.KillTarget)
+            Input.KeyPress(VirtualKeyCode.VK_F);
+
+            FriendlyFlag = false;
+            FriendlyTimer.Stop();
+        }
+
+        private void Api_UpdateEvent(object sender, EventArgs ea)
+        {
+            if (Automater.AutomaterActionMode == ActionMode.KillTarget)
                 StaleStealthTimer.Stop();
         }
 
         private void StaleStealthTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if ((WowApi.PlayerData.Buffs & (int)BuffType.Stealth) > 0)
+            if ((Api.PlayerData.Buffs & (int)BuffType.Stealth) > 0)
             {
                 Input.KeyPress(VirtualKeyCode.VK_T);
             }
@@ -91,19 +106,18 @@ namespace ClassicWowNeuralParasite
 
         private void CheckFindMode()
         {
-            if (WowApi.PlayerData.AmmoCount == 1 && EquipAmmo.CanCastSpell && ThrowFlag)
+            if (Api.PlayerData.AmmoCount == 1 && EquipAmmo.CanCastSpell && ThrowFlag)
                 EquipAmmo.CastSpell();
 
-            if ( (StealthFlag && WowApi.PlayerData.PlayerLevel > StealthLevel) && 
-                      ThrowFlag)
+            if (StealthFlag && ThrowFlag && !FriendlyFlag)
             {
                 FindTargetMode = RogueFindTargetMode.StealthAndThrow;
             }
-            else if (StealthFlag && WowApi.PlayerData.PlayerLevel > StealthLevel)
+            else if (StealthFlag)
             {
                 FindTargetMode = RogueFindTargetMode.Stealth;
             }
-            else if (ThrowFlag)
+            else if (ThrowFlag && !FriendlyFlag)
             {
                 FindTargetMode = RogueFindTargetMode.Throw;
             }
@@ -117,8 +131,31 @@ namespace ClassicWowNeuralParasite
         {
             WaypointFollower.FollowWaypoints(true);
 
+            if (PoisonMain.CanCastSpell)
+            {
+                WaypointFollower.StopFollowingWaypoints();
+                Helper.WaitSeconds(1.0);
+                PoisonMain.CastSpell();
+                Helper.WaitSeconds(4.5);
+                PoisonOff.CastSpell();
+                Helper.WaitSeconds(4.5);
+                return;
+            }
+
+            if(!FriendlyFlag)
+            {
+                Input.KeyPress(VirtualKeyCode.VK_P);
+                Helper.WaitSeconds(Automater.RegisterDelay);
+            }
+
+            if (Api.PlayerData.IsTargetPlayer && !FriendlyFlag)
+            {
+                FriendlyTimer.Start();
+                FriendlyFlag = true;
+            }
+
             CheckFindMode();
-            bool validTarget = false;
+            bool validTarget;
 
             if (FindTargetMode == RogueFindTargetMode.StealthAndThrow)
             {
@@ -130,12 +167,12 @@ namespace ClassicWowNeuralParasite
                         StaleStealthTimer.Start();
                 }
 
-                validTarget = WowApi.PlayerData.PlayerHasTarget &&
-                            WowApi.PlayerData.TargetHealth == 100 &&
-                            !WowApi.PlayerData.TargetInCombat &&
-                            WowApi.PlayerData.TargetFaction == 0 &&
-                            WowApi.PlayerData.IsInFarRange &&
-                            !WowApi.PlayerData.IsInCloseRange &&
+                validTarget = Api.PlayerData.PlayerHasTarget &&
+                            Api.PlayerData.TargetHealth == 100 &&
+                            !Api.PlayerData.TargetInCombat &&
+                            Api.PlayerData.TargetFaction == 0 &&
+                            Api.PlayerData.IsInFarRange &&
+                            !Api.PlayerData.IsInCloseRange &&
                             Throw.CanCastSpell;
 
                 if (validTarget)
@@ -144,17 +181,17 @@ namespace ClassicWowNeuralParasite
 
                     Helper.WaitSeconds(1);
                     Throw.CastSpell();
-                    Helper.WaitSeconds(2);
+                    Helper.WaitSeconds(2.5);
                 }
             }
             else if (FindTargetMode == RogueFindTargetMode.Throw)
             {
-                validTarget = WowApi.PlayerData.PlayerHasTarget &&
-                            WowApi.PlayerData.TargetHealth == 100 &&
-                            !WowApi.PlayerData.TargetInCombat &&
-                            WowApi.PlayerData.TargetFaction == 0 &&
-                            WowApi.PlayerData.IsInFarRange &&
-                            !WowApi.PlayerData.IsInCloseRange &&
+                validTarget = Api.PlayerData.PlayerHasTarget &&
+                            Api.PlayerData.TargetHealth == 100 &&
+                            !Api.PlayerData.TargetInCombat &&
+                            Api.PlayerData.TargetFaction == 0 &&
+                            Api.PlayerData.IsInFarRange &&
+                            !Api.PlayerData.IsInCloseRange &&
                             Throw.CanCastSpell;
 
                 if (validTarget)
@@ -163,7 +200,7 @@ namespace ClassicWowNeuralParasite
 
                     Helper.WaitSeconds(1);
                     Throw.CastSpell();
-                    Helper.WaitSeconds(2);
+                    Helper.WaitSeconds(2.5);
                 }
             }
             else if (FindTargetMode == RogueFindTargetMode.Stealth)
@@ -176,15 +213,15 @@ namespace ClassicWowNeuralParasite
                         StaleStealthTimer.Start();
                 }
 
-                validTarget = WowApi.PlayerData.PlayerHasTarget &&
-                            WowApi.PlayerData.TargetHealth == 100 &&
-                            !WowApi.PlayerData.TargetInCombat &&
-                            WowApi.PlayerData.TargetFaction == 0 &&
-                            WowApi.PlayerData.IsInCloseRange;
+                validTarget = Api.PlayerData.PlayerHasTarget &&
+                            Api.PlayerData.TargetHealth == 100 &&
+                            !Api.PlayerData.TargetInCombat &&
+                            Api.PlayerData.TargetFaction == 0 &&
+                            Api.PlayerData.IsInCloseRange;
 
                 if (validTarget)
                 {
-                    if (WowApi.PlayerData.IsInCloseRange)
+                    if (Api.PlayerData.IsInCloseRange)
                     {
                         Input.KeyPress(VirtualKeyCode.VK_2);
                         Helper.WaitSeconds(0.1);
@@ -193,11 +230,11 @@ namespace ClassicWowNeuralParasite
             }
             else
             {
-                validTarget = WowApi.PlayerData.PlayerHasTarget &&
-                            WowApi.PlayerData.TargetHealth == 100 &&
-                            !WowApi.PlayerData.TargetInCombat &&
-                            WowApi.PlayerData.TargetFaction == 0 &&
-                            WowApi.PlayerData.IsInCloseRange;
+                validTarget = Api.PlayerData.PlayerHasTarget &&
+                            Api.PlayerData.TargetHealth == 100 &&
+                            !Api.PlayerData.TargetInCombat &&
+                            Api.PlayerData.TargetFaction == 0 &&
+                            Api.PlayerData.IsInCloseRange;
 
                 if (validTarget)
                 {
@@ -206,17 +243,17 @@ namespace ClassicWowNeuralParasite
                 }
             }
 
-            if(!validTarget)
+            if (!validTarget)
                 Target.Act();
         }
 
         public override void AutoAttackTarget()
         {
-            if (!WowApi.PlayerData.PlayerInCombat)
+            if (!Api.PlayerData.PlayerInCombat)
                 return;
-            else if (!WowApi.PlayerData.PlayerHasTarget)
+            else if (!Api.PlayerData.PlayerHasTarget)
                 Target.Act();
-            else if (!WowApi.PlayerData.PlayerIsAttacking)
+            else if (!Api.PlayerData.PlayerIsAttacking)
                 Attack.Act();
             else if (SliceAndDice.CanCastSpell)
                 SliceAndDice.CastSpell();
@@ -279,7 +316,7 @@ namespace ClassicWowNeuralParasite
         public override void RegenerateVitals()
         {
             Input.KeyPress(VirtualKeyCode.VK_T);
-            Helper.WaitSeconds(WowAutomater.RegisterDelay);
+            Helper.WaitSeconds(Automater.RegisterDelay);
         }
     }
 }
