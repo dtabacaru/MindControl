@@ -12,6 +12,9 @@ namespace WowAutomater
         public int StealthCooldown = 10;
         public bool RuptureFirst = true;
         public bool AlwaysStealth = true;
+        public volatile bool ApplyPoison = true;
+        public volatile bool DontThrow = true;
+        public volatile bool StopAroundPlayers = false;
 
         public Timer StaleStealthTimer = new Timer();
         public Timer FriendlyTimer = new Timer();
@@ -56,8 +59,8 @@ namespace WowAutomater
             BladeFlurry = new Spell(VirtualKeyCode.VK_N, cooldownTime: 2 * 60, healthPercentage: 35, level: 31);
             EquipAmmo = new Spell(VirtualKeyCode.VK_Z, cooldownTime: 10);
 
-            PoisonMain = new CompoundSpell(VirtualKeyCode.VK_G, VirtualKeyCode.VK_Y, cooldownTime: 31 * 60);
-            PoisonOff = new CompoundSpell(VirtualKeyCode.VK_G, VirtualKeyCode.VK_H, cooldownTime: 31 * 60);
+            PoisonMain = new CompoundSpell(VirtualKeyCode.VK_G, VirtualKeyCode.VK_Y, cooldownTime: 31 * 60, level: 20);
+            PoisonOff = new CompoundSpell(VirtualKeyCode.VK_G, VirtualKeyCode.VK_H, cooldownTime: 31 * 60, level: 20);
 
             StaleStealthTimer.Interval = StealthCooldown * 1000;
             StaleStealthTimer.Elapsed += StaleStealthTimer_Elapsed;
@@ -131,7 +134,7 @@ namespace WowAutomater
         {
             WaypointFollower.FollowWaypoints(true);
 
-            if (PoisonMain.CanCastSpell)
+            if (PoisonMain.CanCastSpell && ApplyPoison)
             {
                 WaypointFollower.StopFollowingWaypoints();
                 Helper.WaitSeconds(1.0);
@@ -142,13 +145,13 @@ namespace WowAutomater
                 return;
             }
 
-            if(!FriendlyFlag)
+            if(!FriendlyFlag && DontThrow)
             {
                 Input.KeyPress(VirtualKeyCode.VK_P);
                 Helper.WaitSeconds(Automater.RegisterDelay);
             }
 
-            if (Api.PlayerData.IsTargetPlayer && !FriendlyFlag)
+            if (Api.PlayerData.IsTargetPlayer && !FriendlyFlag && DontThrow)
             {
                 FriendlyTimer.Start();
                 FriendlyFlag = true;

@@ -88,6 +88,10 @@
             this.FirstSealNoneButton = new System.Windows.Forms.RadioButton();
             this.FirstSealLabel = new System.Windows.Forms.Label();
             this.RogueTab = new System.Windows.Forms.TabPage();
+            this.DontThrowCheckBox = new System.Windows.Forms.CheckBox();
+            this.DontThrowLabel = new System.Windows.Forms.Label();
+            this.ApplyPoisonCheckBox = new System.Windows.Forms.CheckBox();
+            this.ApplyPoisonLabel = new System.Windows.Forms.Label();
             this.StealthForeverCheckBox = new System.Windows.Forms.CheckBox();
             this.StealthForeverLabel = new System.Windows.Forms.Label();
             this.RuptureFirstCheckBox = new System.Windows.Forms.CheckBox();
@@ -149,6 +153,8 @@
             this.FindTargetRateLabel = new System.Windows.Forms.Label();
             this.StatusLabel = new System.Windows.Forms.Label();
             this.ShowInfoButton = new System.Windows.Forms.Button();
+            this.ThrowAfterNumericInput = new System.Windows.Forms.NumericUpDown();
+            this.ThrowAfterLabel = new System.Windows.Forms.Label();
             this.OptionTabs.SuspendLayout();
             this.InfoTab.SuspendLayout();
             this.PathsTab.SuspendLayout();
@@ -177,6 +183,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.KillTargetWaitTimeNumericInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.FindTargetWaitTimeNumericInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.FindTargetRateNumericInput)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ThrowAfterNumericInput)).BeginInit();
             this.SuspendLayout();
             // 
             // ModeDropDown
@@ -411,7 +418,7 @@
             // RemoteServerLabel
             // 
             this.RemoteServerLabel.AutoSize = true;
-            this.RemoteServerLabel.Location = new System.Drawing.Point(3, 515);
+            this.RemoteServerLabel.Location = new System.Drawing.Point(1, 518);
             this.RemoteServerLabel.Name = "RemoteServerLabel";
             this.RemoteServerLabel.Size = new System.Drawing.Size(76, 13);
             this.RemoteServerLabel.TabIndex = 37;
@@ -419,7 +426,7 @@
             // 
             // RemoteServerTextBox
             // 
-            this.RemoteServerTextBox.Location = new System.Drawing.Point(8, 531);
+            this.RemoteServerTextBox.Location = new System.Drawing.Point(6, 534);
             this.RemoteServerTextBox.Name = "RemoteServerTextBox";
             this.RemoteServerTextBox.Size = new System.Drawing.Size(196, 20);
             this.RemoteServerTextBox.TabIndex = 36;
@@ -427,7 +434,7 @@
             // RemoteUserLabel
             // 
             this.RemoteUserLabel.AutoSize = true;
-            this.RemoteUserLabel.Location = new System.Drawing.Point(3, 476);
+            this.RemoteUserLabel.Location = new System.Drawing.Point(1, 479);
             this.RemoteUserLabel.Name = "RemoteUserLabel";
             this.RemoteUserLabel.Size = new System.Drawing.Size(67, 13);
             this.RemoteUserLabel.TabIndex = 35;
@@ -435,7 +442,7 @@
             // 
             // RemoteUserTextBox
             // 
-            this.RemoteUserTextBox.Location = new System.Drawing.Point(8, 492);
+            this.RemoteUserTextBox.Location = new System.Drawing.Point(6, 495);
             this.RemoteUserTextBox.Name = "RemoteUserTextBox";
             this.RemoteUserTextBox.Size = new System.Drawing.Size(196, 20);
             this.RemoteUserTextBox.TabIndex = 34;
@@ -443,7 +450,7 @@
             // RemoteWebInterfaceButton
             // 
             this.RemoteWebInterfaceButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
-            this.RemoteWebInterfaceButton.Location = new System.Drawing.Point(8, 557);
+            this.RemoteWebInterfaceButton.Location = new System.Drawing.Point(6, 560);
             this.RemoteWebInterfaceButton.Name = "RemoteWebInterfaceButton";
             this.RemoteWebInterfaceButton.Size = new System.Drawing.Size(196, 25);
             this.RemoteWebInterfaceButton.TabIndex = 33;
@@ -454,7 +461,7 @@
             // SMTPServerLabel
             // 
             this.SMTPServerLabel.AutoSize = true;
-            this.SMTPServerLabel.Location = new System.Drawing.Point(3, 406);
+            this.SMTPServerLabel.Location = new System.Drawing.Point(1, 409);
             this.SMTPServerLabel.Name = "SMTPServerLabel";
             this.SMTPServerLabel.Size = new System.Drawing.Size(69, 13);
             this.SMTPServerLabel.TabIndex = 32;
@@ -462,7 +469,7 @@
             // 
             // SMTPServerTextBox
             // 
-            this.SMTPServerTextBox.Location = new System.Drawing.Point(8, 422);
+            this.SMTPServerTextBox.Location = new System.Drawing.Point(6, 425);
             this.SMTPServerTextBox.Name = "SMTPServerTextBox";
             this.SMTPServerTextBox.Size = new System.Drawing.Size(196, 20);
             this.SMTPServerTextBox.TabIndex = 31;
@@ -470,7 +477,7 @@
             // SMTPPasswordLabel
             // 
             this.SMTPPasswordLabel.AutoSize = true;
-            this.SMTPPasswordLabel.Location = new System.Drawing.Point(3, 367);
+            this.SMTPPasswordLabel.Location = new System.Drawing.Point(1, 370);
             this.SMTPPasswordLabel.Name = "SMTPPasswordLabel";
             this.SMTPPasswordLabel.Size = new System.Drawing.Size(127, 13);
             this.SMTPPasswordLabel.TabIndex = 30;
@@ -478,7 +485,7 @@
             // 
             // SMTPPasswordTextBox
             // 
-            this.SMTPPasswordTextBox.Location = new System.Drawing.Point(8, 383);
+            this.SMTPPasswordTextBox.Location = new System.Drawing.Point(6, 386);
             this.SMTPPasswordTextBox.Name = "SMTPPasswordTextBox";
             this.SMTPPasswordTextBox.Size = new System.Drawing.Size(196, 20);
             this.SMTPPasswordTextBox.TabIndex = 29;
@@ -486,7 +493,7 @@
             // SMTPNameLabel
             // 
             this.SMTPNameLabel.AutoSize = true;
-            this.SMTPNameLabel.Location = new System.Drawing.Point(3, 328);
+            this.SMTPNameLabel.Location = new System.Drawing.Point(1, 331);
             this.SMTPNameLabel.Name = "SMTPNameLabel";
             this.SMTPNameLabel.Size = new System.Drawing.Size(108, 13);
             this.SMTPNameLabel.TabIndex = 28;
@@ -494,7 +501,7 @@
             // 
             // SMTPNameTextBox
             // 
-            this.SMTPNameTextBox.Location = new System.Drawing.Point(8, 344);
+            this.SMTPNameTextBox.Location = new System.Drawing.Point(6, 347);
             this.SMTPNameTextBox.Name = "SMTPNameTextBox";
             this.SMTPNameTextBox.Size = new System.Drawing.Size(196, 20);
             this.SMTPNameTextBox.TabIndex = 27;
@@ -502,7 +509,7 @@
             // WhisperEmailToLabel
             // 
             this.WhisperEmailToLabel.AutoSize = true;
-            this.WhisperEmailToLabel.Location = new System.Drawing.Point(3, 289);
+            this.WhisperEmailToLabel.Location = new System.Drawing.Point(1, 292);
             this.WhisperEmailToLabel.Name = "WhisperEmailToLabel";
             this.WhisperEmailToLabel.Size = new System.Drawing.Size(88, 13);
             this.WhisperEmailToLabel.TabIndex = 26;
@@ -510,7 +517,7 @@
             // 
             // WhisperEmailToTextBox
             // 
-            this.WhisperEmailToTextBox.Location = new System.Drawing.Point(8, 305);
+            this.WhisperEmailToTextBox.Location = new System.Drawing.Point(6, 308);
             this.WhisperEmailToTextBox.Name = "WhisperEmailToTextBox";
             this.WhisperEmailToTextBox.Size = new System.Drawing.Size(196, 20);
             this.WhisperEmailToTextBox.TabIndex = 25;
@@ -518,7 +525,7 @@
             // WhisperEmailCheckBox
             // 
             this.WhisperEmailCheckBox.AutoSize = true;
-            this.WhisperEmailCheckBox.Location = new System.Drawing.Point(154, 262);
+            this.WhisperEmailCheckBox.Location = new System.Drawing.Point(154, 265);
             this.WhisperEmailCheckBox.Name = "WhisperEmailCheckBox";
             this.WhisperEmailCheckBox.Size = new System.Drawing.Size(15, 14);
             this.WhisperEmailCheckBox.TabIndex = 24;
@@ -528,7 +535,7 @@
             // WhisperEmailLabel
             // 
             this.WhisperEmailLabel.AutoSize = true;
-            this.WhisperEmailLabel.Location = new System.Drawing.Point(3, 262);
+            this.WhisperEmailLabel.Location = new System.Drawing.Point(3, 265);
             this.WhisperEmailLabel.Name = "WhisperEmailLabel";
             this.WhisperEmailLabel.Size = new System.Drawing.Size(101, 13);
             this.WhisperEmailLabel.TabIndex = 23;
@@ -537,7 +544,7 @@
             // WebInterfaceToggleButton
             // 
             this.WebInterfaceToggleButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
-            this.WebInterfaceToggleButton.Location = new System.Drawing.Point(8, 448);
+            this.WebInterfaceToggleButton.Location = new System.Drawing.Point(6, 451);
             this.WebInterfaceToggleButton.Name = "WebInterfaceToggleButton";
             this.WebInterfaceToggleButton.Size = new System.Drawing.Size(196, 25);
             this.WebInterfaceToggleButton.TabIndex = 22;
@@ -924,6 +931,12 @@
             // 
             // RogueTab
             // 
+            this.RogueTab.Controls.Add(this.ThrowAfterNumericInput);
+            this.RogueTab.Controls.Add(this.ThrowAfterLabel);
+            this.RogueTab.Controls.Add(this.DontThrowCheckBox);
+            this.RogueTab.Controls.Add(this.DontThrowLabel);
+            this.RogueTab.Controls.Add(this.ApplyPoisonCheckBox);
+            this.RogueTab.Controls.Add(this.ApplyPoisonLabel);
             this.RogueTab.Controls.Add(this.StealthForeverCheckBox);
             this.RogueTab.Controls.Add(this.StealthForeverLabel);
             this.RogueTab.Controls.Add(this.RuptureFirstCheckBox);
@@ -948,6 +961,48 @@
             this.RogueTab.TabIndex = 2;
             this.RogueTab.Text = "Rogue";
             this.RogueTab.UseVisualStyleBackColor = true;
+            // 
+            // DontThrowCheckBox
+            // 
+            this.DontThrowCheckBox.AutoSize = true;
+            this.DontThrowCheckBox.Checked = true;
+            this.DontThrowCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.DontThrowCheckBox.Location = new System.Drawing.Point(146, 247);
+            this.DontThrowCheckBox.Name = "DontThrowCheckBox";
+            this.DontThrowCheckBox.Size = new System.Drawing.Size(15, 14);
+            this.DontThrowCheckBox.TabIndex = 26;
+            this.DontThrowCheckBox.UseVisualStyleBackColor = true;
+            this.DontThrowCheckBox.CheckedChanged += new System.EventHandler(this.DontThrowCheckBox_CheckedChanged);
+            // 
+            // DontThrowLabel
+            // 
+            this.DontThrowLabel.AutoSize = true;
+            this.DontThrowLabel.Location = new System.Drawing.Point(4, 247);
+            this.DontThrowLabel.Name = "DontThrowLabel";
+            this.DontThrowLabel.Size = new System.Drawing.Size(133, 13);
+            this.DontThrowLabel.TabIndex = 25;
+            this.DontThrowLabel.Text = "Don\'t throw around players";
+            // 
+            // ApplyPoisonCheckBox
+            // 
+            this.ApplyPoisonCheckBox.AutoSize = true;
+            this.ApplyPoisonCheckBox.Checked = true;
+            this.ApplyPoisonCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ApplyPoisonCheckBox.Location = new System.Drawing.Point(146, 224);
+            this.ApplyPoisonCheckBox.Name = "ApplyPoisonCheckBox";
+            this.ApplyPoisonCheckBox.Size = new System.Drawing.Size(15, 14);
+            this.ApplyPoisonCheckBox.TabIndex = 24;
+            this.ApplyPoisonCheckBox.UseVisualStyleBackColor = true;
+            this.ApplyPoisonCheckBox.CheckedChanged += new System.EventHandler(this.ApplyPoisonCheckBox_CheckedChanged);
+            // 
+            // ApplyPoisonLabel
+            // 
+            this.ApplyPoisonLabel.AutoSize = true;
+            this.ApplyPoisonLabel.Location = new System.Drawing.Point(4, 224);
+            this.ApplyPoisonLabel.Name = "ApplyPoisonLabel";
+            this.ApplyPoisonLabel.Size = new System.Drawing.Size(67, 13);
+            this.ApplyPoisonLabel.TabIndex = 23;
+            this.ApplyPoisonLabel.Text = "Apply poison";
             // 
             // StealthForeverCheckBox
             // 
@@ -1695,11 +1750,38 @@
             this.ShowInfoButton.UseVisualStyleBackColor = false;
             this.ShowInfoButton.Click += new System.EventHandler(this.ShowInfoButton_Click);
             // 
+            // ThrowAfterNumericInput
+            // 
+            this.ThrowAfterNumericInput.Location = new System.Drawing.Point(146, 269);
+            this.ThrowAfterNumericInput.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.ThrowAfterNumericInput.Name = "ThrowAfterNumericInput";
+            this.ThrowAfterNumericInput.Size = new System.Drawing.Size(54, 20);
+            this.ThrowAfterNumericInput.TabIndex = 28;
+            this.ThrowAfterNumericInput.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.ThrowAfterNumericInput.ValueChanged += new System.EventHandler(this.ThrowAfterNumericInput_ValueChanged);
+            // 
+            // ThrowAfterLabel
+            // 
+            this.ThrowAfterLabel.AutoSize = true;
+            this.ThrowAfterLabel.Location = new System.Drawing.Point(4, 271);
+            this.ThrowAfterLabel.Name = "ThrowAfterLabel";
+            this.ThrowAfterLabel.Size = new System.Drawing.Size(87, 13);
+            this.ThrowAfterLabel.TabIndex = 27;
+            this.ThrowAfterLabel.Text = "Throw after (sec)";
+            // 
             // MainUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(220, 61);
+            this.ClientSize = new System.Drawing.Size(220, 961);
             this.Controls.Add(this.StatusLabel);
             this.Controls.Add(this.OptionTabs);
             this.Controls.Add(this.ShowInfoButton);
@@ -1746,6 +1828,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.KillTargetWaitTimeNumericInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.FindTargetWaitTimeNumericInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.FindTargetRateNumericInput)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ThrowAfterNumericInput)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1872,6 +1955,12 @@
         private System.Windows.Forms.Label RemoteServerLabel;
         private System.Windows.Forms.TextBox RemoteServerTextBox;
         private System.Windows.Forms.PictureBox MapBox;
+        private System.Windows.Forms.CheckBox ApplyPoisonCheckBox;
+        private System.Windows.Forms.Label ApplyPoisonLabel;
+        private System.Windows.Forms.CheckBox DontThrowCheckBox;
+        private System.Windows.Forms.Label DontThrowLabel;
+        private System.Windows.Forms.NumericUpDown ThrowAfterNumericInput;
+        private System.Windows.Forms.Label ThrowAfterLabel;
     }
 }
 

@@ -1,5 +1,6 @@
---Automater
+--Paths
 Split distance: 0.25
+--Automater
 Turn tolerance (rad): 0.08
 Position tolerance: 0.075
 Register delay (sec): 0.10
@@ -45,5 +46,8 @@ Rupture combo points: 3
 Eviscerate percentage: 25
 Evasion percentage: 40
 Rupture first: true
+Apply poison: true
+Don't throw around players: true
+Throw after (sec): 10
 -- Druid
 Passive humanoid: true

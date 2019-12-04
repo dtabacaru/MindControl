@@ -41,6 +41,8 @@ namespace MindControlUI
         {
             InitializeComponent();
 
+            Size = new Size(236, 100);
+
             if (File.Exists("Config.ftw"))
                 ReadConfigString(File.ReadAllText("Config.ftw"));
 
@@ -434,6 +436,17 @@ namespace MindControlUI
                     Automater.Rogue.RuptureFirst = Convert.ToBoolean(configValue);
                     RuptureFirstCheckBox.Checked = Convert.ToBoolean(configValue);
                     break;
+                case "Apply poison":
+                    Automater.Rogue.ApplyPoison = Convert.ToBoolean(configValue);
+                    ApplyPoisonCheckBox.Checked = Convert.ToBoolean(configValue);
+                    break;
+                case "Don't throw around players":
+                    Automater.Rogue.DontThrow = Convert.ToBoolean(configValue);
+                    DontThrowCheckBox.Checked = Convert.ToBoolean(configValue);
+                    break;
+                case "Throw after (sec)":
+                    Automater.Rogue.FriendlyTimer.Interval = Convert.ToDouble(configValue) * 1000;
+                    ThrowAfterNumericInput.Value = Convert.ToDecimal(configValue); break;
                 case "Passive humanoid":
                     Automater.Druid.Passive = Convert.ToBoolean(configValue);
                     PassiveHumanoidCheckBox.Checked = Convert.ToBoolean(configValue);
@@ -1333,5 +1346,19 @@ namespace MindControlUI
 
         }
 
+        private void ApplyPoisonCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Automater.Rogue.ApplyPoison = ApplyPoisonCheckBox.Checked;
+        }
+
+        private void DontThrowCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Automater.Rogue.DontThrow = DontThrowCheckBox.Checked;
+        }
+
+        private void ThrowAfterNumericInput_ValueChanged(object sender, EventArgs e)
+        {
+            Automater.Rogue.FriendlyTimer.Interval = (double)(ThrowAfterNumericInput.Value*1000);
+        }
     }
 }

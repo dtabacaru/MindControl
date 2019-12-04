@@ -522,7 +522,6 @@ namespace WowAutomater
             if (m_InitializeAction)
             {
                 List<Waypoint> reviveWaypoints = new List<Waypoint>();
-                List<double> ghostYwaypoints = new List<double>();
 
                 reviveWaypoints.AddRange(m_ReviveWaypoints);
                 reviveWaypoints.AddRange(m_PathWaypoints);
@@ -700,7 +699,7 @@ namespace WowAutomater
                 else
                     Input.KeyDown(VirtualKeyCode.VK_A);
 
-                Helper.WaitSeconds(0.25);
+                Helper.WaitSeconds(0.3);
 
                 Input.KeyUp(VirtualKeyCode.VK_S);
 
@@ -737,10 +736,11 @@ namespace WowAutomater
             }
             else if (!Api.PlayerData.PlayerHasTarget)
             {
-                // Wait to be attacked
+                // Wait
             }
             else if (!Api.PlayerData.TargetInCombat ||
-                     Api.PlayerData.TargetFaction > 0)
+                     Api.PlayerData.TargetFaction > 0 ||
+                     !Api.PlayerData.TargetTargetingPlayer)
             {
                 Input.KeyPress(VirtualKeyCode.VK_F);
                 Helper.WaitSeconds(RegisterDelay);
