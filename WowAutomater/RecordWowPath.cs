@@ -5,15 +5,11 @@ namespace WowAutomater
 {
     public class RecordPathEventArgs : EventArgs
     {
-        public uint MapId;
-        public double X;
-        public double Y;
+        public Waypoint CurrentWaypoint;
 
-        public RecordPathEventArgs(uint mapId, double x, double y)
+        public RecordPathEventArgs(Waypoint currentWaypoint)
         {
-            MapId = mapId;
-            X = x;
-            Y = y;
+            CurrentWaypoint = currentWaypoint;
         }
     }
 
@@ -43,7 +39,7 @@ namespace WowAutomater
                         lastSplitX = currentX;
                         lastSplitY = currentY;
 
-                        RecordPathEvent?.Invoke(null, new RecordPathEventArgs(currentMapId, currentX, currentY));
+                        RecordPathEvent?.Invoke(null, new RecordPathEventArgs(new Waypoint(currentMapId, currentX, currentY)));
 
                         continue;
                     }
@@ -56,7 +52,7 @@ namespace WowAutomater
                     lastSplitX = currentX;
                     lastSplitY = currentY;
 
-                    RecordPathEvent?.Invoke(null, new RecordPathEventArgs(currentMapId, currentX, currentY));
+                    RecordPathEvent?.Invoke(null, new RecordPathEventArgs(new Waypoint(currentMapId, currentX, currentY)));
                 }
             }
 

@@ -40,7 +40,7 @@ namespace WowAutomater
         {
             set
             {
-                m_ResetCoordinates = true;
+                m_Resetwaypoints = true;
                 m_InitializeAction = true;
                 m_CurrentActionMode = value;
                 m_PreviousActionMode = value;
@@ -64,14 +64,10 @@ namespace WowAutomater
         public delegate void AutomaterActionEventHandler(object sender, AutomaterActionEventArgs wea);
         public static event AutomaterActionEventHandler AutomaterStatusEvent;
 
-        private static List<double> m_PathXCoordinates = new List<double>();
-        private static List<double> m_PathYCoordinates = new List<double>();
-        private static List<double> m_ReviveXCoordinates = new List<double>();
-        private static List<double> m_ReviveYCoordinates = new List<double>();
-        private static List<double> m_ShopXCoordinates = new List<double>();
-        private static List<double> m_ShopYCoordinates = new List<double>();
-        private static List<double> m_WalkXCoordinates = new List<double>();
-        private static List<double> m_WalkYCoordinates = new List<double>();
+        private static List<Waypoint> m_PathWaypoints = new List<Waypoint>();
+        private static List<Waypoint> m_ReviveWaypoints = new List<Waypoint>();
+        private static List<Waypoint> m_ShopWaypoints = new List<Waypoint>();
+        private static List<Waypoint> m_WalkWaypoints = new List<Waypoint>();
 
         private static EventWaitHandle m_ActionEventWaitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
         private static volatile bool m_Run = true;
@@ -79,7 +75,7 @@ namespace WowAutomater
         private static bool m_NoDead = false;
         private static bool m_NoShop = false;
         private static bool m_NoWalk = false;
-        private static bool m_ResetCoordinates = true;
+        private static bool m_Resetwaypoints = true;
 
         private static PlayerClassType m_CurrentClass = PlayerClassType.None;
 
@@ -344,72 +340,48 @@ namespace WowAutomater
             }
         }
 
-        public static void SetPathCoordinates(List<double> xCoordinates, List<double> yCoordinates)
+        public static void SetPathWaypoints(List<Waypoint> waypoints)
         {
-            if (xCoordinates.Count != yCoordinates.Count )
-                throw new Exception("The number of x and y coordinates must match.");
+            m_Resetwaypoints = true;
 
-            m_ResetCoordinates = true;
-
-            m_PathXCoordinates.Clear();
-            m_PathXCoordinates.AddRange(xCoordinates);
-
-            m_PathYCoordinates.Clear();
-            m_PathYCoordinates.AddRange(yCoordinates);
+            m_PathWaypoints.Clear();
+            m_PathWaypoints.AddRange(waypoints);
         }
 
-        public static void SetReviveCoordinates(List<double> xCoordinates, List<double> yCoordinates)
+        public static void SetReviveWaypoints(List<Waypoint> waypoints)
         {
-            if (xCoordinates.Count != yCoordinates.Count)
-                throw new Exception("The number of x and y coordinates must match.");
+            m_Resetwaypoints = true;
 
-            m_ResetCoordinates = true;
+            m_ReviveWaypoints.Clear();
+            m_ReviveWaypoints.AddRange(waypoints);
 
-            m_ReviveXCoordinates.Clear();
-            m_ReviveXCoordinates.AddRange(xCoordinates);
-
-            m_ReviveYCoordinates.Clear();
-            m_ReviveYCoordinates.AddRange(yCoordinates);
-
-            if (m_ReviveXCoordinates.Count == 0)
+            if (m_ReviveWaypoints.Count == 0)
                 m_NoDead = true;
             else
                 m_NoDead = false;
         }
 
-        public static void SetShopCoordinates(List<double> xCoordinates, List<double> yCoordinates)
+        public static void SetShopWaypoints(List<Waypoint> waypoints)
         {
-            if (xCoordinates.Count != yCoordinates.Count)
-                throw new Exception("The number of x and y coordinates must match.");
+            m_Resetwaypoints = true;
 
-            m_ResetCoordinates = true;
+            m_ShopWaypoints.Clear();
+            m_ShopWaypoints.AddRange(waypoints);
 
-            m_ShopXCoordinates.Clear();
-            m_ShopXCoordinates.AddRange(xCoordinates);
-
-            m_ShopYCoordinates.Clear();
-            m_ShopYCoordinates.AddRange(yCoordinates);
-
-            if (m_ShopXCoordinates.Count == 0)
+            if (m_ShopWaypoints.Count == 0)
                 m_NoShop = true;
             else
                 m_NoShop = false;
         }
 
-        public static void SetWalkCoordinates(List<double> xCoordinates, List<double> yCoordinates)
+        public static void SetWalkWaypoints(List<Waypoint> waypoints)
         {
-            if (xCoordinates.Count != yCoordinates.Count)
-                throw new Exception("The number of x and y coordinates must match.");
+            m_Resetwaypoints = true;
 
-            m_ResetCoordinates = true;
+            m_WalkWaypoints.Clear();
+            m_WalkWaypoints.AddRange(waypoints);
 
-            m_WalkXCoordinates.Clear();
-            m_WalkXCoordinates.AddRange(xCoordinates);
-
-            m_WalkYCoordinates.Clear();
-            m_WalkYCoordinates.AddRange(yCoordinates);
-
-            if (m_WalkXCoordinates.Count == 0)
+            if (m_WalkWaypoints.Count == 0)
                 m_NoWalk = true;
             else
                 m_NoWalk = false;
@@ -532,11 +504,11 @@ namespace WowAutomater
             if (m_NoWalk)
                 return;
 
-            if(m_ResetCoordinates)
+            if(m_Resetwaypoints)
             {
-                WaypointFollower.SetWaypoints(m_WalkXCoordinates, m_WalkYCoordinates);
+                WaypointFollower.SetWaypoints(m_WalkWaypoints);
 
-                m_ResetCoordinates = false;
+                m_Resetwaypoints = false;
             }
 
             WaypointFollower.FollowWaypoints(false);
@@ -549,16 +521,13 @@ namespace WowAutomater
 
             if (m_InitializeAction)
             {
-                List<double> ghostXCoordinates = new List<double>();
-                List<double> ghostYCoordinates = new List<double>();
+                List<Waypoint> reviveWaypoints = new List<Waypoint>();
+                List<double> ghostYwaypoints = new List<double>();
 
-                ghostXCoordinates.AddRange(m_ReviveXCoordinates);
-                ghostXCoordinates.AddRange(m_PathXCoordinates);
+                reviveWaypoints.AddRange(m_ReviveWaypoints);
+                reviveWaypoints.AddRange(m_PathWaypoints);
 
-                ghostYCoordinates.AddRange(m_ReviveYCoordinates);
-                ghostYCoordinates.AddRange(m_PathYCoordinates);
-
-                WaypointFollower.SetWaypoints(ghostXCoordinates, ghostYCoordinates);
+                WaypointFollower.SetWaypoints(reviveWaypoints);
 
                 Helper.WaitSeconds(3.5);
                 Input.MoveMouseTo(XReviveButtonLocation, YReviveButtonLocation);
@@ -584,7 +553,7 @@ namespace WowAutomater
                 WaypointFollower.StopFollowingWaypoints();
                 TransitionState(ActionMode.RegenerateVitals);
                 m_ReviveSw.Stop();
-                m_ResetCoordinates = true;
+                m_Resetwaypoints = true;
 
                 Helper.WaitSeconds(1);
             }
@@ -694,11 +663,11 @@ namespace WowAutomater
 
         private static void FindTarget()
         {
-            if (m_ResetCoordinates)
+            if (m_Resetwaypoints)
             {
-                WaypointFollower.SetWaypoints(m_PathXCoordinates, m_PathYCoordinates);
+                WaypointFollower.SetWaypoints(m_PathWaypoints);
 
-                m_ResetCoordinates = false;
+                m_Resetwaypoints = false;
             }
 
             if (CheckCombat())

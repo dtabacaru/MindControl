@@ -1,68 +1,87 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using WowAutomater;
+using WowApi;
+using System;
+using System.IO;
 
 namespace MindControlUI
 {
     public partial class PathViewer : Form
     {
-        class MapString
-        {
-            public string Text;
-            public float X;
-            public float Y;
+        List<Waypoint> SetPathWaypoints = new List<Waypoint>();
+        string SetPathWaypointName = string.Empty;
 
-            public MapString(string text, float x, float y)
-            {
-                Text = text;
-                X = x;
-                Y = y;
-            }
-        }
+        List<Waypoint> CustomPathWaypoints = new List<Waypoint>();
+        List<Waypoint> CustomPathStartWaypoints = new List<Waypoint>();
+        List<Waypoint> CustomPathEndWaypoints = new List<Waypoint>();
+        List<string> CustomPathNames = new List<string>();
 
-        List<float> m_PathXCoords = new List<float>();
-        List<float> m_PathYCoords = new List<float>();
-        List<float> m_PathStartXCoords = new List<float>();
-        List<float> m_PathStartYCoords = new List<float>();
-        List<float> m_PathEndXCoords = new List<float>();
-        List<float> m_PathEndYCoords = new List<float>();
-        List<MapString> m_PathNames = new List<MapString>();
+        private System.Windows.Forms.Timer m_ApiDataUpdateTimer = new System.Windows.Forms.Timer();
 
-        public PathViewer()
+        public PathViewer(List<Waypoint> waypoints, string name)
         {
             InitializeComponent();
+
+            SetPathWaypointName = name;
+            SetPathWaypoints = waypoints;
+            MapPictureBox.Image = new Bitmap(Helper.ResizeImage(new Bitmap(waypoints[0].MapId.ToString() + ".jpg"), 1000, 700));
+
+            m_ApiDataUpdateTimer.Interval = 50;
+            m_ApiDataUpdateTimer.Tick += M_ApiDataUpdateTimer_Tick;
+            m_ApiDataUpdateTimer.Enabled = true;
         }
 
-        private void LoadMapImageToolStripMenuItem_Click(object sender, EventArgs e)
+        private void M_ApiDataUpdateTimer_Tick(object sender, System.EventArgs e)
         {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "PNG |*.png";
-            ofd.Title = "Open map image";
-            ofd.ShowDialog();
-
-            if (ofd.FileName != "")
-            {
-                try
-                {
-                    MapPictureBox.Image = new Bitmap(ResizeImage(new Bitmap(ofd.FileName), 1000, 700));
-                }
-                catch (Exception err)
-                {
-                    MessageBox.Show(err.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
+            MapPictureBox.Invalidate();
         }
 
-        private void LoadPathToolStripMenuItem_Click(object sender, EventArgs e)
+        Pen m_PathPen = new Pen(Brushes.Black, 2);
+        Pen m_StartPen = new Pen(Brushes.LightGreen, 4);
+        Pen m_EndPen = new Pen(Brushes.Crimson, 4);
+        Pen m_PlayerPen = new Pen(Brushes.Cyan, 4);
+
+        private void MapPictureBox_Paint(object sender, PaintEventArgs e)
+        {
+            for (int i = 0; i < CustomPathWaypoints.Count; i++)
+            {
+                e.Graphics.DrawEllipse(m_PathPen, (float)(CustomPathWaypoints[i].X * 10), (float)(CustomPathWaypoints[i].Y * 7), 1f, 1f);
+            }
+
+            for (int i = 0; i < CustomPathStartWaypoints.Count; i++)
+            {
+                e.Graphics.DrawEllipse(m_StartPen, (float)(CustomPathStartWaypoints[i].X * 10), (float)(CustomPathStartWaypoints[i].Y * 7), 1f, 1f);
+            }
+
+            for (int i = 0; i < CustomPathEndWaypoints.Count; i++)
+            {
+                e.Graphics.DrawEllipse(m_EndPen, (float)(CustomPathEndWaypoints[i].X * 10), (float)(CustomPathEndWaypoints[i].Y * 7), 1f, 1f);
+            }
+
+            for (int i = 0; i < CustomPathStartWaypoints.Count; i++)
+            {
+                e.Graphics.DrawString(CustomPathNames[i], DefaultFont, Brushes.White, (float)(CustomPathStartWaypoints[i].X * 10), (float)(CustomPathStartWaypoints[i].Y * 7));
+            }
+
+            if (SetPathWaypoints.Count < 2)
+                return;
+
+            for (int i = 0; i < SetPathWaypoints.Count; i++)
+            {
+                e.Graphics.DrawEllipse(m_PathPen, (float)(SetPathWaypoints[i].X * 10), (float)(SetPathWaypoints[i].Y * 7), 1f, 1f);
+            }
+
+            e.Graphics.DrawEllipse(m_StartPen, (float)(SetPathWaypoints[0].X * 10), (float)(SetPathWaypoints[0].Y * 7), 1f, 1f);
+            e.Graphics.DrawString(SetPathWaypointName, DefaultFont, Brushes.White, (float)(SetPathWaypoints[0].X * 10), (float)(SetPathWaypoints[0].Y * 7));
+            e.Graphics.DrawEllipse(m_EndPen, (float)(SetPathWaypoints[SetPathWaypoints.Count-1].X * 10), (float)(SetPathWaypoints[SetPathWaypoints.Count - 1].Y * 7), 1f, 1f);
+
+            if (SetPathWaypoints[0].MapId == Api.PlayerData.MapId)
+                e.Graphics.DrawEllipse(m_PlayerPen, (float)(Api.PlayerData.PlayerXPosition * 10), (float)(Api.PlayerData.PlayerYPosition * 7), 1f, 1f);
+        }
+
+        private void LoadPathToolStripMenuItem_Click(object sender, System.EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Filter = "Text |*.txt";
@@ -73,36 +92,33 @@ namespace MindControlUI
             {
                 try
                 {
-                    string allpaths = File.ReadAllText(ofd.FileName);
-                    string[] paths = allpaths.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                    string path = File.ReadAllText(ofd.FileName);
 
-                    string[] xString = paths[0].Trim().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                    string[] yString = paths[1].Trim().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                    string[] waypointsComponents = path.Split(';');
 
-                    List<float> xCoords = new List<float>();
-                    List<float> yCoords = new List<float>();
+                    List<uint> mapIds = Program.ExtractCommaDelimitedUInts(waypointsComponents[0].Trim());
 
-                    foreach (string xcoordinate in xString)
+                    if(mapIds[0] != SetPathWaypoints[0].MapId)
                     {
-                        xCoords.Add(Convert.ToSingle(xcoordinate));
+                        MessageBox.Show("Path not on current map.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
                     }
 
-                    foreach (string ycoordinate in yString)
+                    List<double> xs = Program.ExtractCommaDelimitedDoubles(waypointsComponents[1].Trim());
+                    List<double> ys = Program.ExtractCommaDelimitedDoubles(waypointsComponents[2].Trim());
+                    List<Waypoint> waypointList = new List<Waypoint>();
+
+                    for (int i = 0; i < mapIds.Count; i++)
                     {
-                        yCoords.Add(Convert.ToSingle(ycoordinate));
+                        waypointList.Add(new Waypoint(mapIds[i], xs[i], ys[i]));
                     }
 
-                    m_PathXCoords.AddRange(xCoords);
-                    m_PathYCoords.AddRange(yCoords);
-
-                    m_PathStartXCoords.Add(xCoords[0]);
-                    m_PathStartYCoords.Add(yCoords[0]);
-
-                    m_PathEndXCoords.Add(xCoords[xCoords.Count - 1]);
-                    m_PathEndYCoords.Add(yCoords[yCoords.Count - 1]);
+                    CustomPathWaypoints.AddRange(waypointList);
+                    CustomPathStartWaypoints.Add(waypointList[0]);
+                    CustomPathEndWaypoints.Add(waypointList[waypointList.Count - 1]);
 
                     FileInfo fi = new FileInfo(ofd.FileName);
-                    m_PathNames.Add(new MapString(fi.Name, xCoords[0], yCoords[0]));
+                    CustomPathNames.Add(fi.Name);
 
                     MapPictureBox.Invalidate();
                 }
@@ -113,72 +129,12 @@ namespace MindControlUI
             }
         }
 
-        public Image ResizeImage(Image image, int width, int height)
+        private void ClearPathsToolStripMenuItem_Click(object sender, System.EventArgs e)
         {
-            Rectangle destRect = new Rectangle(0, 0, width, height);
-            Image destImage = new Bitmap(width, height);
-
-            //destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
-
-            using (var graphics = Graphics.FromImage(destImage))
-            {
-                graphics.CompositingMode = CompositingMode.SourceCopy;
-                graphics.CompositingQuality = CompositingQuality.HighQuality;
-                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.SmoothingMode = SmoothingMode.HighQuality;
-                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-                using (var wrapMode = new ImageAttributes())
-                {
-                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
-                }
-            }
-
-            return destImage;
-        }
-
-        Pen m_StartPen = new Pen(Brushes.Cyan, 4);
-        Pen m_EndPen = new Pen(Brushes.Magenta, 4);
-        Pen m_PathPen = new Pen(Brushes.White, 2);
-
-        private void MapPictureBox_Paint(object sender, PaintEventArgs e)
-        {
-            if (m_PathXCoords.Count == 0)
-                return;
-
-            for(int i = 0; i < m_PathXCoords.Count; i++)
-            {
-                e.Graphics.DrawEllipse(m_PathPen, m_PathXCoords[i] * 10, m_PathYCoords[i] * 7, 1, 1);
-            }
-
-            for (int i = 0; i < m_PathStartXCoords.Count; i++)
-            {
-                e.Graphics.DrawEllipse(m_StartPen, m_PathStartXCoords[i] * 10, m_PathStartYCoords[i] * 7, 1, 1);
-            }
-
-            for (int i = 0; i < m_PathEndXCoords.Count; i++)
-            {
-                e.Graphics.DrawEllipse(m_EndPen, m_PathEndXCoords[i] * 10, m_PathEndYCoords[i] * 7, 1, 1);
-            }
-
-            for (int i = 0; i < m_PathNames.Count; i++)
-            {
-                e.Graphics.DrawString(m_PathNames[i].Text,SystemFonts.DefaultFont, Brushes.Cyan, m_PathNames[i].X*10, m_PathNames[i].Y*7);
-            }
-
-            
-        }
-
-        private void clearPathsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            m_PathXCoords.Clear();
-            m_PathYCoords.Clear();
-            m_PathEndXCoords.Clear();
-            m_PathEndYCoords.Clear();
-            m_PathStartXCoords.Clear();
-            m_PathStartYCoords.Clear();
-            m_PathNames.Clear();
+            CustomPathWaypoints.Clear();
+            CustomPathStartWaypoints.Clear();
+            CustomPathEndWaypoints.Clear();
+            CustomPathNames.Clear();
 
             MapPictureBox.Invalidate();
         }

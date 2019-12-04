@@ -34,18 +34,15 @@
             this.InfoTab = new System.Windows.Forms.TabPage();
             this.DataTextBox = new System.Windows.Forms.RichTextBox();
             this.PathsTab = new System.Windows.Forms.TabPage();
+            this.MapBox = new System.Windows.Forms.PictureBox();
             this.ReversePathButton = new System.Windows.Forms.Button();
             this.SplitDistanceLabel = new System.Windows.Forms.Label();
             this.SplitDistanceNumericInput = new System.Windows.Forms.NumericUpDown();
             this.SaveFileButton = new System.Windows.Forms.Button();
             this.PathTypeDropDown = new System.Windows.Forms.ComboBox();
             this.RecordButton = new System.Windows.Forms.Button();
-            this.OKButton = new System.Windows.Forms.Button();
+            this.ApplyPathButton = new System.Windows.Forms.Button();
             this.LoadFileButton = new System.Windows.Forms.Button();
-            this.YTextBox = new System.Windows.Forms.TextBox();
-            this.YLabel = new System.Windows.Forms.Label();
-            this.XTextBox = new System.Windows.Forms.TextBox();
-            this.XLabel = new System.Windows.Forms.Label();
             this.AutomaterTab = new System.Windows.Forms.TabPage();
             this.RemoteServerLabel = new System.Windows.Forms.Label();
             this.RemoteServerTextBox = new System.Windows.Forms.TextBox();
@@ -151,11 +148,11 @@
             this.FindTargetRateNumericInput = new System.Windows.Forms.NumericUpDown();
             this.FindTargetRateLabel = new System.Windows.Forms.Label();
             this.StatusLabel = new System.Windows.Forms.Label();
-            this.PathViewerButton = new System.Windows.Forms.Button();
             this.ShowInfoButton = new System.Windows.Forms.Button();
             this.OptionTabs.SuspendLayout();
             this.InfoTab.SuspendLayout();
             this.PathsTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.MapBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SplitDistanceNumericInput)).BeginInit();
             this.AutomaterTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.RegenerateVitalsNumericInput)).BeginInit();
@@ -234,19 +231,15 @@
             // 
             // PathsTab
             // 
-            this.PathsTab.Controls.Add(this.PathViewerButton);
+            this.PathsTab.Controls.Add(this.MapBox);
             this.PathsTab.Controls.Add(this.ReversePathButton);
             this.PathsTab.Controls.Add(this.SplitDistanceLabel);
             this.PathsTab.Controls.Add(this.SplitDistanceNumericInput);
             this.PathsTab.Controls.Add(this.SaveFileButton);
             this.PathsTab.Controls.Add(this.PathTypeDropDown);
             this.PathsTab.Controls.Add(this.RecordButton);
-            this.PathsTab.Controls.Add(this.OKButton);
+            this.PathsTab.Controls.Add(this.ApplyPathButton);
             this.PathsTab.Controls.Add(this.LoadFileButton);
-            this.PathsTab.Controls.Add(this.YTextBox);
-            this.PathsTab.Controls.Add(this.YLabel);
-            this.PathsTab.Controls.Add(this.XTextBox);
-            this.PathsTab.Controls.Add(this.XLabel);
             this.PathsTab.Location = new System.Drawing.Point(4, 22);
             this.PathsTab.Name = "PathsTab";
             this.PathsTab.Padding = new System.Windows.Forms.Padding(3);
@@ -255,9 +248,20 @@
             this.PathsTab.Text = "Paths";
             this.PathsTab.UseVisualStyleBackColor = true;
             // 
+            // MapBox
+            // 
+            this.MapBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.MapBox.Location = new System.Drawing.Point(6, 62);
+            this.MapBox.Name = "MapBox";
+            this.MapBox.Size = new System.Drawing.Size(200, 140);
+            this.MapBox.TabIndex = 45;
+            this.MapBox.TabStop = false;
+            this.MapBox.Click += new System.EventHandler(this.MapBox_Click);
+            this.MapBox.Paint += new System.Windows.Forms.PaintEventHandler(this.MapBox_Paint);
+            // 
             // ReversePathButton
             // 
-            this.ReversePathButton.Location = new System.Drawing.Point(6, 401);
+            this.ReversePathButton.Location = new System.Drawing.Point(6, 305);
             this.ReversePathButton.Name = "ReversePathButton";
             this.ReversePathButton.Size = new System.Drawing.Size(200, 25);
             this.ReversePathButton.TabIndex = 43;
@@ -268,7 +272,7 @@
             // SplitDistanceLabel
             // 
             this.SplitDistanceLabel.AutoSize = true;
-            this.SplitDistanceLabel.Location = new System.Drawing.Point(8, 443);
+            this.SplitDistanceLabel.Location = new System.Drawing.Point(8, 347);
             this.SplitDistanceLabel.Name = "SplitDistanceLabel";
             this.SplitDistanceLabel.Size = new System.Drawing.Size(70, 13);
             this.SplitDistanceLabel.TabIndex = 42;
@@ -282,7 +286,7 @@
             0,
             0,
             131072});
-            this.SplitDistanceNumericInput.Location = new System.Drawing.Point(130, 441);
+            this.SplitDistanceNumericInput.Location = new System.Drawing.Point(130, 345);
             this.SplitDistanceNumericInput.Maximum = new decimal(new int[] {
             10,
             0,
@@ -305,7 +309,7 @@
             // 
             // SaveFileButton
             // 
-            this.SaveFileButton.Location = new System.Drawing.Point(6, 370);
+            this.SaveFileButton.Location = new System.Drawing.Point(6, 274);
             this.SaveFileButton.Name = "SaveFileButton";
             this.SaveFileButton.Size = new System.Drawing.Size(200, 25);
             this.SaveFileButton.TabIndex = 40;
@@ -331,7 +335,7 @@
             // RecordButton
             // 
             this.RecordButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
-            this.RecordButton.Location = new System.Drawing.Point(6, 467);
+            this.RecordButton.Location = new System.Drawing.Point(6, 371);
             this.RecordButton.Name = "RecordButton";
             this.RecordButton.Size = new System.Drawing.Size(200, 25);
             this.RecordButton.TabIndex = 38;
@@ -339,62 +343,26 @@
             this.RecordButton.UseVisualStyleBackColor = false;
             this.RecordButton.Click += new System.EventHandler(this.RecordButton_Click);
             // 
-            // OKButton
+            // ApplyPathButton
             // 
-            this.OKButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.OKButton.Location = new System.Drawing.Point(6, 549);
-            this.OKButton.Name = "OKButton";
-            this.OKButton.Size = new System.Drawing.Size(200, 37);
-            this.OKButton.TabIndex = 37;
-            this.OKButton.Text = "Apply path";
-            this.OKButton.UseVisualStyleBackColor = true;
-            this.OKButton.Click += new System.EventHandler(this.OKButton_Click);
+            this.ApplyPathButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ApplyPathButton.Location = new System.Drawing.Point(6, 426);
+            this.ApplyPathButton.Name = "ApplyPathButton";
+            this.ApplyPathButton.Size = new System.Drawing.Size(200, 48);
+            this.ApplyPathButton.TabIndex = 37;
+            this.ApplyPathButton.Text = "Apply path";
+            this.ApplyPathButton.UseVisualStyleBackColor = true;
+            this.ApplyPathButton.Click += new System.EventHandler(this.ApplyPathButton_Click);
             // 
             // LoadFileButton
             // 
-            this.LoadFileButton.Location = new System.Drawing.Point(6, 339);
+            this.LoadFileButton.Location = new System.Drawing.Point(6, 243);
             this.LoadFileButton.Name = "LoadFileButton";
             this.LoadFileButton.Size = new System.Drawing.Size(200, 25);
             this.LoadFileButton.TabIndex = 36;
             this.LoadFileButton.Text = "Load path from file";
             this.LoadFileButton.UseVisualStyleBackColor = true;
             this.LoadFileButton.Click += new System.EventHandler(this.LoadFileButton_Click);
-            // 
-            // YTextBox
-            // 
-            this.YTextBox.Location = new System.Drawing.Point(6, 191);
-            this.YTextBox.Multiline = true;
-            this.YTextBox.Name = "YTextBox";
-            this.YTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.YTextBox.Size = new System.Drawing.Size(200, 125);
-            this.YTextBox.TabIndex = 35;
-            // 
-            // YLabel
-            // 
-            this.YLabel.AutoSize = true;
-            this.YLabel.Location = new System.Drawing.Point(6, 175);
-            this.YLabel.Name = "YLabel";
-            this.YLabel.Size = new System.Drawing.Size(14, 13);
-            this.YLabel.TabIndex = 34;
-            this.YLabel.Text = "Y";
-            // 
-            // XTextBox
-            // 
-            this.XTextBox.Location = new System.Drawing.Point(6, 46);
-            this.XTextBox.Multiline = true;
-            this.XTextBox.Name = "XTextBox";
-            this.XTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.XTextBox.Size = new System.Drawing.Size(200, 125);
-            this.XTextBox.TabIndex = 33;
-            // 
-            // XLabel
-            // 
-            this.XLabel.AutoSize = true;
-            this.XLabel.Location = new System.Drawing.Point(6, 30);
-            this.XLabel.Name = "XLabel";
-            this.XLabel.Size = new System.Drawing.Size(14, 13);
-            this.XLabel.TabIndex = 32;
-            this.XLabel.Text = "X";
             // 
             // AutomaterTab
             // 
@@ -1711,16 +1679,6 @@
             this.StatusLabel.Size = new System.Drawing.Size(0, 24);
             this.StatusLabel.TabIndex = 38;
             // 
-            // PathViewerButton
-            // 
-            this.PathViewerButton.Location = new System.Drawing.Point(6, 498);
-            this.PathViewerButton.Name = "PathViewerButton";
-            this.PathViewerButton.Size = new System.Drawing.Size(200, 25);
-            this.PathViewerButton.TabIndex = 44;
-            this.PathViewerButton.Text = "Path viewer";
-            this.PathViewerButton.UseVisualStyleBackColor = true;
-            this.PathViewerButton.Click += new System.EventHandler(this.PathViewerButton_Click);
-            // 
             // ShowInfoButton
             // 
             this.ShowInfoButton.BackColor = System.Drawing.SystemColors.ButtonFace;
@@ -1741,7 +1699,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(220, 61);
+            this.ClientSize = new System.Drawing.Size(220, 961);
             this.Controls.Add(this.StatusLabel);
             this.Controls.Add(this.OptionTabs);
             this.Controls.Add(this.ShowInfoButton);
@@ -1758,6 +1716,7 @@
             this.InfoTab.ResumeLayout(false);
             this.PathsTab.ResumeLayout(false);
             this.PathsTab.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.MapBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.SplitDistanceNumericInput)).EndInit();
             this.AutomaterTab.ResumeLayout(false);
             this.AutomaterTab.PerformLayout();
@@ -1802,12 +1761,8 @@
         private System.Windows.Forms.Button SaveFileButton;
         private System.Windows.Forms.ComboBox PathTypeDropDown;
         private System.Windows.Forms.Button RecordButton;
-        private System.Windows.Forms.Button OKButton;
+        private System.Windows.Forms.Button ApplyPathButton;
         private System.Windows.Forms.Button LoadFileButton;
-        private System.Windows.Forms.TextBox YTextBox;
-        private System.Windows.Forms.Label YLabel;
-        private System.Windows.Forms.TextBox XTextBox;
-        private System.Windows.Forms.Label XLabel;
         private System.Windows.Forms.NumericUpDown TurnToleranceNumericInput;
         private System.Windows.Forms.Label TurnToleranceLabel;
         private System.Windows.Forms.NumericUpDown PositionToleranceNumericInput;
@@ -1916,7 +1871,7 @@
         private System.Windows.Forms.Button RemoteWebInterfaceButton;
         private System.Windows.Forms.Label RemoteServerLabel;
         private System.Windows.Forms.TextBox RemoteServerTextBox;
-        private System.Windows.Forms.Button PathViewerButton;
+        private System.Windows.Forms.PictureBox MapBox;
     }
 }
 

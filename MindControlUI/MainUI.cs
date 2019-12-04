@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Net;
@@ -23,7 +24,6 @@ namespace MindControlUI
         private System.Windows.Forms.Timer m_ApiDataUpdateTimer = new System.Windows.Forms.Timer();
         private bool m_InfoSHown = false;
         private bool m_Recording = false;
-        private string m_FilePath = string.Empty;
         private Color m_RedColor = Color.FromArgb(50, 255, 0, 0);
         private Color m_GreenColor = Color.FromArgb(50, 0, 255, 0);
         private InputSimulator m_InputSimulator = new InputSimulator();
@@ -32,36 +32,49 @@ namespace MindControlUI
         private volatile bool m_SendEmails = true;
         private volatile bool m_SendingEmail = false;
 
+        List<Waypoint> m_TargetPathWaypoints = new List<Waypoint>();
+        List<Waypoint> m_RevivePathWaypoints = new List<Waypoint>();
+        List<Waypoint> m_SellPathWaypoints = new List<Waypoint>();
+        List<Waypoint> m_WalkPathWaypoints = new List<Waypoint>();
+
         public MainUI()
         {
             InitializeComponent();
 
             if (File.Exists("Config.ftw"))
-            {
                 ReadConfigString(File.ReadAllText("Config.ftw"));
-            }
 
-            if (!File.Exists("targetpath.txt"))
+            if (File.Exists("targetpath.txt"))
             {
-                File.WriteAllText("targetpath.txt", ";");
-            }
+                ReadPathFromFile("targetpath.txt", m_TargetPathWaypoints);
+                Automater.SetPathWaypoints(m_TargetPathWaypoints);
+            } 
+            else
+                File.WriteAllText("targetpath.txt", ";;");
 
-            if (!File.Exists("revivepath.txt"))
+            if (File.Exists("revivepath.txt"))
             {
-                File.WriteAllText("revivepath.txt", ";");
+                ReadPathFromFile("revivepath.txt", m_RevivePathWaypoints);
+                Automater.SetReviveWaypoints(m_RevivePathWaypoints);
             }
+            else
+                File.WriteAllText("revivepath.txt", ";;");
 
-            if (!File.Exists("shoppath.txt"))
+            if (File.Exists("shoppath.txt"))
             {
-                File.WriteAllText("shoppath.txt", ";");
+                ReadPathFromFile("shoppath.txt", m_SellPathWaypoints);
+                Automater.SetShopWaypoints(m_SellPathWaypoints);
             }
+            else
+                File.WriteAllText("shoppath.txt", ";;");
 
-            if (!File.Exists("walkpath.txt"))
+            if (File.Exists("walkpath.txt"))
             {
-                File.WriteAllText("walkpath.txt", ";");
+                ReadPathFromFile("walkpath.txt", m_WalkPathWaypoints);
+                Automater.SetWalkWaypoints(m_WalkPathWaypoints);
             }
-
-            ReadPaths();
+            else
+                File.WriteAllText("walkpath.txt", ";;");
 
             RecordWowPath.RecordPathEvent += Automater_RecordPathEvent;
             RecordWowPath.StopEvent += Automater_StopEvent;
@@ -172,16 +185,16 @@ namespace MindControlUI
                 return;
             }
 
-            XTextBox.Enabled = true;
-            YTextBox.Enabled = true;
             LoadFileButton.Enabled = true;
             SaveFileButton.Enabled = true;
-            OKButton.Enabled = true;
+            ApplyPathButton.Enabled = true;
+            PathTypeDropDown.Enabled = true;
 
             RecordButton.Text = "Record Path";
             RecordButton.BackColor = System.Drawing.Color.FromArgb(255, 128, 255, 128);
 
             m_Recording = false;
+            MapBox.Invalidate();
         }
 
         private void Automater_RecordPathEvent(object sender, RecordPathEventArgs wea)
@@ -192,8 +205,23 @@ namespace MindControlUI
                 return;
             }
 
-            XTextBox.Text += wea.X.ToString("N3") + ", ";
-            YTextBox.Text += wea.Y.ToString("N3") + ", ";
+            switch (PathTypeDropDown.SelectedIndex)
+            {
+                case 0:
+                    m_TargetPathWaypoints.Add(wea.CurrentWaypoint);
+                    break;
+                case 1:
+                    m_RevivePathWaypoints.Add(wea.CurrentWaypoint);
+                    break;
+                case 2:
+                    m_SellPathWaypoints.Add(wea.CurrentWaypoint);
+                    break;
+                case 3:
+                    m_WalkPathWaypoints.Add(wea.CurrentWaypoint);
+                    break;
+            }
+
+            MapBox.Invalidate();
         }
 
         private void ReadConfigString(string configString)
@@ -415,6 +443,7 @@ namespace MindControlUI
             }
         }
 
+        /*
         private void ReadPaths()
         {
             string allpaths = File.ReadAllText("targetpath.txt");
@@ -444,6 +473,7 @@ namespace MindControlUI
                                      Program.ExtractCommaDelimitedDoubles(paths[1]));
 
         }
+        */
 
         private bool m_LastFound = true;
 
@@ -470,6 +500,7 @@ namespace MindControlUI
             }
 
             m_LastFound = Api.PlayerData.Found;
+            MapBox.Invalidate();
         }
 
         private void AutomaterStatusEvent(object sender, AutomaterActionEventArgs e)
@@ -530,47 +561,96 @@ namespace MindControlUI
             m_InfoSHown = !m_InfoSHown;
         }
 
+        int selectedIndex = 0;
+
         private void PathTypeDropDown_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SetFilePathFromDropDownIndex(PathTypeDropDown.SelectedIndex);
-            ReadPathFromFile();
-        }
-
-        private void SetFilePathFromDropDownIndex(int index)
-        {
-            switch (index)
+            switch (PathTypeDropDown.SelectedIndex)
             {
                 case 0:
-                    m_FilePath = "targetpath.txt";
+                    ReadPathFromFile("targetpath.txt", m_TargetPathWaypoints);
+                    selectedIndex = 0;
+                    if (m_TargetPathWaypoints.Count > 0)
+                        MapBox.Image = new Bitmap(Helper.ResizeImage(new Bitmap(m_TargetPathWaypoints[0].MapId.ToString() + ".jpg"), 200, 140));
                     break;
                 case 1:
-                    m_FilePath = "revivepath.txt";
+                    ReadPathFromFile("revivepath.txt", m_RevivePathWaypoints);
+                    selectedIndex = 1;
+                    if (m_RevivePathWaypoints.Count > 0)
+                        MapBox.Image = new Bitmap(Helper.ResizeImage(new Bitmap(m_RevivePathWaypoints[0].MapId.ToString() + ".jpg"), 200, 140));
                     break;
                 case 2:
-                    m_FilePath = "shoppath.txt";
+                    ReadPathFromFile("shoppath.txt", m_SellPathWaypoints);
+                    selectedIndex = 2;
+                    if (m_SellPathWaypoints.Count > 0)
+                        MapBox.Image = new Bitmap(Helper.ResizeImage(new Bitmap(m_SellPathWaypoints[0].MapId.ToString() + ".jpg"), 200, 140));
                     break;
                 case 3:
-                    m_FilePath = "walkpath.txt";
+                    ReadPathFromFile("walkpath.txt", m_WalkPathWaypoints);
+                    selectedIndex = 3;
+                    if (m_WalkPathWaypoints.Count > 0)
+                        MapBox.Image = new Bitmap(Helper.ResizeImage(new Bitmap(m_WalkPathWaypoints[0].MapId.ToString() + ".jpg"), 200, 140));
                     break;
             }
+            
+            MapBox.Invalidate();
         }
 
-        private void ReadPathFromFile()
+        private void ReadPathFromFile(string filePath, List<Waypoint> waypointList)
         {
-            if (File.Exists(m_FilePath))
+            waypointList.Clear();
+            string path = File.ReadAllText(filePath);
+
+            string[] waypointsComponents = path.Split(';');
+
+            List<uint> mapIds = Program.ExtractCommaDelimitedUInts(waypointsComponents[0].Trim());
+            List<double> xs = Program.ExtractCommaDelimitedDoubles(waypointsComponents[1].Trim());
+            List<double> ys = Program.ExtractCommaDelimitedDoubles(waypointsComponents[2].Trim());
+
+            for (int i = 0; i < mapIds.Count; i++)
             {
-                string allpaths = File.ReadAllText(m_FilePath);
-                string[] paths = allpaths.Split(';');
-
-                XTextBox.Text = paths[0];
-                YTextBox.Text = paths[1];
+                waypointList.Add(new Waypoint(mapIds[i], xs[i], ys[i]));
             }
+
         }
 
-        private void OKButton_Click(object sender, EventArgs e)
+        private void SavePathToFile(string filePath, List<Waypoint> waypointList)
         {
-            File.WriteAllText(m_FilePath, XTextBox.Text + ";" + YTextBox.Text);
-            ReadPaths();
+            string mapIdsString = string.Empty;
+            string xsString = string.Empty;
+            string ysString = string.Empty;
+
+            for(int i = 0; i < waypointList.Count; i++)
+            {
+                mapIdsString += waypointList[i].MapId + ",";
+                xsString += waypointList[i].X + ",";
+                ysString += waypointList[i].Y + ",";
+            }
+
+            File.WriteAllText(filePath, mapIdsString + ";" + xsString + ";" + ysString);
+        }
+
+        private void ApplyPathButton_Click(object sender, EventArgs e)
+        {
+            switch (PathTypeDropDown.SelectedIndex)
+            {
+                case 0:
+                    Automater.SetPathWaypoints(m_TargetPathWaypoints);
+                    SavePathToFile("targetpath.txt", m_TargetPathWaypoints);
+                    break;
+                case 1:
+                    Automater.SetReviveWaypoints(m_RevivePathWaypoints);
+                    SavePathToFile("revivepath.txt", m_RevivePathWaypoints);
+                    break;
+                case 2:
+                    Automater.SetShopWaypoints(m_SellPathWaypoints);
+                    SavePathToFile("shoppath.txt", m_SellPathWaypoints);
+                    break;
+                case 3:
+                    Automater.SetWalkWaypoints(m_WalkPathWaypoints);
+                    SavePathToFile("walkpath.txt", m_WalkPathWaypoints);
+                    break;
+            }
         }
 
         private void RecordButton_Click(object sender, EventArgs e)
@@ -581,17 +661,31 @@ namespace MindControlUI
             }
             else
             {
-                XTextBox.Text = "";
-                YTextBox.Text = "";
-
-                XTextBox.Enabled = false;
-                YTextBox.Enabled = false;
                 LoadFileButton.Enabled = false;
                 SaveFileButton.Enabled = false;
-                OKButton.Enabled = false;
+                ApplyPathButton.Enabled = false;
+                PathTypeDropDown.Enabled = false;
 
                 RecordButton.Text = "Stop Recording";
                 RecordButton.BackColor = System.Drawing.Color.FromArgb(255, 255, 128, 128);
+
+                switch (PathTypeDropDown.SelectedIndex)
+                {
+                    case 0:
+                        m_TargetPathWaypoints.Clear();
+                        break;
+                    case 1:
+                        m_RevivePathWaypoints.Clear();
+                        break;
+                    case 2:
+                        m_SellPathWaypoints.Clear();
+                        break;
+                    case 3:
+                        m_WalkPathWaypoints.Clear();
+                        break;
+                }
+
+                MapBox.Image = new Bitmap(Helper.ResizeImage(new Bitmap(Api.PlayerData.MapId.ToString() + ".jpg"), 200, 140));
 
                 Task.Run(() =>
                 {
@@ -616,13 +710,27 @@ namespace MindControlUI
             sfd.Filter = "Text |*.txt";
 
             sfd.Title = "Save path";
-            sfd.FileName = m_FilePath;
             sfd.ShowDialog();
 
             // If the file name is not an empty string open it for saving.  
             if (sfd.FileName != "")
             {
-                File.WriteAllText(sfd.FileName, XTextBox.Text + ";" + YTextBox.Text);
+                switch (PathTypeDropDown.SelectedIndex)
+                {
+                    case 0:
+                        SavePathToFile(sfd.FileName, m_TargetPathWaypoints);
+                        break;
+                    case 1:
+                        SavePathToFile(sfd.FileName, m_RevivePathWaypoints);
+                        break;
+                    case 2:
+                        SavePathToFile(sfd.FileName, m_SellPathWaypoints);
+                        break;
+                    case 3:
+                        SavePathToFile(sfd.FileName, m_WalkPathWaypoints);
+                        break;
+                }
+
             }
         }
 
@@ -635,11 +743,31 @@ namespace MindControlUI
 
             if (ofd.FileName != "")
             {
-                string allpaths = File.ReadAllText(ofd.FileName);
-                string[] paths = allpaths.Split(';');
+                switch (PathTypeDropDown.SelectedIndex)
+                {
+                    case 0:
+                        ReadPathFromFile(ofd.FileName, m_TargetPathWaypoints);
+                        if (m_TargetPathWaypoints.Count > 0)
+                            MapBox.Image = new Bitmap(Helper.ResizeImage(new Bitmap(m_TargetPathWaypoints[0].MapId.ToString() + ".jpg"), 200, 140));
+                        break;
+                    case 1:
+                        ReadPathFromFile(ofd.FileName, m_RevivePathWaypoints);
+                        if (m_RevivePathWaypoints.Count > 0)
+                            MapBox.Image = new Bitmap(Helper.ResizeImage(new Bitmap(m_RevivePathWaypoints[0].MapId.ToString() + ".jpg"), 200, 140));
+                        break;
+                    case 2:
+                        ReadPathFromFile(ofd.FileName, m_SellPathWaypoints);
+                        if (m_SellPathWaypoints.Count > 0)
+                            MapBox.Image = new Bitmap(Helper.ResizeImage(new Bitmap(m_SellPathWaypoints[0].MapId.ToString() + ".jpg"), 200, 140));
+                        break;
+                    case 3:
+                        ReadPathFromFile(ofd.FileName, m_WalkPathWaypoints);
+                        if (m_WalkPathWaypoints.Count > 0)
+                            MapBox.Image = new Bitmap(Helper.ResizeImage(new Bitmap(m_WalkPathWaypoints[0].MapId.ToString() + ".jpg"), 200, 140));
+                        break;
+                }
 
-                XTextBox.Text = paths[0];
-                YTextBox.Text = paths[1];
+                MapBox.Invalidate();
             }
         }
 
@@ -718,27 +846,23 @@ namespace MindControlUI
 
         private void ReversePathButton_Click(object sender, EventArgs e)
         {
-            List<double> xCoordinates = Program.ExtractCommaDelimitedDoubles(XTextBox.Text);
-            List<double> yCoordinates = Program.ExtractCommaDelimitedDoubles(YTextBox.Text);
-
-            xCoordinates.Reverse();
-            yCoordinates.Reverse();
-
-            string xPath = string.Empty;
-            string yPath = string.Empty;
-
-            foreach(double xCoordinate in xCoordinates)
+            switch (PathTypeDropDown.SelectedIndex)
             {
-                xPath += xCoordinate.ToString("N3") + ", ";
+                case 0:
+                    m_TargetPathWaypoints.Reverse();
+                    break;
+                case 1:
+                    m_RevivePathWaypoints.Reverse();
+                    break;
+                case 2:
+                    m_SellPathWaypoints.Reverse();
+                    break;
+                case 3:
+                    m_WalkPathWaypoints.Reverse();
+                    break;
             }
 
-            foreach (double yCoordinate in yCoordinates)
-            {
-                yPath += yCoordinate.ToString("N3") + ", ";
-            }
-
-            XTextBox.Text = xPath;
-            YTextBox.Text = yPath;
+            MapBox.Invalidate();
         }
 
         private void AlwaysThrowCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -1144,10 +1268,70 @@ namespace MindControlUI
 
         }
 
-        private void PathViewerButton_Click(object sender, EventArgs e)
+        private void MapBox_Click(object sender, EventArgs e)
         {
-            PathViewer pv = new PathViewer();
+            PathViewer pv = null;
+
+            switch (PathTypeDropDown.SelectedIndex)
+            {
+                case 0:
+                    pv = new PathViewer(m_TargetPathWaypoints, "Target Path");
+                    break;
+                case 1:
+                    pv = new PathViewer(m_RevivePathWaypoints, "Revive Path");
+                    break;
+                case 2:
+                    pv = new PathViewer(m_SellPathWaypoints, "Shop Path");
+                    break;
+                case 3:
+                    pv = new PathViewer(m_WalkPathWaypoints, "Walk Path");
+                    break;
+            }
+
             pv.Show();
         }
+
+        private void MapBox_Paint(object sender, PaintEventArgs e)
+        {
+            switch (selectedIndex)
+            {
+                case 0:
+                    DrawWaypoints(e, m_TargetPathWaypoints);
+                    break;
+                case 1:
+                    DrawWaypoints(e, m_RevivePathWaypoints);
+                    break;
+                case 2:
+                    DrawWaypoints(e, m_SellPathWaypoints);
+                    break;
+                case 3:
+                    DrawWaypoints(e, m_WalkPathWaypoints);
+                    break;
+            }
+        }
+
+        Pen m_PathPen = new Pen(Brushes.Black, 1);
+        Pen m_StartPen = new Pen(Brushes.LightGreen, 2);
+        Pen m_EndPen = new Pen(Brushes.Crimson, 2);
+        Pen m_PlayerPen = new Pen(Brushes.Cyan, 2);
+
+        private void DrawWaypoints(PaintEventArgs e, List<Waypoint> waypoints)
+        {
+            if (waypoints.Count < 2)
+                return;
+
+            for (int i = 0; i < waypoints.Count; i++)
+            {
+                e.Graphics.DrawEllipse(m_PathPen, (float)(waypoints[i].X * 2), (float)(waypoints[i].Y * 1.4), 1f, 1f);
+            }
+
+            e.Graphics.DrawEllipse(m_StartPen, (float)(waypoints[0].X * 2), (float)(waypoints[0].Y * 1.4), 1f, 1f);
+            e.Graphics.DrawEllipse(m_EndPen, (float)(waypoints[waypoints.Count - 1].X * 2), (float)(waypoints[waypoints.Count - 1].Y * 1.4), 1f, 1f);
+
+            if (waypoints[0].MapId == Api.PlayerData.MapId)
+                e.Graphics.DrawEllipse(m_PlayerPen, (float)(Api.PlayerData.PlayerXPosition * 2), (float)(Api.PlayerData.PlayerYPosition * 1.4), 1f, 1f);
+
+        }
+
     }
 }

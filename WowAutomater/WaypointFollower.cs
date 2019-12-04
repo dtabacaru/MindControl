@@ -7,6 +7,20 @@ using WowApi;
 
 namespace WowAutomater
 {
+    public class Waypoint
+    {
+        public uint MapId;
+        public double X;
+        public double Y;
+
+        public Waypoint(uint mapId, double x, double y)
+        {
+            MapId = mapId;
+            X = x;
+            Y = y;
+        }
+    }
+
     public static class WaypointFollower
     {
         public static double TurnToleranceRad = 0.08;
@@ -18,14 +32,13 @@ namespace WowAutomater
         private static EventWaitHandle m_StopWaypointEventWaitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
         private static TurningDirection m_TurningDirection = TurningDirection.None;
 
-        private static List<double> m_XCoordinates = new List<double>();
-        private static List<double> m_YCoordinates = new List<double>();
+        private static List<Waypoint> m_Waypoints = new List<Waypoint>();
 
         public static Jitterizer Jitterizer = new Jitterizer();
 
         private static bool m_Initialized = false;
 
-        public static void SetWaypoints(List<double> xCoordinates, List<double> yCoordinates)
+        public static void SetWaypoints(List<Waypoint> waypoints)
         {
             if(!m_Initialized)
             {
@@ -38,11 +51,8 @@ namespace WowAutomater
                 m_Initialized = true;
             }
 
-            m_XCoordinates.Clear();
-            m_YCoordinates.Clear();
-
-            m_XCoordinates.AddRange(xCoordinates);
-            m_YCoordinates.AddRange(yCoordinates);
+            m_Waypoints.Clear();
+            m_Waypoints.AddRange(waypoints);
 
             m_WaypointIndex = 0;
         }
@@ -52,10 +62,10 @@ namespace WowAutomater
             double closestDistance = double.MaxValue;
             int closestWaypointIndex = 0;
 
-            for (int i = 0; i < m_XCoordinates.Count; i++)
+            for (int i = 0; i < m_Waypoints.Count; i++)
             {
-                double distance = Math.Sqrt(Math.Pow((m_XCoordinates[i] - Api.PlayerData.PlayerXPosition), 2) +
-                                            Math.Pow((m_YCoordinates[i] - Api.PlayerData.PlayerYPosition), 2));
+                double distance = Math.Sqrt(Math.Pow((m_Waypoints[i].X - Api.PlayerData.PlayerXPosition), 2) +
+                                            Math.Pow((m_Waypoints[i].Y - Api.PlayerData.PlayerYPosition), 2));
 
                 if (distance < closestDistance)
                 {
@@ -87,11 +97,8 @@ namespace WowAutomater
 
         public static void FollowWaypoints(bool loop)
         {
-            if (!m_FollowingWaypoints)
+            if (!m_FollowingWaypoints && m_Waypoints.Count > 0)
             {
-                if (m_XCoordinates.Count == 0 || m_YCoordinates.Count == 0)
-                    return;
-
                 m_FollowingWaypoints = true;
 
                 Helper.WaitSeconds(1);
@@ -103,8 +110,8 @@ namespace WowAutomater
                     {
                         Api.Sync.WaitOne();
 
-                        double distanceToWaypoint = Math.Sqrt(Math.Pow(m_XCoordinates[m_WaypointIndex] - Api.PlayerData.PlayerXPosition, 2) +
-                                                           Math.Pow(m_YCoordinates[m_WaypointIndex] - Api.PlayerData.PlayerYPosition, 2));
+                        double distanceToWaypoint = Math.Sqrt(Math.Pow(m_Waypoints[m_WaypointIndex].X - Api.PlayerData.PlayerXPosition, 2) +
+                                                           Math.Pow(m_Waypoints[m_WaypointIndex].Y - Api.PlayerData.PlayerYPosition, 2));
 
                         if (distanceToWaypoint > ClosestPointDistance)
                             FindClosestWaypoint();
@@ -115,8 +122,8 @@ namespace WowAutomater
                         double actualHeading_y = (Api.PlayerData.PlayerYPosition - Math.Cos(Api.PlayerData.PlayerHeading)) -
                                                  Api.PlayerData.PlayerYPosition;
 
-                        double desiredHeading_x = m_XCoordinates[m_WaypointIndex] - Api.PlayerData.PlayerXPosition;
-                        double desiredHeading_y = m_YCoordinates[m_WaypointIndex] - Api.PlayerData.PlayerYPosition;
+                        double desiredHeading_x = m_Waypoints[m_WaypointIndex].X - Api.PlayerData.PlayerXPosition;
+                        double desiredHeading_y = m_Waypoints[m_WaypointIndex].Y - Api.PlayerData.PlayerYPosition;
 
                         double requriedTurn = Math.Atan2(actualHeading_x * desiredHeading_y - actualHeading_y * desiredHeading_x,
                                                          actualHeading_x * desiredHeading_x + actualHeading_y * desiredHeading_y);
@@ -154,22 +161,33 @@ namespace WowAutomater
 
                         Jitterizer.RandomJitter();
 
-                        bool xReached = Math.Abs(Api.PlayerData.PlayerXPosition - m_XCoordinates[m_WaypointIndex]) < PositionTolerance;
-                        bool yReached = Math.Abs(Api.PlayerData.PlayerYPosition - m_YCoordinates[m_WaypointIndex]) < PositionTolerance;
+                        bool xReached = Math.Abs(Api.PlayerData.PlayerXPosition - m_Waypoints[m_WaypointIndex].X) < PositionTolerance;
+                        bool yReached = Math.Abs(Api.PlayerData.PlayerYPosition - m_Waypoints[m_WaypointIndex].Y) < PositionTolerance;
 
                         if (xReached && yReached)
                         {
-                            if (m_WaypointIndex == (m_XCoordinates.Count - 1))
+                            if (m_WaypointIndex == (m_Waypoints.Count - 1))
                             {
                                 if (!loop)
                                 {
                                     break;
                                 }
 
-                                m_XCoordinates.Reverse();
-                                m_YCoordinates.Reverse();
-
+                                m_Waypoints.Reverse();
                                 m_WaypointIndex = 0;
+                            }
+
+                            if(m_Waypoints[m_WaypointIndex+1].MapId != m_Waypoints[m_WaypointIndex].MapId)
+                            {
+                                m_TurningDirection = TurningDirection.None;
+                                Input.KeyUp(VirtualKeyCode.VK_D);
+                                Input.KeyUp(VirtualKeyCode.VK_A);
+
+                                while(Api.PlayerData.MapId != m_Waypoints[m_WaypointIndex + 1].MapId)
+                                {
+                                    Helper.WaitSeconds(0.001);
+                                    continue;
+                                }
                             }
 
                             m_WaypointIndex++;

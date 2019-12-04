@@ -44,5 +44,32 @@ namespace MindControlUI
             return output;
         }
 
+        public static List<uint> ExtractCommaDelimitedUInts(string uintString)
+        {
+            List<uint> output = new List<uint>();
+
+            string[] uIntStringParts = uintString.Split(new char[] { ',' });
+
+            foreach (string uIntStringPart in uIntStringParts)
+            {
+                if (uIntStringPart == string.Empty || string.IsNullOrWhiteSpace(uIntStringPart))
+                    continue;
+
+                uint decodedUInt = 0;
+
+                try
+                {
+                    decodedUInt = uint.Parse(uIntStringPart);
+                    output.Add(decodedUInt);
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+            }
+
+            return output;
+        }
+
     }
 }
