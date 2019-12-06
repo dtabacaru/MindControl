@@ -9,7 +9,7 @@ Skin after loot: true
 X revive button location: 325
 Y revive button location: 145
 Regenerate health %: 60
-Auto loot: false
+Auto loot: true
 Send whisper e-mail: false
 Whisper e-mail to: test@test.com
 SMTP account name: test@test.com

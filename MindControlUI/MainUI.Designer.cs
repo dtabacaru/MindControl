@@ -88,6 +88,8 @@
             this.FirstSealNoneButton = new System.Windows.Forms.RadioButton();
             this.FirstSealLabel = new System.Windows.Forms.Label();
             this.RogueTab = new System.Windows.Forms.TabPage();
+            this.ThrowAfterNumericInput = new System.Windows.Forms.NumericUpDown();
+            this.ThrowAfterLabel = new System.Windows.Forms.Label();
             this.DontThrowCheckBox = new System.Windows.Forms.CheckBox();
             this.DontThrowLabel = new System.Windows.Forms.Label();
             this.ApplyPoisonCheckBox = new System.Windows.Forms.CheckBox();
@@ -153,8 +155,6 @@
             this.FindTargetRateLabel = new System.Windows.Forms.Label();
             this.StatusLabel = new System.Windows.Forms.Label();
             this.ShowInfoButton = new System.Windows.Forms.Button();
-            this.ThrowAfterNumericInput = new System.Windows.Forms.NumericUpDown();
-            this.ThrowAfterLabel = new System.Windows.Forms.Label();
             this.OptionTabs.SuspendLayout();
             this.InfoTab.SuspendLayout();
             this.PathsTab.SuspendLayout();
@@ -172,6 +172,7 @@
             this.ClassTabs.SuspendLayout();
             this.PaladinTab.SuspendLayout();
             this.RogueTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ThrowAfterNumericInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.EvasionPercentaceNumericInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.EvisceratePercentageNumericInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.RuptureCPNumericInput)).BeginInit();
@@ -183,7 +184,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.KillTargetWaitTimeNumericInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.FindTargetWaitTimeNumericInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.FindTargetRateNumericInput)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ThrowAfterNumericInput)).BeginInit();
             this.SuspendLayout();
             // 
             // ModeDropDown
@@ -555,6 +555,8 @@
             // AutoLootLabelCheckbox
             // 
             this.AutoLootLabelCheckbox.AutoSize = true;
+            this.AutoLootLabelCheckbox.Checked = true;
+            this.AutoLootLabelCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.AutoLootLabelCheckbox.Location = new System.Drawing.Point(154, 242);
             this.AutoLootLabelCheckbox.Name = "AutoLootLabelCheckbox";
             this.AutoLootLabelCheckbox.Size = new System.Drawing.Size(15, 14);
@@ -961,6 +963,33 @@
             this.RogueTab.TabIndex = 2;
             this.RogueTab.Text = "Rogue";
             this.RogueTab.UseVisualStyleBackColor = true;
+            // 
+            // ThrowAfterNumericInput
+            // 
+            this.ThrowAfterNumericInput.Location = new System.Drawing.Point(146, 269);
+            this.ThrowAfterNumericInput.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.ThrowAfterNumericInput.Name = "ThrowAfterNumericInput";
+            this.ThrowAfterNumericInput.Size = new System.Drawing.Size(54, 20);
+            this.ThrowAfterNumericInput.TabIndex = 28;
+            this.ThrowAfterNumericInput.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.ThrowAfterNumericInput.ValueChanged += new System.EventHandler(this.ThrowAfterNumericInput_ValueChanged);
+            // 
+            // ThrowAfterLabel
+            // 
+            this.ThrowAfterLabel.AutoSize = true;
+            this.ThrowAfterLabel.Location = new System.Drawing.Point(4, 271);
+            this.ThrowAfterLabel.Name = "ThrowAfterLabel";
+            this.ThrowAfterLabel.Size = new System.Drawing.Size(87, 13);
+            this.ThrowAfterLabel.TabIndex = 27;
+            this.ThrowAfterLabel.Text = "Throw after (sec)";
             // 
             // DontThrowCheckBox
             // 
@@ -1750,33 +1779,6 @@
             this.ShowInfoButton.UseVisualStyleBackColor = false;
             this.ShowInfoButton.Click += new System.EventHandler(this.ShowInfoButton_Click);
             // 
-            // ThrowAfterNumericInput
-            // 
-            this.ThrowAfterNumericInput.Location = new System.Drawing.Point(146, 269);
-            this.ThrowAfterNumericInput.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.ThrowAfterNumericInput.Name = "ThrowAfterNumericInput";
-            this.ThrowAfterNumericInput.Size = new System.Drawing.Size(54, 20);
-            this.ThrowAfterNumericInput.TabIndex = 28;
-            this.ThrowAfterNumericInput.Value = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.ThrowAfterNumericInput.ValueChanged += new System.EventHandler(this.ThrowAfterNumericInput_ValueChanged);
-            // 
-            // ThrowAfterLabel
-            // 
-            this.ThrowAfterLabel.AutoSize = true;
-            this.ThrowAfterLabel.Location = new System.Drawing.Point(4, 271);
-            this.ThrowAfterLabel.Name = "ThrowAfterLabel";
-            this.ThrowAfterLabel.Size = new System.Drawing.Size(87, 13);
-            this.ThrowAfterLabel.TabIndex = 27;
-            this.ThrowAfterLabel.Text = "Throw after (sec)";
-            // 
             // MainUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1789,7 +1791,6 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MinimizeBox = false;
             this.Name = "MainUI";
             this.Text = "MindControl";
             this.TopMost = true;
@@ -1815,6 +1816,7 @@
             this.PaladinTab.PerformLayout();
             this.RogueTab.ResumeLayout(false);
             this.RogueTab.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ThrowAfterNumericInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.EvasionPercentaceNumericInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.EvisceratePercentageNumericInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.RuptureCPNumericInput)).EndInit();
@@ -1828,7 +1830,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.KillTargetWaitTimeNumericInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.FindTargetWaitTimeNumericInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.FindTargetRateNumericInput)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ThrowAfterNumericInput)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

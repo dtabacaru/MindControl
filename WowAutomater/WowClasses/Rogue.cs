@@ -142,6 +142,7 @@ namespace WowAutomater
                 Helper.WaitSeconds(4.5);
                 PoisonOff.CastSpell();
                 Helper.WaitSeconds(4.5);
+                Input.RightClick();
                 return;
             }
 

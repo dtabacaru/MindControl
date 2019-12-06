@@ -98,7 +98,7 @@ namespace WowAutomater
 
         private static volatile string m_RelayString = string.Empty;
 
-        public static volatile bool AutoLoot = false;
+        public static volatile bool AutoLoot = true;
 
         private static Stopwatch m_ReviveSw = new Stopwatch();
 
