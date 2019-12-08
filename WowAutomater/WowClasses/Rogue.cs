@@ -55,7 +55,7 @@ namespace WowAutomater
             Rupture = new ComboPointSpell(VirtualKeyCode.VK_6, 3, 5, 25, 6 + 3 * 2, level: 20);
             KidneyShot = new ComboPointSpell(VirtualKeyCode.VK_7, 3, 5, 25, 20, level: 30);
             Evasion = new Spell(VirtualKeyCode.VK_L, cooldownTime: 5 * 60, healthPercentage: 20, level: 8);
-            AdrenalineRush = new Spell(VirtualKeyCode.VK_P, cooldownTime: 5 * 60, healthPercentage: 30, level: 40);
+            AdrenalineRush = new Spell(VirtualKeyCode.VK_J, cooldownTime: 5 * 60, healthPercentage: 30, level: 40);
             BladeFlurry = new Spell(VirtualKeyCode.VK_N, cooldownTime: 2 * 60, healthPercentage: 35, level: 31);
             EquipAmmo = new Spell(VirtualKeyCode.VK_Z, cooldownTime: 10);
 

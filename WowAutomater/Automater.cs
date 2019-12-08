@@ -738,12 +738,15 @@ namespace WowAutomater
             {
                 // Wait
             }
-            else if (!Api.PlayerData.TargetInCombat ||
-                     Api.PlayerData.TargetFaction > 0 ||
-                     !Api.PlayerData.TargetTargetingPlayer)
+            else if (!Api.PlayerData.TargetInCombat)
             {
                 Input.KeyPress(VirtualKeyCode.VK_F);
                 Helper.WaitSeconds(RegisterDelay);
+            }
+            else if (Api.PlayerData.TargetFaction > 0 ||
+                    !Api.PlayerData.TargetTargetingPlayer)
+            {
+                // Wait
             }
             else if (Api.PlayerData.PlayerActionError > ActionErrorType.None &&
                     Api.PlayerData.PlayerActionError < ActionErrorType.OutOfRange)
