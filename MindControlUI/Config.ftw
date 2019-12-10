@@ -44,10 +44,10 @@ Always throw: true
 Slice and dice combo points: 1
 Rupture combo points: 3
 Eviscerate percentage: 25
-Evasion percentage: 40
+Evasion percentage: 25
 Rupture first: true
 Apply poison: true
 Don't throw around players: true
-Throw after (sec): 10
+Throw after (sec): 30
 -- Druid
 Passive humanoid: true

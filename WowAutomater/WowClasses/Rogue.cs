@@ -54,8 +54,8 @@ namespace WowAutomater
             SliceAndDice = new ComboPointSpell(VirtualKeyCode.VK_5, 1, 1, 25, level: 10, useOnce: true);
             Rupture = new ComboPointSpell(VirtualKeyCode.VK_6, 3, 5, 25, 6 + 3 * 2, level: 20);
             KidneyShot = new ComboPointSpell(VirtualKeyCode.VK_7, 3, 5, 25, 20, level: 30);
-            Evasion = new Spell(VirtualKeyCode.VK_L, cooldownTime: 5 * 60, healthPercentage: 20, level: 8);
-            AdrenalineRush = new Spell(VirtualKeyCode.VK_J, cooldownTime: 5 * 60, healthPercentage: 30, level: 40);
+            Evasion = new Spell(VirtualKeyCode.VK_L, cooldownTime: 5 * 60, healthPercentage: 25, level: 8);
+            AdrenalineRush = new Spell(VirtualKeyCode.VK_J, cooldownTime: 5 * 60, healthPercentage: 35, level: 40);
             BladeFlurry = new Spell(VirtualKeyCode.VK_N, cooldownTime: 2 * 60, healthPercentage: 35, level: 31);
             EquipAmmo = new Spell(VirtualKeyCode.VK_Z, cooldownTime: 10);
 
@@ -64,8 +64,8 @@ namespace WowAutomater
 
             StaleStealthTimer.Interval = StealthCooldown * 1000;
             StaleStealthTimer.Elapsed += StaleStealthTimer_Elapsed;
-
-            FriendlyTimer.Interval = 10000;
+            
+            FriendlyTimer.Interval = 30000;
             FriendlyTimer.Elapsed += FriendlyTimer_Elapsed;
 
             Api.UpdateEvent += Api_UpdateEvent;

@@ -303,7 +303,7 @@ namespace WowApi
 
                     currentPlayerData.Found = found1 && found2;
 
-                    currentPlayerData.IsWowForeground = GetForegroundProcessName().ToLower() == "wow";
+                    currentPlayerData.IsWowForeground = GetForegroundProcessName().ToLower() == "wowclassic";
 
                     if (currentPlayerData.IsWowForeground && !currentPlayerData.Found)
                     {

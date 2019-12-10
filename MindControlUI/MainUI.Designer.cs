@@ -976,7 +976,7 @@
             this.ThrowAfterNumericInput.Size = new System.Drawing.Size(54, 20);
             this.ThrowAfterNumericInput.TabIndex = 28;
             this.ThrowAfterNumericInput.Value = new decimal(new int[] {
-            10,
+            30,
             0,
             0,
             0});
