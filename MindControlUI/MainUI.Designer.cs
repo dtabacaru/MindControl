@@ -1091,7 +1091,7 @@
             this.EvasionPercentaceNumericInput.Size = new System.Drawing.Size(54, 20);
             this.EvasionPercentaceNumericInput.TabIndex = 17;
             this.EvasionPercentaceNumericInput.Value = new decimal(new int[] {
-            40,
+            25,
             0,
             0,
             0});
