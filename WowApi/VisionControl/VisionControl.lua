@@ -663,3 +663,39 @@ whisperFrame:SetScript('OnEvent', function(self, event)
 	WhisperPixel:SetColorTexture(1, 1, 1, 1);
 	whisperFlag = true;
 end)
+
+local shellList = {
+	["Thick-shelled Clam"] = true,
+	["Small Barnacled Clam"] = true,
+	["Big-mouth Clam"] = true,
+	["Soft-shelled Clam"] = true,
+	["Darkwater Clam"] = true,
+	["Jaggal Clam"] = true,
+	["Abyssal Clam"] = true,
+	["Brooding Darkwater Clam"] = true,
+	["Giant Darkwater Clam"] = true,
+};
+
+local clamFrame = CreateFrame('Frame');
+clamFrame:RegisterEvent("BAG_UPDATE")
+clamFrame:SetScript('OnEvent', function(self, event)
+	if not GetCVarBool("autoLootDefault") then
+		return
+	end
+
+	for i = 0, 4 do
+		local numSlots = GetContainerNumSlots(i);
+
+		for j = 1, numSlots do
+			local itemLink = select(7, GetContainerItemInfo(i, j));
+		
+			if (itemLink) then
+				local name = strsub(itemLink, strfind(itemLink, "%[") + 1, strfind(itemLink, "]") - 1);
+			
+				if (shellList[name]) then
+					UseContainerItem(i, j);
+				end
+			end
+		end
+	end
+end)
