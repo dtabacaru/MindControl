@@ -1559,7 +1559,7 @@
             this.KillTargetWaitTimeNumericInput.Size = new System.Drawing.Size(54, 20);
             this.KillTargetWaitTimeNumericInput.TabIndex = 26;
             this.KillTargetWaitTimeNumericInput.Value = new decimal(new int[] {
-            8,
+            6,
             0,
             0,
             131072});

@@ -26,7 +26,7 @@ namespace MindControlUI
 
             SetPathWaypointName = name;
             SetPathWaypoints = waypoints;
-            MapPictureBox.Image = new Bitmap(Helper.ResizeImage(new Bitmap(waypoints[0].MapId.ToString() + ".jpg"), 1000, 700));
+            MapPictureBox.Image = new Bitmap(Helper.ResizeImage(new Bitmap("MapImages\\" + waypoints[0].MapId.ToString() + ".jpg"), 1000, 700));
 
             m_ApiDataUpdateTimer.Interval = 50;
             m_ApiDataUpdateTimer.Tick += M_ApiDataUpdateTimer_Tick;

@@ -26,7 +26,7 @@ Find target right: true
 Find target leftright: true
 Find target rightleft: true
 Kill target rate: 0.01
-Kill target wait time: 0.08
+Kill target wait time: 0.06
 Kill target jump: true
 Kill target updown: true
 Kill target downup: true

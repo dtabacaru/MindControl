@@ -114,7 +114,7 @@ namespace WowAutomater
         public static ShamanAutomater  Shaman =  new ShamanAutomater();
         public static DruidAutomater   Druid =   new DruidAutomater();
 
-        public static Jitterizer Jitterizer = new Jitterizer();
+        public static Jitterizer PlayerJitterizer = new Jitterizer();
 
         public static void SetRelayString(string relayString)
         {
@@ -757,7 +757,7 @@ namespace WowAutomater
             else if (!Api.PlayerData.IsInCloseRange &&
                      m_WowClassAutomater.IsMelee)
             {
-                Jitterizer.Jitter();
+                PlayerJitterizer.Jitter();
                 Helper.WaitSeconds(0.5);
             }
             else if (!Api.PlayerData.PlayerIsAttacking)
@@ -775,7 +775,7 @@ namespace WowAutomater
                 m_WowClassAutomater.KillTarget();
 
                 if (m_WowClassAutomater.IsMelee)
-                    Jitterizer.RandomJitter();
+                    PlayerJitterizer.RandomJitter();
             }
 
         }

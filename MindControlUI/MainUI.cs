@@ -343,39 +343,39 @@ namespace MindControlUI
                     FindTargetRightLeftCheckBox.Checked = Convert.ToBoolean(configValue);
                     break;
                 case "Kill target rate":
-                    Automater.Jitterizer.Rate = Convert.ToDouble(configValue);
+                    Automater.PlayerJitterizer.Rate = Convert.ToDouble(configValue);
                     KillTargetRateNumericInput.Value = Convert.ToDecimal(configValue);
                     break;
                 case "Kill target wait time":
-                    Automater.Jitterizer.WaitTime = Convert.ToDouble(configValue);
+                    Automater.PlayerJitterizer.WaitTime = Convert.ToDouble(configValue);
                     KillTargetWaitTimeNumericInput.Value = Convert.ToDecimal(configValue);
                     break;
                 case "Kill target jump":
-                    Automater.Jitterizer.Jump = Convert.ToBoolean(configValue);
+                    Automater.PlayerJitterizer.Jump = Convert.ToBoolean(configValue);
                     KillTargetJumpCheckBox.Checked = Convert.ToBoolean(configValue);
                     break;
                 case "Kill target updown":
-                    Automater.Jitterizer.UpDown = Convert.ToBoolean(configValue);
+                    Automater.PlayerJitterizer.UpDown = Convert.ToBoolean(configValue);
                     KillTargetUpDownCheckBox.Checked = Convert.ToBoolean(configValue);
                     break;
                 case "Kill target downup":
-                    Automater.Jitterizer.DownUp = Convert.ToBoolean(configValue);
+                    Automater.PlayerJitterizer.DownUp = Convert.ToBoolean(configValue);
                     KillTargetDownUpCheckBox.Checked = Convert.ToBoolean(configValue);
                     break;
                 case "Kill target leftright":
-                    Automater.Jitterizer.LeftRight = Convert.ToBoolean(configValue);
+                    Automater.PlayerJitterizer.LeftRight = Convert.ToBoolean(configValue);
                     KillTargetLeftRightCheckBox.Checked = Convert.ToBoolean(configValue);
                     break;
                 case "Kill target rightleft":
-                    Automater.Jitterizer.RightLeft = Convert.ToBoolean(configValue);
+                    Automater.PlayerJitterizer.RightLeft = Convert.ToBoolean(configValue);
                     KillTargetRightLeftCheckBox.Checked = Convert.ToBoolean(configValue);
                     break;
                 case "Kill target clockwise":
-                    Automater.Jitterizer.Clockwise = Convert.ToBoolean(configValue);
+                    Automater.PlayerJitterizer.Clockwise = Convert.ToBoolean(configValue);
                     KillTargetClockwiseCheckBox.Checked = Convert.ToBoolean(configValue);
                     break;
                 case "Kill target counter clockwise":
-                    Automater.Jitterizer.CounterClockwise = Convert.ToBoolean(configValue);
+                    Automater.PlayerJitterizer.CounterClockwise = Convert.ToBoolean(configValue);
                     KillTargetCounterClockwiseCheckBox.Checked = Convert.ToBoolean(configValue);
                     break;
                 case "First seal":
@@ -584,25 +584,25 @@ namespace MindControlUI
                     ReadPathFromFile("targetpath.txt", m_TargetPathWaypoints);
                     selectedIndex = 0;
                     if (m_TargetPathWaypoints.Count > 0)
-                        MapBox.Image = new Bitmap(Helper.ResizeImage(new Bitmap(m_TargetPathWaypoints[0].MapId.ToString() + ".jpg"), 200, 140));
+                        MapBox.Image = new Bitmap(Helper.ResizeImage(new Bitmap("MapImages\\" + m_TargetPathWaypoints[0].MapId.ToString() + ".jpg"), 200, 140));
                     break;
                 case 1:
                     ReadPathFromFile("revivepath.txt", m_RevivePathWaypoints);
                     selectedIndex = 1;
                     if (m_RevivePathWaypoints.Count > 0)
-                        MapBox.Image = new Bitmap(Helper.ResizeImage(new Bitmap(m_RevivePathWaypoints[0].MapId.ToString() + ".jpg"), 200, 140));
+                        MapBox.Image = new Bitmap(Helper.ResizeImage(new Bitmap("MapImages\\" + m_RevivePathWaypoints[0].MapId.ToString() + ".jpg"), 200, 140));
                     break;
                 case 2:
                     ReadPathFromFile("shoppath.txt", m_SellPathWaypoints);
                     selectedIndex = 2;
                     if (m_SellPathWaypoints.Count > 0)
-                        MapBox.Image = new Bitmap(Helper.ResizeImage(new Bitmap(m_SellPathWaypoints[0].MapId.ToString() + ".jpg"), 200, 140));
+                        MapBox.Image = new Bitmap(Helper.ResizeImage(new Bitmap("MapImages\\" + m_SellPathWaypoints[0].MapId.ToString() + ".jpg"), 200, 140));
                     break;
                 case 3:
                     ReadPathFromFile("walkpath.txt", m_WalkPathWaypoints);
                     selectedIndex = 3;
                     if (m_WalkPathWaypoints.Count > 0)
-                        MapBox.Image = new Bitmap(Helper.ResizeImage(new Bitmap(m_WalkPathWaypoints[0].MapId.ToString() + ".jpg"), 200, 140));
+                        MapBox.Image = new Bitmap(Helper.ResizeImage(new Bitmap("MapImages\\" + m_WalkPathWaypoints[0].MapId.ToString() + ".jpg"), 200, 140));
                     break;
             }
             
@@ -698,7 +698,7 @@ namespace MindControlUI
                         break;
                 }
 
-                MapBox.Image = new Bitmap(Helper.ResizeImage(new Bitmap(Api.PlayerData.MapId.ToString() + ".jpg"), 200, 140));
+                MapBox.Image = new Bitmap(Helper.ResizeImage(new Bitmap("MapImages\\" + Api.PlayerData.MapId.ToString() + ".jpg"), 200, 140));
 
                 Task.Run(() =>
                 {
@@ -761,22 +761,22 @@ namespace MindControlUI
                     case 0:
                         ReadPathFromFile(ofd.FileName, m_TargetPathWaypoints);
                         if (m_TargetPathWaypoints.Count > 0)
-                            MapBox.Image = new Bitmap(Helper.ResizeImage(new Bitmap(m_TargetPathWaypoints[0].MapId.ToString() + ".jpg"), 200, 140));
+                            MapBox.Image = new Bitmap(Helper.ResizeImage(new Bitmap("MapImages\\" + m_TargetPathWaypoints[0].MapId.ToString() + ".jpg"), 200, 140));
                         break;
                     case 1:
                         ReadPathFromFile(ofd.FileName, m_RevivePathWaypoints);
                         if (m_RevivePathWaypoints.Count > 0)
-                            MapBox.Image = new Bitmap(Helper.ResizeImage(new Bitmap(m_RevivePathWaypoints[0].MapId.ToString() + ".jpg"), 200, 140));
+                            MapBox.Image = new Bitmap(Helper.ResizeImage(new Bitmap("MapImages\\" + m_RevivePathWaypoints[0].MapId.ToString() + ".jpg"), 200, 140));
                         break;
                     case 2:
                         ReadPathFromFile(ofd.FileName, m_SellPathWaypoints);
                         if (m_SellPathWaypoints.Count > 0)
-                            MapBox.Image = new Bitmap(Helper.ResizeImage(new Bitmap(m_SellPathWaypoints[0].MapId.ToString() + ".jpg"), 200, 140));
+                            MapBox.Image = new Bitmap(Helper.ResizeImage(new Bitmap("MapImages\\" + m_SellPathWaypoints[0].MapId.ToString() + ".jpg"), 200, 140));
                         break;
                     case 3:
                         ReadPathFromFile(ofd.FileName, m_WalkPathWaypoints);
                         if (m_WalkPathWaypoints.Count > 0)
-                            MapBox.Image = new Bitmap(Helper.ResizeImage(new Bitmap(m_WalkPathWaypoints[0].MapId.ToString() + ".jpg"), 200, 140));
+                            MapBox.Image = new Bitmap(Helper.ResizeImage(new Bitmap("MapImages\\" + m_WalkPathWaypoints[0].MapId.ToString() + ".jpg"), 200, 140));
                         break;
                 }
 
@@ -966,47 +966,47 @@ namespace MindControlUI
 
         private void KillTargetRateNumericInput_ValueChanged(object sender, EventArgs e)
         {
-            Automater.Jitterizer.Rate = (double)KillTargetRateNumericInput.Value;
+            Automater.PlayerJitterizer.Rate = (double)KillTargetRateNumericInput.Value;
         }
 
         private void KillTargetWaitTimeNumericInput_ValueChanged(object sender, EventArgs e)
         {
-            Automater.Jitterizer.WaitTime = (double)KillTargetWaitTimeNumericInput.Value;
+            Automater.PlayerJitterizer.WaitTime = (double)KillTargetWaitTimeNumericInput.Value;
         }
 
         private void KillTargetJumpCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            Automater.Jitterizer.Jump = KillTargetJumpCheckBox.Checked;
+            Automater.PlayerJitterizer.Jump = KillTargetJumpCheckBox.Checked;
         }
 
         private void KillTargetUpDownCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            Automater.Jitterizer.UpDown = KillTargetUpDownCheckBox.Checked;
+            Automater.PlayerJitterizer.UpDown = KillTargetUpDownCheckBox.Checked;
         }
 
         private void KillTargetDownUpCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            Automater.Jitterizer.DownUp = KillTargetDownUpCheckBox.Checked;
+            Automater.PlayerJitterizer.DownUp = KillTargetDownUpCheckBox.Checked;
         }
 
         private void KillTargetLeftRightCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            Automater.Jitterizer.LeftRight = KillTargetLeftRightCheckBox.Checked;
+            Automater.PlayerJitterizer.LeftRight = KillTargetLeftRightCheckBox.Checked;
         }
 
         private void KillTargetRightLeftCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            Automater.Jitterizer.RightLeft = KillTargetRightLeftCheckBox.Checked;
+            Automater.PlayerJitterizer.RightLeft = KillTargetRightLeftCheckBox.Checked;
         }
 
         private void KillTargetClockwiseCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            Automater.Jitterizer.Clockwise = KillTargetClockwiseCheckBox.Checked;
+            Automater.PlayerJitterizer.Clockwise = KillTargetClockwiseCheckBox.Checked;
         }
 
         private void KillTargetCounterClockwiseCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            Automater.Jitterizer.CounterClockwise = KillTargetCounterClockwiseCheckBox.Checked;
+            Automater.PlayerJitterizer.CounterClockwise = KillTargetCounterClockwiseCheckBox.Checked;
         }
 
         private void StealthForeverCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -1052,19 +1052,23 @@ namespace MindControlUI
             Automater.Paladin.FirstSeal = FirstSealType.Justice;
         }
 
-        private const byte RELAY_BYTE = 59;
-        private const byte LOGIN_BYTE = 26;
-        private const byte START_BYTE = 53;
-        private const byte STOP_BYTE = 58;
-        private const byte SCREEN_BYTE = 97;
-        private const byte BAD_LOGIN_BYTE = 93;
+        private const int LOGIN_LENGTH = 34;
+
+
         private const int READ_BUFFER_LENGTH = 8192;
         private const int PORT = 8002;
         private const int SLEEP_TIME = 10; // ms
 
         private const int LOGIN_BYTE_1 = 31;
         private const int LOGIN_BYTE_2 = 41;
-        private const int LOGIN_LENGTH = 34;
+        private const byte RELAY_BYTE = 59;
+        private const byte LOGIN_BYTE = 26;
+        private const byte START_BYTE = 53;
+        private const byte STOP_BYTE = 58;
+        private const byte SCREEN_BYTE = 97;
+        private const byte BAD_LOGIN_BYTE = 93;
+        private const byte BOOP_BYTE = 23;
+
 
         private void ConnectToRemote(string host, string user)
         {
@@ -1177,6 +1181,14 @@ namespace MindControlUI
 
                                         break;
                                     }
+
+                                case BOOP_BYTE:
+                                    {
+                                        ns.WriteByte(BOOP_BYTE);
+
+                                        break;
+                                    }
+
                                 default:
                                     {
                                         throw new Exception("BAD COMMAND");
