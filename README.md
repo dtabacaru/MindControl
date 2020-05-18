@@ -1,2 +1,2 @@
 # MindControl
-A private C# API and automater for World of Warcraft Classic.
+A visual based C# API and automater for World of Warcraft Classic.
