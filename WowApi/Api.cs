@@ -73,6 +73,8 @@ namespace WowApi
         private object PlayerHeadingContainerLock = new object();
         private double PlayerHealthPercentageContainer = 0;
         private object PlayerHealthPercentageContainerLock = new object();
+        private double TargetHealthPercentageContainer = 0;
+        private object TargetHealthPercentageContainerLock = new object();
 
         public double PlayerXPosition
         {
@@ -109,6 +111,15 @@ namespace WowApi
         public volatile bool PlayerHasTarget = false;
         public volatile uint TargetHealth = 0;
         public volatile uint TargetMana = 0;
+        public volatile uint MaxTargetHealth = 0;
+        public volatile uint MaxTargetMana = 0;
+
+        public double TargetHealthPercentage
+        {
+            get { lock (TargetHealthPercentageContainerLock) { return TargetHealthPercentageContainer; } }
+            set { lock (TargetHealthPercentageContainerLock) { TargetHealthPercentageContainer = value; } }
+        }
+
         public volatile bool SpellCanAttackTarget = false;
         public volatile bool CanAttackTarget = false;
         public volatile bool PlayerInCombat = false;
@@ -159,6 +170,9 @@ namespace WowApi
             output += "PlayerHasTarget: " + PlayerHasTarget.ToString() + "\r\n";
             output += "TargetHealth: " + TargetHealth.ToString() + "\r\n";
             output += "TargetMana: " + TargetMana.ToString() + "\r\n";
+            output += "MaxTargetHealth: " + MaxTargetHealth.ToString() + "\r\n";
+            output += "MaxTargetMana: " + MaxTargetMana.ToString() + "\r\n";
+            output += "TargetHealthPercentage: " + TargetHealthPercentage.ToString("N3") + "\r\n";
             output += "SpellCanAttackTarget: " + SpellCanAttackTarget.ToString() + "\r\n";
             output += "CanAttackTarget: " + CanAttackTarget.ToString() + "\r\n";
             output += "PlayerInCombat: " + PlayerInCombat.ToString() + "\r\n";
@@ -220,7 +234,7 @@ namespace WowApi
     public static class Api
     {
         private const int API_WIDTH_PIXELS = 7;
-        private const int API_HEIGHT_PIXELS = 58;
+        private const int API_HEIGHT_PIXELS = 61;
         private const int SEARCH_SPACE_PIXELS = 250;
 
         private const byte FIND1_PIXEL_R = 50;
@@ -360,6 +374,14 @@ namespace WowApi
                     Color whisperPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((57 * m_ApiYScale)));
                     currentPlayerData.Whisper = whisperPixel.R == PIXEL_SET ? true : false;
 
+                    Color maxTargetHealthPixel = bitmap.GetPixel((int)Math.Round((0 * m_ApiXScale)), (int)Math.Round((60 * m_ApiYScale)));
+                    currentPlayerData.MaxTargetHealth = GetThreeByteIntPixelValue(maxTargetHealthPixel);
+
+                    if(currentPlayerData.MaxTargetHealth > 0)
+                        currentPlayerData.TargetHealthPercentage = ((double)currentPlayerData.TargetHealth / currentPlayerData.MaxTargetHealth) * 100;
+                    else
+                        currentPlayerData.TargetHealthPercentage = 0;
+
                     Color spellCanAttackTargetPixel = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((0 * m_ApiYScale)));
                     currentPlayerData.SpellCanAttackTarget = spellCanAttackTargetPixel.R == PIXEL_SET ? true : false;
 
@@ -428,6 +450,9 @@ namespace WowApi
 
                     Color freeBagSlotsPixel = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((57 * m_ApiYScale)));
                     currentPlayerData.FreeBagSlots = GetThreeByteIntPixelValue(freeBagSlotsPixel);
+
+                    Color maxTargetManaPixel = bitmap.GetPixel((int)Math.Round((3 * m_ApiXScale)), (int)Math.Round((60 * m_ApiYScale)));
+                    currentPlayerData.MaxTargetMana = GetThreeByteIntPixelValue(maxTargetManaPixel);
 
                     Color comboPointsPixel = bitmap.GetPixel((int)Math.Round((6 * m_ApiXScale)), (int)Math.Round((15 * m_ApiYScale)));
                     currentPlayerData.TargetComboPoints = GetThreeByteIntPixelValue(comboPointsPixel);

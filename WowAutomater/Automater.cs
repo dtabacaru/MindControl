@@ -577,13 +577,13 @@ namespace WowAutomater
             if (!AutoLoot)
                 Input.KeyDown(VirtualKeyCode.LSHIFT);
 
-            for (int x = 25000; x < 41000; x += 1000)
+            for (int x = 28000; x < 38000; x += 2000)
             {
-                for (int y = 25000; y < 49000; y += 1000)
+                for (int y = 28000; y < 44000; y += 2000)
                 {
                     Input.MoveMouseTo(x, y);
                     Input.RightClick();
-                    Helper.WaitSeconds(0.001);
+                    Helper.WaitSeconds(0.05);
                 }
             }
 
@@ -603,13 +603,13 @@ namespace WowAutomater
                 if (!AutoLoot)
                     Input.KeyDown(VirtualKeyCode.LSHIFT);
 
-                for (int x = 25000; x < 41000; x += 1000)
+                for (int x = 28000; x < 38000; x += 2000)
                 {
-                    for (int y = 25000; y < 49000; y += 1000)
+                    for (int y = 28000; y < 44000; y += 2000)
                     {
                         Input.MoveMouseTo(x, y);
                         Input.RightClick();
-                        Helper.WaitSeconds(0.001);
+                        Helper.WaitSeconds(0.05);
                     }
                 }
 

@@ -293,6 +293,19 @@
               </Anchors>
               <Color r="0" g="0" b="0"/>
             </Texture>
+            <Texture name="TargetMaxManaPixel">
+              <Size>
+                <AbsDimension x="3" y="3"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="3" y="-60"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="0" g="0" b="0"/>
+            </Texture>
             <Texture name="TargetNamePixel6">
               <Size>
                 <AbsDimension x="3" y="3"/>
@@ -540,7 +553,20 @@
               </Anchors>
               <Color r="0" g="0" b="0"/>
             </Texture>
-			<Texture name="FindPixel1">
+            <Texture name="ReservedPixel">
+              <Size>
+                <AbsDimension x="3" y="3"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="6" y="-57"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="0" g="0" b="0"/>
+            </Texture>
+			      <Texture name="FindPixel1">
               <Size>
                 <AbsDimension x="3" y="3"/>
               </Size>
@@ -800,7 +826,19 @@
               </Anchors>
               <Color r="0" g="0" b="0"/>
             </Texture>
-
+            <Texture name="TargetMaxHealthPixel">
+              <Size>
+                <AbsDimension x="3" y="3"/>
+              </Size>
+              <Anchors>
+                <Anchor point="CENTER" relativeTo="VisionControlMain" relativePoint="Center">
+                  <Offset>
+                    <AbsDimension x="0" y="-60"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="0" g="0" b="0"/>
+            </Texture>
             <Texture name="StartStopIndicator">
               <Size>
                 <AbsDimension x="50" y="5"/>

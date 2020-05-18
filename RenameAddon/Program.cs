@@ -222,62 +222,72 @@ namespace RenameAddon
         static void Main(string[] args)
         {
 
-            while(true)
+            try
             {
-                DirectoryInfo mainDir = new DirectoryInfo(Directory.GetCurrentDirectory());
-
-                List<DirectoryInfo> mainDirDirs = new List<DirectoryInfo>(mainDir.GetDirectories());
-
-                DirectoryInfo addonDir = null;
-
-                foreach (DirectoryInfo di in mainDirDirs)
+                while (true)
                 {
-                    List<FileInfo> directoryFiles = new List<FileInfo>(di.GetFiles());
+                    DirectoryInfo mainDir = new DirectoryInfo(Directory.GetCurrentDirectory());
 
-                    if (directoryFiles.Exists(x => x.Extension.Contains(".toc")))
+                    List<DirectoryInfo> mainDirDirs = new List<DirectoryInfo>(mainDir.GetDirectories());
+
+                    DirectoryInfo addonDir = null;
+
+                    foreach (DirectoryInfo di in mainDirDirs)
                     {
-                        FileInfo tableOfContents = directoryFiles.Find(x => x.Extension.Contains(".toc"));
+                        List<FileInfo> directoryFiles = new List<FileInfo>(di.GetFiles());
 
-                        string tocString = File.ReadAllText(tableOfContents.FullName);
-
-                        if (tocString.Contains("The FYB Team"))
+                        if (directoryFiles.Exists(x => x.Extension.Contains(".toc")))
                         {
-                            addonDir = di;
-                            break;
+                            FileInfo tableOfContents = directoryFiles.Find(x => x.Extension.Contains(".toc"));
+
+                            string tocString = File.ReadAllText(tableOfContents.FullName);
+
+                            if (tocString.Contains("The FYB Team"))
+                            {
+                                addonDir = di;
+                                break;
+                            }
                         }
+
                     }
 
-                }
-
-                if (addonDir == null)
-                    return;
-
-                List<FileInfo> addonFiles = new List<FileInfo>(addonDir.GetFiles());
-
-                if (addonFiles.Count != 3)
-                    return;
-
-                string oldAddonName = addonDir.Name;
-                string newAddonName = Adjectives[RandomNumberGenerator.Next(0, 49)] + Verbs[RandomNumberGenerator.Next(0, 49)] + Nouns[RandomNumberGenerator.Next(0, 49)];
-
-                Directory.CreateDirectory(newAddonName);
-
-                foreach (FileInfo fi in addonFiles)
-                {
-                    if (fi.Extension != ".toc" && fi.Extension != ".lua" && fi.Extension != ".xml")
+                    if (addonDir == null)
                         return;
 
-                    string fileString = File.ReadAllText(fi.FullName);
+                    List<FileInfo> addonFiles = new List<FileInfo>(addonDir.GetFiles());
 
-                    fileString = fileString.Replace(oldAddonName, newAddonName);
+                    if (addonFiles.Count != 3)
+                        return;
 
-                    File.WriteAllText(newAddonName + "\\" + newAddonName + fi.Extension, fileString);
+                    string oldAddonName = addonDir.Name;
+                    string newAddonName = Adjectives[RandomNumberGenerator.Next(0, 49)] + Verbs[RandomNumberGenerator.Next(0, 49)] + Nouns[RandomNumberGenerator.Next(0, 49)];
+
+                    Directory.CreateDirectory(newAddonName);
+
+                    foreach (FileInfo fi in addonFiles)
+                    {
+                        if (fi.Extension != ".toc" && fi.Extension != ".lua" && fi.Extension != ".xml")
+                            return;
+
+                        string fileString = File.ReadAllText(fi.FullName);
+
+                        fileString = fileString.Replace(oldAddonName, newAddonName);
+
+                        File.WriteAllText(newAddonName + "\\" + newAddonName + fi.Extension, fileString);
+                    }
+
+                    Directory.Delete(oldAddonName, true);
+
+                    System.Threading.Thread.Sleep(SleepTime);
+
                 }
-
-                Directory.Delete(oldAddonName, true);
-
-                System.Threading.Thread.Sleep(SleepTime);
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                System.Threading.Thread.Sleep(10 * 1000);
+            }
+            
 
         }
     }

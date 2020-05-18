@@ -15,6 +15,7 @@ namespace WowAutomater
         public static void MoveMouseTo(double x, double y)
         {
             InputSimulator.Mouse.MoveMouseTo(x, y);
+            InputSleep();
         }
 
         public static void KeyPress(VirtualKeyCode vk)

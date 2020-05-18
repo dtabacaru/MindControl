@@ -179,7 +179,7 @@ namespace WowAutomater
             // Found a target
             if (Api.PlayerData.PlayerHasTarget)
             {
-                bool validEnemy = Api.PlayerData.TargetHealth == 100 &&
+                bool validEnemy = Api.PlayerData.TargetHealthPercentage > 99.9 &&
                                     !Api.PlayerData.TargetInCombat &&
                                     !Api.PlayerData.IsTargetPlayer &&
                                     Api.PlayerData.IsInFarRange &&

@@ -261,6 +261,16 @@ function VisionControlData_OnUpdate()
 	ThreeByteOnePixel(targetMana,TargetManaPixel);
 	
 	debugString = debugString .. "Target MP: " .. targetMana .. "\n";
+
+	local targetMaxHealth = UnitHealthMax("target");
+	ThreeByteOnePixel(targetMaxHealth,TargetMaxHealthPixel);
+	
+	debugString = debugString .. "Target Max HP: " .. targetMaxHealth .. "\n";
+	
+	local targetMaxtMana = UnitPowerMax("target");
+	ThreeByteOnePixel(targetMaxtMana,TargetMaxManaPixel);
+	
+	debugString = debugString .. "Target Max MP: " .. targetMaxtMana .. "\n";
 	
 	if UnitAffectingCombat("player") then
 		CombatPixel:SetColorTexture(1, 1, 1, 1);

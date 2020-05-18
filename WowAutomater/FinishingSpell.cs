@@ -26,7 +26,7 @@ namespace WowAutomater
             {
                 if (Api.PlayerData.PlayerMana >= ManaCost &&
                    ((Api.PlayerData.TargetComboPoints >= MinimumComboPointsCost && Api.PlayerData.TargetComboPoints <= MaximumComboPointsCost) ||
-                   (Api.PlayerData.TargetHealth < TargetHealthPercentage && Api.PlayerData.TargetComboPoints >= 1)) &&
+                   (Api.PlayerData.TargetHealthPercentage <= TargetHealthPercentage && Api.PlayerData.TargetComboPoints >= 1)) &&
                    !Api.PlayerData.Casting &&
                     Api.PlayerData.CanUseSkill &&
                     Api.PlayerData.PlayerHealthPercentage <= PlayerHealthPercentage &&

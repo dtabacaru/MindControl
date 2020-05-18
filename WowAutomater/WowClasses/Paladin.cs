@@ -99,7 +99,7 @@ namespace WowAutomater
             bool validTarget = false;
 
             validTarget = Api.PlayerData.PlayerHasTarget &&
-                            Api.PlayerData.TargetHealth == 100 &&
+                            Api.PlayerData.TargetHealthPercentage > 99.9 &&
                             !Api.PlayerData.TargetInCombat &&
                             Api.PlayerData.TargetFaction == 0 &&
                             Api.PlayerData.IsInCloseRange;
